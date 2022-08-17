@@ -8,12 +8,12 @@ import lombok.ToString;
 
 @Data
 @ToString
-@TableName(value = "user")
-public class UserEntity {
+@TableName(value = "image")
+public class ImageEntity {
     @TableId(type = IdType.AUTO)
-    long id;
-    String account;
-    String pass;
-    double money;
+    String id;
+    String name;
+    String author;
+    long userId;
     String created;
 }
