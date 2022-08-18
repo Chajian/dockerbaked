@@ -34,15 +34,15 @@ public class ContainerServer {
             .responseTimeout(Duration.ofSeconds(45))
             .build();
 
-//    DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+    DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
 
     public void inspectContainer(String containerId){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
-        dockerClient.inspectContainerCmd(containerId).exec().toString();
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+        log.info(dockerClient.inspectContainerCmd(containerId).exec().toString());
     }
 
     public void createContainer(String containerName,String imageName, PortBinding ... portBinding){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         HostConfig hostConfig = HostConfig.newHostConfig();
         List<PortBinding> ports = List.of(portBinding);
         hostConfig.withPortBindings(ports);
@@ -53,23 +53,28 @@ public class ContainerServer {
     }
 
     public void deleteContainer(String containerId){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         dockerClient.removeContainerCmd(containerId).exec();
     }
 
     public void startContainer(String containerId){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         dockerClient.startContainerCmd(containerId).exec();
     }
 
     public void pauseContainer(String containerId){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         dockerClient.pauseContainerCmd(containerId).exec();
     }
 
     public void stopContainer(String containerId){
-        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         dockerClient.stopContainerCmd(containerId).exec();
+    }
+
+    public void renameContainer(String newName){
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+        dockerClient.renameContainerCmd(newName);
     }
 
 }
