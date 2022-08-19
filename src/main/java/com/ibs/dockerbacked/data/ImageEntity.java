@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @TableName(value = "image")
 public class ImageEntity {
-    @TableId(type = IdType.AUTO)
     String id;
     String name;
     String author;

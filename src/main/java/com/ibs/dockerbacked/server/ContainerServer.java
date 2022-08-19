@@ -41,11 +41,23 @@ public class ContainerServer {
         log.info(dockerClient.inspectContainerCmd(containerId).exec().toString());
     }
 
-    public void createContainer(String containerName,String imageName, PortBinding ... portBinding){
+    public synchronized void createContainer(String containerName,String imageName, List<PortBinding> ports){
 //        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         HostConfig hostConfig = HostConfig.newHostConfig();
-        List<PortBinding> ports = List.of(portBinding);
         hostConfig.withPortBindings(ports);
+        dockerClient.createContainerCmd(imageName)
+                .withName(containerName)
+                .withHostConfig(hostConfig)
+                .exec();
+    }
+
+    public synchronized void createContainer(long cpu,long memory,long disk,int network,String containerName,String imageName, List<PortBinding> ports){
+        HostConfig hostConfig = HostConfig.newHostConfig();
+        hostConfig.withCpuCount(cpu)
+                .withMemory(1048576*memory)
+                .withDiskQuota(disk*1048576*1024)
+                .withNetworkMode("bridge")
+                .withPortBindings(ports);
         dockerClient.createContainerCmd(imageName)
                 .withName(containerName)
                 .withHostConfig(hostConfig)
