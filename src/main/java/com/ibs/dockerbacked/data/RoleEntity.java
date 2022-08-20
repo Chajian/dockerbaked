@@ -9,7 +9,7 @@ import lombok.ToString;
 @Data
 @ToString
 @TableName(value = "rose")
-public class RoseEntity {
+public class RoleEntity {
     @TableId(type = IdType.AUTO)
     int id;
     String name;

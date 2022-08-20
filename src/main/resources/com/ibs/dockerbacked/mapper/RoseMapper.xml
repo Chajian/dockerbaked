@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ibs.dockerbacked.mapper.RoseMapper">
-    <resultMap id="rose" type="com.ibs.dockerbacked.data.RoseEntity">
+    <resultMap id="rose" type="com.ibs.dockerbacked.data.RoleEntity">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
     </resultMap>

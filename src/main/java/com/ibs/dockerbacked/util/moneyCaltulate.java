@@ -1,4 +1,4 @@
-package com.ibs.dockerbacked;
+package com.ibs.dockerbacked.util;
 
 public class moneyCaltulate {
 

@@ -13,6 +13,7 @@ public class UserEntity {
     @TableId(type = IdType.AUTO)
     long id;
     String account;
+    int roleId;
     String pass;
     double money;
     String created;
