@@ -74,6 +74,11 @@ public class ContainerServer {
         dockerClient.startContainerCmd(containerId).exec();
     }
 
+    public void restartContainer(String containerId){
+//        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
+        dockerClient.restartContainerCmd(containerId).exec();
+    }
+
     public void pauseContainer(String containerId){
 //        DockerClient dockerClient = DockerClientImpl.getInstance(config,httpClient);
         dockerClient.pauseContainerCmd(containerId).exec();

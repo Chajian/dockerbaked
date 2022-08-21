@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @TableName(value = "container")
 public class ContainerEntity {
-    @TableId(type = IdType.AUTO)
     String id;
     String imageId;
     long userId;

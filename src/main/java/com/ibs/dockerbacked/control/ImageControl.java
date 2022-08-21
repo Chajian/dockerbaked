@@ -1,14 +1,16 @@
 package com.ibs.dockerbacked.control;
 
 import com.ibs.dockerbacked.data.ResponseBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiresRoles(value = {"学生","管理员"},logical = Logical.OR)
 @RequestMapping("ibs/api/images")
 public class ImageControl {
+
 
     @GetMapping(value = "")
     public ResponseBody getImages(){
@@ -16,7 +18,10 @@ public class ImageControl {
     }
 
     @PostMapping(value = "pull")
-    public ResponseBody pullImage(){
+    public ResponseBody pullImage(@RequestParam("name") String imageName, @RequestParam("tag") String tag){
+
+
+
         return null;
     }
 

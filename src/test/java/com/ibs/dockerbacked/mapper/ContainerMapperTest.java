@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SpringBootTest
 @Slf4j
 public class ContainerMapperTest {
@@ -27,5 +30,16 @@ public class ContainerMapperTest {
         containerEntity.setUserId(1);
         containerEntity.setImageId("1");
         containerMapper.insert(containerEntity);
+    }
+
+    @Test
+    public void testSelectMutilple(){
+        Map<String,String> map =  new HashMap<>();
+        map.put("id","1");
+        map.put("user_id","1");
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.allEq(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        log.info(containerEntity.toString());
     }
 }

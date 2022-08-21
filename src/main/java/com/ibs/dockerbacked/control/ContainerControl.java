@@ -10,10 +10,13 @@ import com.ibs.dockerbacked.data.UserEntity;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.server.ContainerServer;
+import com.ibs.dockerbacked.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +32,7 @@ public class ContainerControl {
 
     @Autowired
     UserMapper userMapper;
+
     @RequestMapping(value = "",method = RequestMethod.GET)
     public ResponseBody getContainers(@RequestParam(value = "all") boolean all, @RequestParam(value = "filters",required = false) String filters){
         //假设userId存在
@@ -67,28 +71,96 @@ public class ContainerControl {
     }
 
     @RequestMapping(value = "/{containerId}",method = RequestMethod.GET)
-    public ResponseBody deleteContainer(@PathVariable String id){
-        return null;
+    public ResponseBody deleteContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable String id){
+        String account = JwtUtils.getAccount(token);
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getAccount,account));
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("user_id",String.valueOf(userEntity.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.deleteContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("删除成功!");
+        }
+        return ResponseBody.Fail("删除失败!");
     }
     @RequestMapping(value = "/{containerId}/start",method = RequestMethod.POST)
-    public ResponseBody startContainer(@PathVariable String id){
-        return null;
+    public ResponseBody startContainer(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String token,@PathVariable("containerId") String id){
+//        String account = JwtUtils.getAccount(token);
+        Map<String,String> map =  new HashMap<>();
+        map.put("id",id);
+        map.put("user_id","1");
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.allEq(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.startContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("开启成功!");
+        }
+        return ResponseBody.Fail("开启失败!");
     }
-    @RequestMapping(value = "/{containerId}/stop",method = RequestMethod.POST)
-    public ResponseBody stopContainer(@PathVariable String id){
-        return null;
-    }
+
     @RequestMapping(value = "/{containerId}/restart",method = RequestMethod.POST)
-    public ResponseBody restartContainer(@PathVariable String id){
-        return null;
+    public ResponseBody restartContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable("containerId") String id){
+        String account = JwtUtils.getAccount(token);
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getAccount,account));
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("user_id",String.valueOf(userEntity.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.restartContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("重启成功!");
+        }
+        return ResponseBody.Fail("重启失败!");
+    }
+
+    @RequestMapping(value = "/{containerId}/stop",method = RequestMethod.POST)
+    public ResponseBody stopContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable String id){
+        String account = JwtUtils.getAccount(token);
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getAccount,account));
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("user_id",String.valueOf(userEntity.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.stopContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("关机成功!");
+        }
+        return ResponseBody.Fail("关机失败!");
     }
     @RequestMapping(value = "/{containerId}/pause",method = RequestMethod.POST)
-    public ResponseBody pauseContainer(@PathVariable String id){
-        return null;
+    public ResponseBody pauseContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable String id){
+        String account = JwtUtils.getAccount(token);
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getAccount,account));
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("user_id",String.valueOf(userEntity.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.pauseContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("暂停成功!");
+        }
+        return ResponseBody.Fail("暂停失败!");
     }
     @RequestMapping(value = "/{containerId}/rename",method = RequestMethod.POST)
-    public ResponseBody renameContainer(@PathVariable String id){
-        return null;
+    public ResponseBody renameContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable String id){
+        String account = JwtUtils.getAccount(token);
+        UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getAccount,account));
+        Map<String,String> map = new HashMap<>();
+        map.put("id",id);
+        map.put("user_id",String.valueOf(userEntity.getId()));
+        QueryWrapper queryWrapper = new QueryWrapper(map);
+        ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
+        if( containerEntity!=null){
+            containerServer.renameContainer(containerEntity.getId());
+            return ResponseBody.SUCCESS("重命名成功!");
+        }
+        return ResponseBody.Fail("重命名失败!");
     }
 
 
