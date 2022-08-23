@@ -11,6 +11,8 @@ import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.server.ContainerServer;
 import com.ibs.dockerbacked.util.JwtUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiresRoles(value = {"用户","管理员"},logical = Logical.OR)
 @RequestMapping("ibs/api/containers")
 public class ContainerControl {
 
