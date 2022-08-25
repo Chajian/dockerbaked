@@ -14,4 +14,8 @@ public class ContainerEntity {
     String imageId;
     long userId;
     String created;
+    long cpu;
+    long memory;
+    long disk;
+    int networkSpeed;
 }
