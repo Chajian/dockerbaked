@@ -11,9 +11,11 @@ import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.server.ContainerServer;
 import com.ibs.dockerbacked.util.JwtUtils;
+import com.ibs.dockerbacked.util.StringUtil;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,9 @@ public class ContainerControl {
     @Autowired
     UserMapper userMapper;
 
+    @Value("${server.address}")
+    String hostIp;
+
     @RequestMapping(value = "",method = RequestMethod.GET)
     public ResponseBody getContainers(@RequestParam(value = "all") boolean all, @RequestParam(value = "filters",required = false) String filters){
         //假设userId存在
@@ -45,7 +50,9 @@ public class ContainerControl {
             return ResponseBody.SUCCESS(containerEntityList);
         }
         else{
+            switch (filters){
 
+            }
         }
 
         return ResponseBody.Fail("请求出错");
@@ -58,6 +65,14 @@ public class ContainerControl {
         //余额是否足够
         boolean enough = true;
         if(enough){
+            List<String> lPorts = StringUtil.getPortsByString(ports);
+            List<PortBinding> bindings = new ArrayList<>();
+            List<String> envs = StringUtil.getEnvsByString(env);
+            for(String s:lPorts){
+                PortBinding portBinding = new PortBinding(new Ports.Binding(hostIp,StringUtil.getSourcePort(s)),new ExposedPort(Integer.parseInt(StringUtil.getTargetPort(s))));
+                bindings.add(portBinding);
+            }
+            containerServer.createContainer(name,imageName,bindings,envs);
 //            List<PortBinding> list = new ArrayList<>();
 //            if(ports!=null) {
 //                for (int key : ports.keySet()) {
