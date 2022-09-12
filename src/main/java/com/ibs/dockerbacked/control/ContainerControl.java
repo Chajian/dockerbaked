@@ -52,20 +52,20 @@ public class ContainerControl {
     }
 
     @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public ResponseBody createContainer(@RequestParam(value = "name") String name, @RequestParam(value = "imageName")String imageName, @RequestParam(value = "ports",required = false) Map<Integer,Integer> ports){
+    public ResponseBody createContainer(@RequestParam(value = "name") String name, @RequestParam(value = "imageName")String imageName, @RequestParam(value = "ports",required = false)String ports,@RequestParam(value = "env",required = false)String env,int cpu,long memory,int disk,int network){
         long userId = 1;
         UserEntity userEntity = userMapper.selectOne(new QueryWrapper<UserEntity>().lambda().eq(UserEntity::getId,userId));
         //余额是否足够
         boolean enough = true;
         if(enough){
-            List<PortBinding> list = new ArrayList<>();
-            if(ports!=null) {
-                for (int key : ports.keySet()) {
-                    PortBinding portBinding = new PortBinding(new Ports.Binding(null, String.valueOf(key)), new ExposedPort(ports.get(key)));
-                    list.add(portBinding);
-                }
-            }
-            containerServer.createContainer(name,imageName,list);
+//            List<PortBinding> list = new ArrayList<>();
+//            if(ports!=null) {
+//                for (int key : ports.keySet()) {
+//                    PortBinding portBinding = new PortBinding(new Ports.Binding(null, String.valueOf(key)), new ExposedPort(ports.get(key)));
+//                    list.add(portBinding);
+//                }
+//            }
+//            containerServer.createContainer(name,imageName,list);
             return ResponseBody.SUCCESS("成功!");
         }
         else{

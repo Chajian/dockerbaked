@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -41,5 +43,11 @@ public class ContainerMapperTest {
         queryWrapper.allEq(map);
         ContainerEntity containerEntity = containerMapper.selectOne(queryWrapper);
         log.info(containerEntity.toString());
+    }
+
+    @Test
+    public void testAllContainers(){
+        List<ContainerEntity> containerEntities = containerMapper.selectList(null);
+        log.info(Arrays.toString(containerEntities.toArray()));
     }
 }

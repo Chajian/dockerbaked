@@ -8,5 +8,9 @@
         <result column="image_id" property="imageId"/>
         <result column="user_id" property="userId"/>
         <result column="created" property="created"/>
+        <result column="cpu" property="cpu"/>
+        <result column="memory" property="memory"/>
+        <result column="disk" property="disk"/>
+        <result column="network_speed" property="networkSpeed"/>
     </resultMap>
 </mapper>
