@@ -19,5 +19,4 @@ public class ContainerEntity {
     long memory;
     long disk;
     int networkSpeed;
-
 }
