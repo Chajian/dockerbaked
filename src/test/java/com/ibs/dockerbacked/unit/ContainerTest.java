@@ -33,7 +33,7 @@ public class ContainerTest {
 
 
     /**
-     * 实体类COntainer成员变量owner与数据库Container的owner_id字段的类型不符无法添加
+     * 实体类Container成员变量owner与数据库Container的owner_id字段的类型不符无法添加
      * 其余正常
      */
     @Test
