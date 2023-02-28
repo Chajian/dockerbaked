@@ -11,7 +11,13 @@
 
 
 
-
+<!--    远程库-->
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
 
     <groupId>com.ibs</groupId>
     <artifactId>dockerbacked</artifactId>
@@ -74,6 +80,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
             <version>3.4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>3.4.0</version>
         </dependency>
 
         <dependency>
