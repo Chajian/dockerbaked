@@ -14,7 +14,7 @@ public class Container extends TimeRecord {
     private String imageId;
     private String name;
     private String description;
-    private User owner;
+    private Users owner;
     private String state;
     private Packet packet;
     private Date leaseAt;
