@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,10 +13,14 @@ import java.util.Date;
 public class Container extends TimeRecord {
     private int id;
     private String imageId;
+    @TableField("name_c")
     private String name;
+    @TableField("descption")
     private String description;
+    @TableField("owner_id")
     private Users owner;
     private String state;
+    @TableField(exist = false)
     private Packet packet;
     private Date leaseAt;
     private Date leaseEnd;
