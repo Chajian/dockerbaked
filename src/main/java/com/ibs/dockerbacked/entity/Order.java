@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -8,8 +9,10 @@ import lombok.Data;
  * @author Chajian
  */
 @Data
+@TableName("orders")
 public class Order extends TimeRecord {
     private int id;
+    @TableField("name_o")
     private String name;
     private int userId;
     private float money;
