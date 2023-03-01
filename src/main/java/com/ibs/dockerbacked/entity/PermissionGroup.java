@@ -13,7 +13,4 @@ public class PermissionGroup extends TimeRecord{
     private int id;
     private String name;
     private String descrption;
-    private List<Permission> permissions;
-
-
 }

@@ -18,10 +18,10 @@ public class Container extends TimeRecord {
     @TableField("descption")
     private String description;
     @TableField("owner_id")
-    private Users owner;
+    private int ownerId;
     private String state;
     @TableField(exist = false)
-    private Packet packet;
+    private int packetId;
     private Date leaseAt;
     private Date leaseEnd;
 }

@@ -16,6 +16,4 @@ public class Users extends TimeRecord{
     private int id;
     private String account;
     private String pwd;
-    @TableField(exist = false)
-    private List<PermissionGroup> permissionGroups;
 }

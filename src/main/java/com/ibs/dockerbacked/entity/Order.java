@@ -11,10 +11,10 @@ import lombok.Data;
 public class Order extends TimeRecord {
     private int id;
     private String name;
-    private Users user;
+    private int userId;
     private float money;
     private String payWay;
-    private Container container;
-    private Packet packet;
+    private int containerId;
+    private int packetId;
 
 }
