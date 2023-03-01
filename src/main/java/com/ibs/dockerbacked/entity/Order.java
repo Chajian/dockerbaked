@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
 public class Order extends TimeRecord {
     private int id;
     private String name;
-    private User user;
+    private Users user;
     private float money;
     private String payWay;
     private Container container;

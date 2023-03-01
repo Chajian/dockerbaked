@@ -1,7 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ibs.dockerbacked.entity.User;
+import com.ibs.dockerbacked.entity.Users;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.service.UserSerivce;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements UserSerivce {
+public class UserSerivceImpl extends ServiceImpl<UserMapper, Users> implements UserSerivce {
 
 }
