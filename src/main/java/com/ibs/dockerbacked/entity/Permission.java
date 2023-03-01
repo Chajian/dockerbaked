@@ -10,7 +10,7 @@ import lombok.Data;
 public class Permission extends TimeRecord{
     private int id;
     private String name;
-    private String descrption;
+    private String description;
 
 
 

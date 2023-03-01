@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @author Chajian
  */
 @Data
+@TableName("permission_group_permission")
 public class PermissionGroupPermission {
     private int id;
     private int groupId;
