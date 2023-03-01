@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
@@ -9,7 +10,8 @@ import lombok.Data;
 @Data
 public class Packet extends TimeRecord {
     private int id;
-    private String descrption;
+    private String description;
+    @TableField("name_p")
     private String name;
     private int hardwareId;
 }
