@@ -2,6 +2,7 @@ package com.ibs.dockerbacked.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.mysql.cj.xdevapi.Table;
 import lombok.Data;
 
@@ -12,7 +13,8 @@ import java.util.List;
  * @author Chajian
  */
 @Data
-public class Users extends TimeRecord{
+@TableName("users")
+public class User extends TimeRecord{
     private int id;
     private String account;
     private String pwd;

@@ -1,7 +1,9 @@
 package com.ibs.dockerbacked.unit;
 
-import com.ibs.dockerbacked.entity.Users;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.service.UserSerivce;
+import com.ibs.dockerbacked.util.EntityUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class UserTest {
 
     @Test
     public void testInsert() {
-        Users user = new Users();
+        User user = new User();
         user.setAccount("1000");
         user.setPwd("1234");
         userSerivce.save(user);
@@ -30,7 +32,7 @@ public class UserTest {
 
     @Test
     public void testUpdate() {
-        Users user = new Users();
+        User user = new User();
         user.setId(3);
         user.setPwd("123");
         userSerivce.updateById(user);
@@ -40,7 +42,16 @@ public class UserTest {
     @Test
     public void testDelete() {
         userSerivce.removeById(2);
+    }
 
+    /**
+     * 通过javaAPi执行Where子句
+     */
+    @Test
+    public void selectUserByAccount(){
+        User user = userSerivce.getBaseMapper().selectOne(new QueryWrapper<User>()
+                .eq("account","1000"));
+        EntityUtils.print(user);
     }
 }
 

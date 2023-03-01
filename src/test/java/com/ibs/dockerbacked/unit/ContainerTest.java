@@ -1,7 +1,7 @@
 package com.ibs.dockerbacked.unit;
 
 import com.ibs.dockerbacked.entity.Container;
-import com.ibs.dockerbacked.entity.Users;
+import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.UserSerivce;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class ContainerTest {
     public void containerInsert() {
         Container container = new Container();
         container.setImageId("hhh");
-        Users owner = userSerivce.getById(1);
+        User owner = userSerivce.getById(1);
         container.setOwnerId(owner.getId());
 
         containerService.save(container);

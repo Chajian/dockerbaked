@@ -1,7 +1,7 @@
 package com.ibs.dockerbacked.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ibs.dockerbacked.entity.Users;
+import com.ibs.dockerbacked.entity.User;
 
 /**
  * UserMapper
@@ -9,5 +9,5 @@ import com.ibs.dockerbacked.entity.Users;
  */
 
 
-public interface UserSerivce extends IService<Users> {
+public interface UserSerivce extends IService<User> {
 }
