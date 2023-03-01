@@ -12,5 +12,5 @@ import java.util.List;
 public class PermissionGroup extends TimeRecord{
     private int id;
     private String name;
-    private String descrption;
+    private String description;
 }

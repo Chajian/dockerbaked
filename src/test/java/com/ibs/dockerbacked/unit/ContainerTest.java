@@ -29,7 +29,7 @@ public class ContainerTest {
         Container container = new Container();
         container.setImageId("hhh");
         Users owner = userSerivce.getById(1);
-        container.setOwner(owner);
+        container.setOwnerId(owner.getId());
 
         containerService.save(container);
     }
