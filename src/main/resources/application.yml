@@ -14,7 +14,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/docker_cloud
     username: root
-    password: 1234
+    password: 123456789
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
