@@ -1,6 +1,10 @@
 package com.ibs.dockerbacked.unit;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ibs.dockerbacked.entity.Permission;
+import com.ibs.dockerbacked.entity.PermissionGroup;
+import com.ibs.dockerbacked.entity.UserPermissionGroup;
+import com.ibs.dockerbacked.mapper.PermissionMapper;
 import com.ibs.dockerbacked.service.PermissionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,11 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class PermissionTest {
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
 
     @Test
     public void PermissionAll() {
@@ -38,5 +48,11 @@ public class PermissionTest {
     @Test
     public void PermissionRemove() {
         permissionService.removeById(2);
+    }
+
+    @Test
+    public void getPermissionsByUser(){
+        permissionMapper.getPermissionsByUserAccount("1000").stream()
+                .forEach(System.out::println);
     }
 }
