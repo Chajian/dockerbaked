@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * 全局配置
- * @author yezi
+ * @author Chajian
  * @date 2020/9/17
  */
 @Component

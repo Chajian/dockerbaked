@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * @author Chajian
  * 实体类打印
  */
 public class EntityUtils {

@@ -1,6 +1,10 @@
 package com.ibs.dockerbacked.config;
 import org.apache.shiro.authc.AuthenticationToken;
 
+/**
+ * @author Chajian
+ *
+ */
 public class JWTToken implements AuthenticationToken {
     private String token;
 

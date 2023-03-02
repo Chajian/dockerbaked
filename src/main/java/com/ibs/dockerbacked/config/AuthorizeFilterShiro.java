@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 /**
  * 基于shiro实现的授权过滤取
- * @author yezi
+ * @author Chajian
  * @date 2020/9/14
  */
 @Component

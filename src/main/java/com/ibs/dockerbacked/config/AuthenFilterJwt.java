@@ -19,7 +19,7 @@ import java.net.URLEncoder;
  * 如果认证失败就跳转unauthorized
  *
  * 处理顺序preHandle->isAccessAllowed->isLoginAttempt->executeLogin
- * @author yezi
+ * @author Chajian
  * @date 2020/9/14
  */
 @Component
