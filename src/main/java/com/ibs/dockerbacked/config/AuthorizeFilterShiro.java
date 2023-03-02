@@ -66,34 +66,19 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
         //解密或得username
         String account = JwtUtil.getUserAccount(token);
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        int userId = userMapper.selectOne(new QueryWrapper<User>().eq("account", account)).getId();
 
-
-        List<UserPermissionGroup> userPermissionGroup = userPermissionGroupMapper.selectList(new QueryWrapper<UserPermissionGroup>().eq("user_id", userId));
-
-        //获取权限组
-        List<Integer> permissionIds = userPermissionGroup.stream()
-                .map(e -> e.getId())
-                .collect(Collectors.toList());
-        List<PermissionGroup> permissionGroups = permissionGroupMapper.selectList(new QueryWrapper<PermissionGroup>().in("id",permissionIds));
-//        List<Permission> permissions = permissionMapper.selectList(new QueryWrapper<Permission>().in(""))
+        List<Permission> permissions = permissionMapper.getPermissionsByUserAccount(account);
 
         //存放会员拥有的权限
         Set<String> permissionSet = new HashSet<>();
         //存放会员拥有的角色
         Set<String> roleSet = new HashSet<>();
-
-//        for(Role role:roleList){
-//            System.out.println(role.toString());
-//            //添加会员的角色到roleset
-//            roleSet.add(role.getName());
-//
-//            //添加会员的权限
-//            for(Permission permission:permissionMapper.selectPermissionByRoleId(role.getId())){
-//                permissionSet.add(permission.getName());
-//            }
-//
-//        }
+        permissions.stream().forEach(
+                e->{
+                    //添加会员的权限
+                    permissionSet.add(e.getName());
+                }
+        );
 
         simpleAuthorizationInfo.setRoles(roleSet);
         simpleAuthorizationInfo.setStringPermissions(permissionSet);
@@ -105,19 +90,18 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
         log.info("[身份认证]");
 
         //检测用户信息是否存在，并且尝试通过token验证
-//        String token = (String) authenticationToken.getCredentials();
-//        String username = JwtUtil.getUsername(token);
-//        Member member = memberMapper.selectMemberByName(username);
-//        log.info(username+":"+member.toString());
-//        if(username == null || !JwtUtil.verity(token,member)){
-//            log.info("身份认证失败  token和 username");
-//            throw new AuthenticationException("身份认证失败");
-//        }
-//        if(member== null ){
-//            log.info("用户不存在");
-//            throw new AuthenticationException("该用户不存在");
-//        }
-//        return new SimpleAuthenticationInfo(token,token,"TokenRealm");
-        return null;
+        String token = (String) authenticationToken.getCredentials();
+        String account = JwtUtil.getUserAccount(token);
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+        log.info(account+":"+user.toString());
+        if(account == null || !JwtUtil.verity(token,user)){
+            log.info("身份认证失败  token和 username");
+            throw new AuthenticationException("身份认证失败");
+        }
+        if(user== null ){
+            log.info("用户不存在");
+            throw new AuthenticationException("该用户不存在");
+        }
+        return new SimpleAuthenticationInfo(token,token,"TokenRealm");
     }
 }
