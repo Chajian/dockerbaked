@@ -8,16 +8,13 @@ import com.ibs.dockerbacked.service.ContainerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
 /**
  * @author sn
  */
-=======
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
->>>>>>> 4aba4c5c63cc975568f6c1a10ed7576a9a7b6bb9
 @Slf4j
 @Service
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
