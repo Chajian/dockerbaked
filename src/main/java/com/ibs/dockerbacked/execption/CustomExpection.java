@@ -10,7 +10,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomExpection extends RuntimeException implements Serializable {
+    private Integer code;  //状态编码
+<<<<<<< HEAD
+=======
 
     private String message; //异常消息
-    private Integer code;  //状态编码
+
+>>>>>>> 4aba4c5c63cc975568f6c1a10ed7576a9a7b6bb9
 }

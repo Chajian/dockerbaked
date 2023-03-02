@@ -3,6 +3,7 @@ server:
   address: 127.0.0.1
 mybatis:
   config-location: classpath:conf/mybatis-conf.xml
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
