@@ -21,7 +21,7 @@ public class Result<T> {
 
     //失败的信息
 
-    public static <T> Result<T> error(String message, Integer code) {
+    public static <T> Result<T> error(Integer code,String message) {
         Result<T> result = new Result<>();
         result.data = null;
         result.code = code;

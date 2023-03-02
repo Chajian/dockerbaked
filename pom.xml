@@ -160,9 +160,9 @@
         </profile>
         <profile>
             <!-- 本地开发环境 -->
-            <id>dev-cjz</id>
+            <id>dev-chen</id>
             <properties>
-                <profileActive>dev-cjz</profileActive>
+                <profileActive>dev-chen</profileActive>
             </properties>
         </profile>
         <profile>
