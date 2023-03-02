@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * PermissionMapper
- * @author Chajian
+ * @author sn
  */
 public interface PermissionMapper extends BaseMapper<Permission> {
 

@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ibs.dockerbacked.entity.Permission;
 
 /**
- * PermissionMapper
- * @author Chajian
+ * @author sn
  */
 
 public interface PermissionService extends IService<Permission> {

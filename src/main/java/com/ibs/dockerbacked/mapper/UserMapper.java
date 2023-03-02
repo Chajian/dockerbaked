@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ibs.dockerbacked.entity.User;
 
 /**
- * UserMapper
- * @author Chajian
+ * @author sn
  */
 public interface UserMapper extends BaseMapper<User> {
 }

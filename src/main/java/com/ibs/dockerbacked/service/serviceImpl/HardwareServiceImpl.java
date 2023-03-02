@@ -6,6 +6,10 @@ import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.service.HardwareService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+/**
+ * @author sn
+ */
 @Slf4j
 @Service
 public class HardwareServiceImpl extends ServiceImpl<HardwareMapper, Hardware> implements HardwareService {

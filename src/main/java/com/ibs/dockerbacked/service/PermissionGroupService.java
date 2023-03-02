@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ibs.dockerbacked.entity.PermissionGroup;
 
 /**
- * PermissionGroupMapper
- * @author Chajian
+ * @author sn
  */
 
 

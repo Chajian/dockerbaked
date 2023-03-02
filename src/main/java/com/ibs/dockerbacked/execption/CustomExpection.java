@@ -13,5 +13,4 @@ public class CustomExpection extends RuntimeException implements Serializable {
 
     private String message; //异常消息
     private Integer code;  //状态编码
-
 }

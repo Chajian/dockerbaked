@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author sn
+ */
 @RunWith(SpringRunner.class)
-
 @SpringBootTest
 public class PermissionGroupText {
     @Autowired
