@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -38,7 +39,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @author sn
      */
     @Override
-    public User userRegist(User user) {
+    public UserDto userRegist(UserDto user) {
 
         //1.user为空抛出异常
         if (user == null) throw new CustomExpection(Constants.CODE_400, "添加的用户数据不正确");
@@ -47,7 +48,8 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         //2.1判断用户是否为null,是则抛异常
         if (one != null) throw new CustomExpection(Constants.CODE_400, "用户已存在");
         //2.2否则注册
-        save(user);
+        BeanUtil.copyProperties(user, one);
+        save(one);
         return user;
     }
 
@@ -59,7 +61,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @author sn
      */
     @Override
-    public String userLogin(User user) {
+    public String userLogin(UserDto user) {
         //1.判断user是否为空
         if (user == null) throw new CustomExpection(Constants.CODE_Login_500, "用户数据为空");
         //2.判断用户是否存在数据库

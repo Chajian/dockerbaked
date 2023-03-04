@@ -13,10 +13,10 @@ import com.ibs.dockerbacked.entity.dto.UserDto;
 
 public interface UserSerivce extends IService<User> {
     //用户注册
-    User userRegist(User user);
+    UserDto userRegist(UserDto user);
 
     //用户登录
-    String userLogin(User user);
+    String userLogin(UserDto user);
 
     //批量生产账号
     boolean batchGenerationUser(int count, String token);
