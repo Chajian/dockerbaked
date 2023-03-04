@@ -23,7 +23,7 @@ class ContainerServiceImplTest {
         List<String> list = new ArrayList<>();
         list.add("0");
         list.add("1");
-        System.out.println(containerService.getContainersByStatus(null, list));
+//        System.out.println(containerService.getContainersByStatus(null, list));
 
     }
 }
