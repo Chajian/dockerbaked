@@ -1,11 +1,17 @@
 package com.ibs.dockerbacked.common;
 
+import lombok.Data;
+import lombok.ToString;
+
+
 /**
  * 通用返回结果，服务器响应的数据最终会封装成此对象
  *
  * @author sn
  * @param <T>
  */
+@Data
+@ToString
 public class Result<T> {
     private Integer code; //编码
     private String message;//错误信息

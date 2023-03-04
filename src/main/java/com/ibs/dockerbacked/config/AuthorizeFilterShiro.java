@@ -36,17 +36,11 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private PermissionGroupMapper permissionGroupMapper;
 
     @Autowired
     private PermissionMapper permissionMapper;
 
-    @Autowired
-    private UserPermissionGroupMapper userPermissionGroupMapper;
 
-    @Autowired
-    private PermissionGroupPermissionMapper permissionGroupPermissionMapper;
 
     @Override
     public boolean supports(AuthenticationToken token) {

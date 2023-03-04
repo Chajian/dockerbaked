@@ -3,9 +3,10 @@ package com.ibs.dockerbacked.controller;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
-import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.UserSerivce;
+
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +24,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("ibs/admin/containers")
+@RequiresRoles("admin")
 public class AdminController {
     @Autowired
     private ContainerService containerService;
     @Autowired
     private UserSerivce userSerivce;
+
 
     /***
      *@descript 操纵容器
@@ -66,7 +69,6 @@ public class AdminController {
      *@author sn
      *@version 1.0
      */
-//    批量生产账号
     @GetMapping("/batch/{count}/{token}")
     public Boolean batchGenerationUser(@PathVariable("count") int count,
                                        @PathVariable String token) {
@@ -74,3 +76,4 @@ public class AdminController {
         return isSuccess;
     }
 }
+
