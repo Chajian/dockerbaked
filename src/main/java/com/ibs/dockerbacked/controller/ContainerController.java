@@ -1,8 +1,10 @@
 package com.ibs.dockerbacked.controller;
 
+import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
+import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.service.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class ContainerController {
      *@descript 创建容器
      *@param null *
      *@return  /ibs/api/containers/create
-     *@author
+     *@author sn
      *@version 1.0
      */
     @PostMapping("/create")
@@ -55,8 +57,21 @@ public class ContainerController {
      *@version 1.0
      */
     @GetMapping("/{id}/{status}")
-    public Container operateContainer(@PathVariable("id") Long containerId,@PathVariable("status")String status){
-        return containerService.getContainersByIdOrStatus(containerId,status);
+    public Container operateContainer(@PathVariable("id") Long containerId, @PathVariable("status") String status) {
+        return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
+    /**
+     *没写完
+     * @param imagesParam
+     * @return
+     * @descript 查询镜像
+     * @author
+     */
+    @GetMapping("/ibs/api/images")
+    public Result<List<Container>> getImages(@RequestBody ImagesParam imagesParam) {
+
+        containerService.getImages(imagesParam);
+        return null;
+    }
 }

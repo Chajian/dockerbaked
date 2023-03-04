@@ -67,10 +67,11 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         //2.判断用户是否存在数据库
         //2.1获取用户数据
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.eq(User::getAccount, user.getAccount()).eq(User::getPwd, user.getPwd());
+        userLambdaQueryWrapper.eq(User::getAccount, user.getAccount());
         User one = getOne(userLambdaQueryWrapper);
         //为null,拦截
-        if (one == null) throw new CustomExpection(Constants.CODE_Login_500, "用户不存在或者账密错误");
+        if (one == null) throw new CustomExpection(Constants.CODE_Login_500, "账号不存在");
+        if (!one.getPwd().equals(user.getPwd())) throw new CustomExpection(Constants.CODE_Login_500, "密码错误");
         //3.登录成功
         //3.1生成token并返回
         String token = JwtUtil.sign(one.getAccount());

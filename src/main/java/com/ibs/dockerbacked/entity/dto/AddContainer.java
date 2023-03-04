@@ -4,9 +4,9 @@ import com.ibs.dockerbacked.entity.Container;
 import lombok.Data;
 
 /**
- * @author sm
+ * @author chen
  * @version 1.0
- * @descript TODO
+ * @descript 容器的新增信息
  * @date 2023/3/4 20:34
  */
 @Data

@@ -5,7 +5,7 @@ import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
- * @author sm
+ * @author chen
  * @version 1.0
  * @descript 分页查询参数
  * @date 2023/3/4 20:15

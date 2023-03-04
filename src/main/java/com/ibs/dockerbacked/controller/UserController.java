@@ -22,24 +22,31 @@ public class UserController {
     @Autowired
     private UserSerivce userSerivce;
 
+    /**
+     * @descript用户的注册
+     * @param user
+     * @return user
+     * @version 1.0
+     * @author sn
+     */
     @PostMapping("register")
     public Result register(@RequestBody UserDto user) {
         return Result.success(Constants.CODE_200, "新增成功", userSerivce.userRegist(user));
     }
-
+    /***
+     *@descript 用户的登录
+     *@param user *
+     *@return  String
+     *@author sn
+     *@version 1.0
+     */
     @PostMapping("/login")
     public Result<String> userLogin(@RequestBody UserDto user) {
         String userLoginToken = userSerivce.userLogin(user);
         return Result.success(Constants.CODE_200, "登录成功", userLoginToken);
     }
 
-//    批量生产账号
-    @GetMapping("/batch/{count}/{token}")
-    public Boolean batchGenerationUser(@PathVariable("count") int count,
-                                              @PathVariable String token) {
-        boolean isSuccess = userSerivce.batchGenerationUser(count, token);
-        return isSuccess;
-    }
+
 
 
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
-*@descript TODO
+*@descript 容器的查询条件
 *@author sm
 *@date 2023/3/4 21:02
 *@version 1.0

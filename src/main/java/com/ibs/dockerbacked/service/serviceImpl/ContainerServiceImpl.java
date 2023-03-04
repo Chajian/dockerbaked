@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
+import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
@@ -20,11 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author sn
  */
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -107,6 +106,15 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             return null;
         }
         return container;
+    }
+
+    //获取镜像
+    @Override
+    public List<Container> getImages(ImagesParam imagesParam) {
+        Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
+        Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+
+        return null;
     }
 
 }

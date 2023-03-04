@@ -20,4 +20,6 @@ public interface UserSerivce extends IService<User> {
 
     //批量生产账号
     boolean batchGenerationUser(int count, String token);
+
+
 }
