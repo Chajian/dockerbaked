@@ -2,8 +2,10 @@ package com.ibs.dockerbacked.service.serviceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.config.JWTToken;
@@ -20,7 +22,9 @@ import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author sn
@@ -66,8 +70,11 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) throw new CustomExpection(Constants.CODE_Login_500, "用户数据为空");
         //2.判断用户是否存在数据库
         //2.1获取用户数据
-        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        userLambdaQueryWrapper.eq(User::getAccount, user.getAccount()).eq(User::getPwd, user.getPwd());
+        QueryWrapper<User> userLambdaQueryWrapper = new QueryWrapper<>();
+        Map<String,String> map = new HashMap<>();
+        map.put("account",user.getAccount());
+        map.put("pwd",user.getPwd());
+        userLambdaQueryWrapper.allEq(map);
         User one = getOne(userLambdaQueryWrapper);
         //为null,拦截
         if (one == null) throw new CustomExpection(Constants.CODE_Login_500, "用户不存在或者账密错误");
