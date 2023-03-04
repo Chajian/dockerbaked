@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserSerivce userSerivce;
+    private UserSerivce userSerivce;
 
-    @PostMapping("/add")
-    public Result userRegist(@RequestBody User user) {
+    @PostMapping("register")
+    public Result register(@RequestBody User user) {
         return Result.success(Constants.CODE_200, "新增成功", userSerivce.userRegist(user));
     }
 
