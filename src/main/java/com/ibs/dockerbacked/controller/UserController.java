@@ -27,10 +27,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Result<String> userlogin(@RequestBody User user) {
-        String userLoginToken = userSerivce.userlogin(user);
+    public Result<String> userLogin(@RequestBody User user) {
+        String userLoginToken = userSerivce.userLogin(user);
         return Result.success(Constants.CODE_200, "登录成功", userLoginToken);
     }
+
+    //批量生产账号
+//    @GetMapping("/batch/{count}/{token}")
+//    public Result<boolean> batchGenerationUser(@PathVariable("count") int count,
+//                                              @PathVariable String token) {
+//         userSerivce.batchGenerationUser(count, token);
+//        return null;
+//    }
 
 
 }

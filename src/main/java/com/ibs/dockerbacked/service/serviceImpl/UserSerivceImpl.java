@@ -1,5 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.common.Constants;
@@ -13,7 +15,11 @@ import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author sn
@@ -53,19 +59,44 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @author sn
      */
     @Override
-    public String userlogin(User user) {
+    public String userLogin(User user) {
         //1.判断user是否为空
-        if (user == null) throw new CustomExpection(Constants.CODE_400, "用户为空");
+        if (user == null) throw new CustomExpection(Constants.CODE_Login_500, "用户数据为空");
         //2.判断用户是否存在数据库
         //2.1获取用户数据
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(User::getAccount, user.getAccount()).eq(User::getPwd, user.getPwd());
         User one = getOne(userLambdaQueryWrapper);
         //为null,拦截
-        if (one == null) throw new CustomExpection(Constants.CODE_400, "用户不存在");
+        if (one == null) throw new CustomExpection(Constants.CODE_Login_500, "用户不存在或者账密错误");
         //3.登录成功
-        //3.1获取token
+        //3.1生成token并返回
         String token = JwtUtil.sign(one.getAccount());
         return token;
+    }
+
+    /**
+     * @param count 批量生成账号的个数
+     * @param token 管理员的token
+     * @return
+     */
+    @Override
+    public boolean batchGenerationUser(int count, String token) {
+
+        //判断是否为管理员
+
+        //随机生成账号和密码
+        List<User> userList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            User user = new User();
+            user.setAccount(IdUtil.simpleUUID().substring(0, 7));
+            user.setPwd(IdUtil.simpleUUID().substring(0, 7));
+            userList.add(user);
+        }
+        //保存
+        boolean batch = saveBatch(userList);
+        if (!batch) throw new CustomExpection(Constants.CODE_BatchREgister_501, "批量注册失败");
+        return batch;
+
     }
 }

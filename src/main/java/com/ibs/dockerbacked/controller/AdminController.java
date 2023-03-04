@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.controller;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.service.ContainerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class AdminController {
     @Autowired
     private ContainerService containerService;
+
     /***
      *@descript 获取容器
      *@param
@@ -30,7 +32,8 @@ public class AdminController {
      *@version 1.0
      */
     @GetMapping("/containers")
-    public List<Container> containersAll(@RequestParam(value = "id",required = false)Integer containerId, @RequestParam("status")List<String> status){
-        return containerService.getContainersByStatus(containerId,status);
+    public List<Container> containersAll(@RequestParam(value = "id", required = false) Integer containerId, @RequestParam("status") List<String> status) {
+
+        return containerService.getContainersByStatus(containerId, status);
     }
 }

@@ -16,7 +16,8 @@ public interface UserSerivce extends IService<User> {
     User userRegist(User user);
 
     //用户登录
-    String userlogin(User user);
+    String userLogin(User user);
 
-
+    //批量生产账号
+    boolean batchGenerationUser(int count, String token);
 }
