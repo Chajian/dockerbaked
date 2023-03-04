@@ -19,15 +19,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserSerivce userSerivce;
+    private UserSerivce userSerivce;
 
-    @PostMapping("/add")
-    public Result userRegist(@RequestBody User user) {
+    @PostMapping("register")
+    public Result register(@RequestBody User user) {
         return Result.success(Constants.CODE_200, "新增成功", userSerivce.userRegist(user));
     }
 
     @PostMapping("/login")
-    public Result<String> userlogin(@RequestBody User user) {
+    public Result<String> login(@RequestBody User user) {
         String userLoginToken = userSerivce.userlogin(user);
         return Result.success(Constants.CODE_200, "登录成功", userLoginToken);
     }
