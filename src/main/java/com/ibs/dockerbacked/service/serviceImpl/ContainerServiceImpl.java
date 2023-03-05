@@ -7,7 +7,6 @@ import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
-import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
@@ -17,10 +16,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.github.dockerjava.api.model.Image;
 /**
  * @author sn
  */
+import java.awt.*;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +30,7 @@ import java.util.List;
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
     @Autowired
     private UserMapper userMapper;
+
     /***
      *@descript 容器
      *@param c
@@ -39,7 +40,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      *@version 1.0
      */
     @Override
-    public List<Container> getContainers(ContainerParam containerParam,Long userId) {
+    public List<Container> getContainers(ContainerParam containerParam, Long userId) {
         //测试用户
         Integer page = containerParam.getPageParam().getPage() == null ? 1 : containerParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = containerParam.getPageParam().getPageSize() == null ? 5 : containerParam.getPageParam().getPageSize();//页大小 默认5条每页
@@ -50,13 +51,13 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //用户名
         String account = containerParam.getAccount();
         //主要是管理员可以根据用户名查询容器用的
-        if(account!=null) {
+        if (account != null) {
             //拿到用户Id
-            userId  = userMapper.getUserIdByAccount(account);
+            userId = userMapper.getUserIdByAccount(account);
         }
         Page<Container> p = new Page<>(page, pageSize);
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
-        lambdaQueryWrapper.eq(userId!=null,Container::getOwnerId, userId); //根据用户找
+        lambdaQueryWrapper.eq(userId != null, Container::getOwnerId, userId); //根据用户找
         lambdaQueryWrapper.eq(containerId != null, Container::getId, containerId); //根据容器Id查找
         lambdaQueryWrapper.in(status != null, Container::getState, status); //根据状态找
         Page<Container> pageResult = page(p, lambdaQueryWrapper);
@@ -95,6 +96,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             throw new CustomExpection(500, "创建容器失败");
         }
     }
+
     //管理员接口
     @Override
     public Container getContainersByIdOrStatus(Long containerId, String status) {
@@ -110,9 +112,11 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     //获取镜像
     @Override
-    public List<Container> getImages(ImagesParam imagesParam) {
+    public List<Image> getImages(ImagesParam imagesParam) {
         Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+
+
 
         return null;
     }

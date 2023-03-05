@@ -13,7 +13,7 @@ import lombok.Data;
 public class ImagesParam {
     //-"label"-返回指定标签的镜像
     private String label;
-    //-"page"-查询所有容器，分页查询
+    //-"page"-查询所有镜像，分页查询
     private PageParam pageParam;
     //-"id"-通过id查询
     private Integer id;

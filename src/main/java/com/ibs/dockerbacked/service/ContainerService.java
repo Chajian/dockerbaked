@@ -1,11 +1,12 @@
 package com.ibs.dockerbacked.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
-import com.ibs.dockerbacked.entity.dto.PageParam;
+
 
 
 /**
@@ -25,7 +26,7 @@ public interface ContainerService extends IService<Container> {
     Container getContainersByIdOrStatus(Long containerId, String status);
 
     //查询镜像
-    List<Container> getImages(ImagesParam imagesParam);
+    List<Image> getImages(ImagesParam imagesParam);
 
 
 }
