@@ -72,25 +72,37 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+<<<<<<< HEAD
             <version>3.5.3</version>
+=======
+            <version>3.5.3.1</version>
+>>>>>>> c3827d0492bc3ea415e40621376a6192d467670d
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
+<<<<<<< HEAD
             <version>3.5.3</version>
+=======
+            <version>3.5.3.1</version>
+>>>>>>> c3827d0492bc3ea415e40621376a6192d467670d
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.4.0</version>
+            <version>3.5.3.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter-test</artifactId>
+<<<<<<< HEAD
             <version>3.5.3</version>
+=======
+            <version>3.5.3.1</version>
+>>>>>>> c3827d0492bc3ea415e40621376a6192d467670d
             <scope>test</scope>
         </dependency>
 
