@@ -27,6 +27,14 @@ public class DockerConnection {
 
     DockerClient dockerClient = null;
 
+    /**
+     *
+     * @param userName docker账户名
+     * @param passWord 密码
+     * @param email 邮箱
+     * @param host
+     * @param url
+     */
     public DockerConnection(String userName,String passWord,String email,String host,String url){
         this.userName = userName;
         this.passWord = passWord;
