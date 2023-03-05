@@ -31,8 +31,8 @@ class UserSerivceImplTest {
     @Test
     void userLogin() {
         User user = new User();
-        user.setAccount("1000");
-        user.setPwd("12");
+        user.setAccount("10002");
+        user.setPwd("1234");
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(User::getAccount, user.getAccount());
         User one = userSerivce.getOne(userLambdaQueryWrapper);

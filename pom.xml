@@ -10,8 +10,7 @@
     </parent>
 
 
-
-<!--    远程库-->
+    <!--    远程库-->
     <repositories>
         <repository>
             <id>snapshots</id>
@@ -73,13 +72,13 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.3</version>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
-            <version>3.4.3</version>
+            <version>3.5.3</version>
         </dependency>
 
         <dependency>
@@ -91,7 +90,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter-test</artifactId>
-            <version>3.4.3</version>
+            <version>3.5.3</version>
             <scope>test</scope>
         </dependency>
 
@@ -120,7 +119,7 @@
             <version>1.7.0</version>
         </dependency>
 
-<!--        hutool依赖-->
+        <!--        hutool依赖-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
