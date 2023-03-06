@@ -18,3 +18,9 @@ spring:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
+  docker:
+    host: unix:///var/run/docker.sock #host
+    url: https://index.docker.io/v1/ #url
+    username: #dockerHub账号
+    password: #dockerHub 密码
+    email: #dockerHub 邮箱
