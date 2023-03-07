@@ -1,5 +1,7 @@
 package com.ibs.dockerbacked.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 
@@ -40,12 +43,13 @@ public class AdminController {
      *@version 1.0
      */
     @GetMapping("/{id}/{status}")
-    public Container operateContainer(@PathVariable("id") Long containerId, @PathVariable("status") String status) {
-        return containerService.getContainersByIdOrStatus(containerId, status);
+    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
+        Container containers = containerService.getContainersByIdOrStatus(containerId, status);
+        return Result.success(200, "", containers);
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody AddContainer addContainer) {
+    public Result create(@RequestBody AddContainer addContainer) {
         containerService.createContainer(addContainer);
     }
 
