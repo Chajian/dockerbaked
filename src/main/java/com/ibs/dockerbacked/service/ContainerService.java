@@ -6,6 +6,7 @@ import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
 
 
 /**
@@ -28,4 +29,5 @@ public interface ContainerService extends IService<Container> {
     List<Image> getImages(ImagesParam imagesParam);
 
 
+    boolean pullImages(PullImages pullImages);
 }

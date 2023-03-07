@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.SearchItem;
+import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.connection.DockerConnection;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
@@ -149,6 +151,24 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             return imageNameList.subList(0, 6);
         }
         return images;
+    }
+
+    @Override
+    public boolean pullImages(PullImages pullImages) {
+        //测试用户数据
+        DockerConnection dockerConnection = new DockerConnection
+                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
+                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
+        //获取镜像对象
+        imageModel = new ImageModel(dockerConnection.connect());
+        //通过指定的标签获取镜像,默认
+        try {
+            imageModel.pullImage(pullImages.getNmae(), pullImages.getTag());
+        } catch (InterruptedException e) {
+            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
+        }
+
+        return true;
     }
 
 }
