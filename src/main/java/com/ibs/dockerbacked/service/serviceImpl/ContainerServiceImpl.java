@@ -3,6 +3,9 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.dockerjava.api.model.SearchItem;
+import com.ibs.dockerbacked.connection.DockerConnection;
+import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
@@ -12,6 +15,7 @@ import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +24,8 @@ import com.github.dockerjava.api.model.Image;
 /**
  * @author sn
  */
-import java.awt.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +36,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Autowired
     private UserMapper userMapper;
 
+    private ImageModel imageModel;
+
     /***
      *@descript 容器
-     *@param c
      * @param
      *@return
      *@author
@@ -110,15 +116,39 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         return container;
     }
 
+    /**
+     * @param imagesParam
+     * @return
+     * @version 1.0
+     * @author sn
+     */
     //获取镜像
     @Override
     public List<Image> getImages(ImagesParam imagesParam) {
-        Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
-        Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+        //测试用户数据
+        DockerConnection dockerConnection = new DockerConnection
+                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
+                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
+        //获取镜像对象
+        imageModel = new ImageModel(dockerConnection.connect());
+        //通过指定的标签获取镜像,默认
+        List<Image> images = imageModel.getImages(imagesParam.getLabel());
 
+        //如果传来了镜像名称搜索则返回此镜像，通过镜像名称获取id
+        List<Image> imageNameList = null;
+        if (StringUtils.isNotEmpty(imagesParam.getId())) {
+            List<SearchItem> searchItems = imageModel.searchImage(imagesParam.getId(), imagesParam.getSize() == null ? 5 : imagesParam.getSize());
 
-
-        return null;
+            for (SearchItem searchItem : searchItems) {
+                //获取镜像名称
+                String nameImage = searchItem.getName();
+                imageNameList = imageModel.getImages(nameImage);
+                break;
+            }
+            //返回此列表前5个
+            return imageNameList.subList(0, 6);
+        }
+        return images;
     }
 
 }

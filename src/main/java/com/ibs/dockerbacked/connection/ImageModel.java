@@ -51,7 +51,7 @@ public class ImageModel {
     /**
      * 搜索镜像
      * @param imageName
-     * @param size
+     * @param size 一次性搜索几个
      * @return
      */
     public List<SearchItem> searchImage(String imageName, int size){

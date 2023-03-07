@@ -62,17 +62,6 @@ public class ContainerController {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
-    /**
-     *没写完
-     * @param imagesParam
-     * @return
-     * @descript 查询镜像
-     * @author
-     */
-    @GetMapping("/ibs/api/images")
-    public Result<List<Image>> getImages(@RequestBody ImagesParam imagesParam) {
 
-        containerService.getImages(imagesParam);
-        return null;
-    }
+
 }
