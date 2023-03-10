@@ -1,7 +1,10 @@
 package com.ibs.dockerbacked.entity.dto;
 
+import com.github.dockerjava.api.model.PortBinding;
 import com.ibs.dockerbacked.entity.Container;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author chen
@@ -15,7 +18,7 @@ public class AddContainer {
     private String Env;
 
     //端口
-    private Object ExposedPorts;
+    private List<PortBinding> ExposedPorts;
 
     //镜像名称
     private String ImageName;
@@ -26,6 +29,6 @@ public class AddContainer {
     //是否关闭容器的网络
     private boolean NetworkDisabled;
 
-    //容器信息
+    //容器信息资料
     private Container HostConfig;
 }
