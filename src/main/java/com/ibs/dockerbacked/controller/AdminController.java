@@ -51,6 +51,7 @@ public class AdminController {
     @PostMapping("/create")
     public Result create(@RequestBody AddContainer addContainer) {
         containerService.createContainer(addContainer);
+        return null;
     }
 
     /***

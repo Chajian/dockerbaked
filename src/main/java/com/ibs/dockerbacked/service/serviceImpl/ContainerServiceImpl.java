@@ -107,7 +107,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     //管理员接口
     @Override
-    public Container getContainersByIdOrStatus(Long containerId, String status) {
+    public Container getContainersByIdOrStatus(String containerId, String status) {
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Container::getId, containerId); //根据Id找
         lambdaQueryWrapper.eq(Container::getState, status);  //根据状态找

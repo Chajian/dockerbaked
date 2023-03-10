@@ -23,7 +23,7 @@ public interface ContainerService extends IService<Container> {
     void createContainer(AddContainer addContainer);
 
     //操作容器
-    Container getContainersByIdOrStatus(Long containerId, String status);
+    Container getContainersByIdOrStatus(String containerId, String status);
 
     //查询镜像
     List<Image> getImages(ImagesParam imagesParam);

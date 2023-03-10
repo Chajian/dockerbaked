@@ -13,14 +13,15 @@ public class TestContainer {
 
     @Before
     public void init(){
-        dockerConnection = new DockerConnection("","","","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+//        dockerConnection = new DockerConnection("","","","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("","","","tcp://192.168.1.215:2375","https://index.docker.io/v1/");
         containerModel = new ContainerModel(dockerConnection.connect());
     }
 
 
     @Test
     public void getInfo(){
-        EntityUtils.print(containerModel.inspectContainer("d24447f0f10b"));
+        EntityUtils.print(containerModel.inspectContainer("869a991df097"));
     }
 
     @Test

@@ -58,7 +58,7 @@ public class ContainerController {
      *@version 1.0
      */
     @GetMapping("/{id}/{status}")
-    public Container operateContainer(@PathVariable("id") Long containerId, @PathVariable("status") String status) {
+    public Container operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
