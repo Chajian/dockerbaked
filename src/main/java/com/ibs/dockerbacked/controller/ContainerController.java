@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.controller;
 
+import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
@@ -61,17 +62,6 @@ public class ContainerController {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
-    /**
-     *没写完
-     * @param imagesParam
-     * @return
-     * @descript 查询镜像
-     * @author
-     */
-    @GetMapping("/ibs/api/images")
-    public Result<List<Container>> getImages(@RequestBody ImagesParam imagesParam) {
 
-        containerService.getImages(imagesParam);
-        return null;
-    }
+
 }

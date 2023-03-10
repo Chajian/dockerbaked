@@ -10,8 +10,7 @@
     </parent>
 
 
-
-<!--    远程库-->
+    <!--    远程库-->
     <repositories>
         <repository>
             <id>snapshots</id>
@@ -74,11 +73,13 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.3.1</version>
+
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
+
             <version>3.5.3.1</version>
         </dependency>
 
@@ -100,6 +101,7 @@
             <artifactId>docker-java-core</artifactId>
             <version>3.2.13</version>
         </dependency>
+
         <dependency>
             <groupId>com.github.docker-java</groupId>
             <artifactId>docker-java-transport-httpclient5</artifactId>
@@ -120,7 +122,7 @@
             <version>1.7.0</version>
         </dependency>
 
-<!--        hutool依赖-->
+        <!--        hutool依赖-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

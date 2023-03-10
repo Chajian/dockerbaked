@@ -3,24 +3,31 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.dockerjava.api.model.SearchItem;
+import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.connection.DockerConnection;
+import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
-import com.ibs.dockerbacked.entity.dto.PageParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.github.dockerjava.api.model.Image;
 /**
  * @author sn
  */
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,16 +37,18 @@ import java.util.List;
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
     @Autowired
     private UserMapper userMapper;
+
+    private ImageModel imageModel;
+
     /***
      *@descript 容器
-     *@param c
      * @param
      *@return
      *@author
      *@version 1.0
      */
     @Override
-    public List<Container> getContainers(ContainerParam containerParam,Long userId) {
+    public List<Container> getContainers(ContainerParam containerParam, Long userId) {
         //测试用户
         Integer page = containerParam.getPageParam().getPage() == null ? 1 : containerParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = containerParam.getPageParam().getPageSize() == null ? 5 : containerParam.getPageParam().getPageSize();//页大小 默认5条每页
@@ -50,13 +59,13 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //用户名
         String account = containerParam.getAccount();
         //主要是管理员可以根据用户名查询容器用的
-        if(account!=null) {
+        if (account != null) {
             //拿到用户Id
-            userId  = userMapper.getUserIdByAccount(account);
+            userId = userMapper.getUserIdByAccount(account);
         }
         Page<Container> p = new Page<>(page, pageSize);
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
-        lambdaQueryWrapper.eq(userId!=null,Container::getOwnerId, userId); //根据用户找
+        lambdaQueryWrapper.eq(userId != null, Container::getOwnerId, userId); //根据用户找
         lambdaQueryWrapper.eq(containerId != null, Container::getId, containerId); //根据容器Id查找
         lambdaQueryWrapper.in(status != null, Container::getState, status); //根据状态找
         Page<Container> pageResult = page(p, lambdaQueryWrapper);
@@ -95,6 +104,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             throw new CustomExpection(500, "创建容器失败");
         }
     }
+
     //管理员接口
     @Override
     public Container getContainersByIdOrStatus(Long containerId, String status) {
@@ -108,13 +118,57 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         return container;
     }
 
+    /**
+     * @param imagesParam
+     * @return
+     * @version 1.0
+     * @author sn
+     */
     //获取镜像
     @Override
-    public List<Container> getImages(ImagesParam imagesParam) {
-        Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
-        Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+    public List<Image> getImages(ImagesParam imagesParam) {
+        //测试用户数据
+        DockerConnection dockerConnection = new DockerConnection
+                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
+                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
+        //获取镜像对象
+        imageModel = new ImageModel(dockerConnection.connect());
+        //通过指定的标签获取镜像,默认
+        List<Image> images = imageModel.getImages(imagesParam.getLabel());
 
-        return null;
+        //如果传来了镜像名称搜索则返回此镜像，通过镜像名称获取id
+        List<Image> imageNameList = null;
+        if (StringUtils.isNotEmpty(imagesParam.getId())) {
+            List<SearchItem> searchItems = imageModel.searchImage(imagesParam.getId(), imagesParam.getSize() == null ? 5 : imagesParam.getSize());
+
+            for (SearchItem searchItem : searchItems) {
+                //获取镜像名称
+                String nameImage = searchItem.getName();
+                imageNameList = imageModel.getImages(nameImage);
+                break;
+            }
+            //返回此列表前5个
+            return imageNameList.subList(0, 6);
+        }
+        return images;
+    }
+
+    @Override
+    public boolean pullImages(PullImages pullImages) {
+        //测试用户数据
+        DockerConnection dockerConnection = new DockerConnection
+                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
+                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
+        //获取镜像对象
+        imageModel = new ImageModel(dockerConnection.connect());
+        //通过指定的标签获取镜像,默认
+        try {
+            imageModel.pullImage(pullImages.getNmae(), pullImages.getTag());
+        } catch (InterruptedException e) {
+            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
+        }
+
+        return true;
     }
 
 }
