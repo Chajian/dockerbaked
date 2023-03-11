@@ -40,7 +40,7 @@ public class ContainerController {
 
     /***
      *@descript 创建容器
-     *@param null *
+     *@param  *
      *@return  /ibs/api/containers/create
      *@author sn
      *@version 1.0
@@ -52,13 +52,13 @@ public class ContainerController {
 
     /***
      *@descript 操作容器
-     *@param null *
+     *@param  *
      *@return
      *@author chen  /ibs/api/containers/{id}/{action}
      *@version 1.0
      */
     @GetMapping("/{id}/{status}")
-    public Container operateContainer(@PathVariable("id") Long containerId, @PathVariable("status") String status) {
+    public Container operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
