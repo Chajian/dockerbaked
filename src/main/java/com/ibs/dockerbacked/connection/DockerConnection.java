@@ -7,12 +7,14 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import lombok.Data;
 
 import java.time.Duration;
 
 /**
  * docker远程连接器
  */
+
 public class DockerConnection {
     private String userName;
     private String passWord;
@@ -21,12 +23,35 @@ public class DockerConnection {
     private String url;
 
 
+    public DockerClientConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(DockerClientConfig config) {
+        this.config = config;
+    }
+
+    public DockerHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public void setHttpClient(DockerHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public DockerClient getDockerClient() {
+        return dockerClient;
+    }
+
+    public void setDockerClient(DockerClient dockerClient) {
+        this.dockerClient = dockerClient;
+    }
+
     DockerClientConfig config = null;
 
     DockerHttpClient httpClient = null;
 
     DockerClient dockerClient = null;
-
     /**
      *
      * @param userName docker账户名

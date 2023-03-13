@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.service.ContainerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,28 @@ class ContainerServiceImplTest {
         list.add("1");
 //        System.out.println(containerService.getContainersByStatus(null, list));
 
+    }
+
+    @Test
+    void getContainers() {
+        ContainerParam containerParam = new ContainerParam();
+//        containerParam
+        System.out.println(containerService.getContainers(containerParam, 1234L));
+    }
+
+    @Test
+    void createContainer() {
+    }
+
+    @Test
+    void getContainersByIdOrStatus() {
+    }
+
+    @Test
+    void getImages() {
+    }
+
+    @Test
+    void pullImages() {
     }
 }

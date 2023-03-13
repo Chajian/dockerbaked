@@ -3,9 +3,11 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.SearchItem;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.DockerConnection;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
@@ -38,9 +40,11 @@ import java.util.List;
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
     @Autowired
     private UserMapper userMapper;
-
+    @Autowired
     private ImageModel imageModel;
 
+    @Autowired
+    private ContainerModel containerModel;
     /***
      *@descript 容器
      * @param
@@ -84,8 +88,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //用户Id
         int userId = 1234;
         //用户money
+        //:todo
         Long userMoney = 100L;
         //用户选择配置的价格 -->需要根据配置来计算价格
+        //:todo
         Long userConfigMoney = 200L;
         //判断余额
         if (userMoney < userConfigMoney) {
@@ -93,8 +99,15 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
         //要保证原子性 -->可以通过锁来实现 请求量不大的话
         userMoney = userMoney - userConfigMoney;
-        //创建容器
+
+        //创建容器  保存到虚拟机中
+        List<String> envs = addContainer.getEnv(); //环境
+        List<PortBinding> ports = addContainer.getExposedPorts(); //端口
+        String imageName = addContainer.getImageName(); //镜像名字
         Container hostConfig = addContainer.getHostConfig(); //容器资料
+        containerModel.createContainer(hostConfig.getName(), imageName,
+                ports, envs);
+        //把容器信息保存到数据库
         Container container = new Container();
         BeanUtils.copyProperties(hostConfig, container);
         container.setOwnerId(userId);

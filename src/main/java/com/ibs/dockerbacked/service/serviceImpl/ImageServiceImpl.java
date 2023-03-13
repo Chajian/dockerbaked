@@ -30,7 +30,7 @@ public class ImageServiceImpl implements ImageService {
         Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
         String label = imagesParam.getLabel();
-        String imageName = imagesParam.getId().toString();
+        String imageName = imagesParam.getId();
         //1.拿到该用户的所有镜像
         if (label != null) {
             imageName = imageName + ":" + label;
