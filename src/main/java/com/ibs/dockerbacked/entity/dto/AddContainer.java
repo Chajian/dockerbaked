@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class AddContainer {
     //环境
-    private String Env;
+    private List<String> Env;
 
     //端口
     private List<PortBinding> ExposedPorts;

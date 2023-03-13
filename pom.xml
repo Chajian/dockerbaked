@@ -101,7 +101,6 @@
             <artifactId>docker-java-core</artifactId>
             <version>3.2.13</version>
         </dependency>
-
         <dependency>
             <groupId>com.github.docker-java</groupId>
             <artifactId>docker-java-transport-httpclient5</artifactId>
@@ -159,6 +158,10 @@
             <properties>
                 <profileActive>dev-xyl</profileActive>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
         </profile>
         <profile>
             <!-- 本地开发环境 -->

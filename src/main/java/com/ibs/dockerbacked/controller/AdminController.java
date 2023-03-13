@@ -48,10 +48,15 @@ public class AdminController {
         return Result.success(200, "", containers);
     }
 
+    /** 新增容器
+     *  author chen
+     * @param addContainer
+     * @return
+     */
     @PostMapping("/create")
     public Result create(@RequestBody AddContainer addContainer) {
         containerService.createContainer(addContainer);
-        return null;
+        return Result.success(200, "创建成功", null);
     }
 
     /***
