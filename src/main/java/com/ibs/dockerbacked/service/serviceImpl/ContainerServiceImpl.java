@@ -20,7 +20,6 @@ import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +32,7 @@ import com.github.dockerjava.api.model.Image;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -45,6 +45,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     @Autowired
     private ContainerModel containerModel;
+
     /***
      *@descript 容器
      * @param
@@ -141,47 +142,46 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //获取镜像
     @Override
     public List<Image> getImages(ImagesParam imagesParam) {
-        //测试用户数据
-        DockerConnection dockerConnection = new DockerConnection
-                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
-                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
-        //获取镜像对象
-        imageModel = new ImageModel(dockerConnection.connect());
+
         //通过指定的标签获取镜像,默认
         List<Image> images = imageModel.getImages(imagesParam.getLabel());
+        int Cunrrentpage = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage();
+        int CunrrentpageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();
 
-        //如果传来了镜像名称搜索则返回此镜像，通过镜像名称获取id
-        List<Image> imageNameList = null;
-        if (StringUtils.isNotEmpty(imagesParam.getId())) {
-            List<SearchItem> searchItems = imageModel.searchImage(imagesParam.getId(), imagesParam.getSize() == null ? 5 : imagesParam.getSize());
-
-            for (SearchItem searchItem : searchItems) {
-                //获取镜像名称
-                String nameImage = searchItem.getName();
-                imageNameList = imageModel.getImages(nameImage);
-                break;
+        //判断镜像id是否为空
+        if (imagesParam.getId() != null) {
+            //不为空，通过镜像id获取指定镜像
+            List<Image> imageIDList = new ArrayList<>();
+            for (Image image : images) {
+                if (image.getId().equals(imagesParam.getId())) {
+                    imageIDList.add(image);
+                    return imageIDList;
+                }
             }
-            //返回此列表前5个
-            return imageNameList.subList(0, 6);
+            return null;
         }
-        return images;
+        //镜像id为空，则返回前几条数据 ，参数数据范围过大则不正确
+        if ((Cunrrentpage - 1) * CunrrentpageSize < images.size()) {
+            return images.stream().skip((Cunrrentpage - 1) * CunrrentpageSize).limit(CunrrentpageSize).
+                    collect(Collectors.toList());
+        }
+        return null;
     }
 
+    /**
+     * @param pullImages
+     * @return
+     * @derscipt 拉取镜像
+     * @author sn
+     */
     @Override
     public boolean pullImages(PullImages pullImages) {
-        //测试用户数据
-        DockerConnection dockerConnection = new DockerConnection
-                ("dockerxylyjy", "docker@123789", "xylyjy@gmail.com",
-                        "npipe:////./pipe/docker_engine", "https://index.docker.io/v1/");
-        //获取镜像对象
-        imageModel = new ImageModel(dockerConnection.connect());
         //通过指定的标签获取镜像,默认
         try {
-            imageModel.pullImage(pullImages.getNmae(), pullImages.getTag());
+            imageModel.pullImage(pullImages.getName(), pullImages.getTag());
         } catch (InterruptedException e) {
             throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
         }
-
         return true;
     }
 
