@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class PullImages {
-    private String Nmae;
+    private String Name;
     private String tag;
 }
