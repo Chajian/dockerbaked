@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
@@ -30,7 +31,7 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
 
     @Override
     @Transient
-    public Boolean createPacket(Hardware hardware,boolean isFree) {
+    public Result<Boolean> createPacket(Hardware hardware, boolean isFree) {
         //判断是否是否是管理员 todo
 
         //判断全部字段是否按照条件来填
@@ -61,7 +62,7 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
             packet.setCreatedAt(new Date());
             save(packet);
         }
-        return true;
+        return Result.success(200,"success",true);
     }
 
     private void checkParam(Hardware hardware) {

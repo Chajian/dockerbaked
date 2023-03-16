@@ -33,7 +33,7 @@ public class ContainerController {
      *@version 1.0
      */
     @PostMapping
-    public List<Container> getContainers(@RequestBody ContainerParam containerParam) {
+    public Result<List<Container>> getContainers(@RequestBody ContainerParam containerParam) {
         Long userId = 1L; //测试的用户Id
         return containerService.getContainers(containerParam, userId);
     }

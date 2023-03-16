@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.controller;
 
+import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.service.PacketService;
@@ -22,10 +23,10 @@ public class PacketController {
 
     /** author chen
      * param 套餐的信息
-     * @return
+     * @return true or false
      */
     @PostMapping("/create")
-    public Boolean createPacket(@RequestBody Hardware hardware,boolean ifFree){
+    public Result<Boolean> createPacket(@RequestBody Hardware hardware, boolean ifFree){
         return packetService.createPacket(hardware,ifFree);
     }
 }

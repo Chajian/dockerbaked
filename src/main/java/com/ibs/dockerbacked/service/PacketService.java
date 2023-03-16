@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Packet;
 
@@ -15,5 +16,5 @@ public interface PacketService extends IService<Packet> {
      * @return
      */
     //创建套餐
-    Boolean createPacket(Hardware hardware, boolean isFree);
+    Result<Boolean> createPacket(Hardware hardware, boolean isFree);
 }

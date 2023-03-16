@@ -19,7 +19,6 @@ public class ImageController {
     /**
      * 获取镜像列表
      * author chen
-     *
      * @return 镜像列表
      */
     @GetMapping
