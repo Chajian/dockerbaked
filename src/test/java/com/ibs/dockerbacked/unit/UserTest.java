@@ -58,7 +58,7 @@ public class UserTest {
     @Test
     public void selectUserByAccount(){
         User user = userSerivce.getBaseMapper().selectOne(new QueryWrapper<User>()
-                .eq("account","1000"));
+                .eq("account","10001"));
         EntityUtils.print(user);
     }
 

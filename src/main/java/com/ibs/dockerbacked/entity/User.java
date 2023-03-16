@@ -1,5 +1,7 @@
 package com.ibs.dockerbacked.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.mysql.cj.xdevapi.Table;
 import lombok.Data;
@@ -16,8 +18,8 @@ import java.util.List;
 
 @TableName("users")
 @Data
-
 public class User extends TimeRecord implements Serializable {
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     private String account;
     private String pwd;

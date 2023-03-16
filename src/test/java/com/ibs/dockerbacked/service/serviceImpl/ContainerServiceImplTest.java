@@ -1,7 +1,12 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,10 +18,14 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @SpringBootTest
 class ContainerServiceImplTest {
     @Autowired
     private ContainerService containerService;
+
+    @Autowired
+    private ImageModel imageModel;
 
     //查询容器
     @Test
@@ -47,7 +56,18 @@ class ContainerServiceImplTest {
     void getImages() {
     }
 
+
     @Test
-    void pullImages() {
+    void testPullImages() {
+        PullImages pullImages = new PullImages();
+        pullImages.setName("javaweb");
+        pullImages.setTag("1.0");
+        //通过指定的标签获取镜像,默认
+        try {
+            imageModel.pullImage(pullImages.getName(), pullImages.getTag());
+        } catch (InterruptedException e) {
+//            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
+            log.info("拉取失败");
+        }
     }
 }
