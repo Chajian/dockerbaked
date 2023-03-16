@@ -85,5 +85,8 @@ public class AdminController {
         boolean isSuccess = userSerivce.batchGenerationUser(count, token);
         return isSuccess;
     }
+
+
+
 }
 
