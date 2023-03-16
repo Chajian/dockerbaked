@@ -38,7 +38,7 @@ public class AdminController {
     /***
      *@descript 操纵容器
      *@param  *
-     *@return
+     *@return 更新后的容器信息
      *@author chen  /ibs/api/admin/containers/{id}/{status}
      *@version 1.0
      */
@@ -51,7 +51,7 @@ public class AdminController {
     /** 新增容器
      *  author chen
      * @param addContainer
-     * @return
+     * @return 成功为200 失败为500
      */
     @PostMapping("/create")
     public Result create(@RequestBody AddContainer addContainer) {
@@ -61,13 +61,13 @@ public class AdminController {
 
     /***
      *@descript 查询容器
-     *@param  *
-     *@return 容器集合
+     *@param  * containerParam 是前端传递过来的参数
+     *@return 符合条件的容器集合
      *@author chen /ibs/api/admin/containers/
      *@version 1.0
      */
     @PostMapping
-    public List<Container> getContainers(@RequestBody ContainerParam containerParam) {
+    public Result<List<Container>> getContainers(@RequestBody ContainerParam containerParam) {
         return containerService.getContainers(containerParam, null);
     }
 
