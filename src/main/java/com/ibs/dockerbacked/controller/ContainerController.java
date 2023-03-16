@@ -7,7 +7,9 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,13 +30,14 @@ public class ContainerController {
     /***
      *@descript 获取容器列表
      *@param containerParam *
+     * @param token token
      *@return
      *@author chen
      *@version 1.0
      */
     @PostMapping
-    public Result<List<Container>> getContainers(@RequestBody ContainerParam containerParam) {
-        Long userId = 1L; //测试的用户Id
+    public Result getContainers(@RequestBody ContainerParam containerParam,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        Long userId = JwtUtil.getUserId(token);
         return containerService.getContainers(containerParam, userId);
     }
 

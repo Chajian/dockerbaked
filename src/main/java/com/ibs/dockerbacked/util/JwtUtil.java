@@ -33,7 +33,7 @@ public class JwtUtil {
      * @param account 账号
      * @return
      */
-    public static String sign(String account){
+    public static String sign(String account,long id){
         Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
 
         Algorithm algorithm = Algorithm.HMAC256(account+SECRET);
@@ -43,6 +43,7 @@ public class JwtUtil {
         return JWT.create()
                 .withHeader(header)
                 .withClaim("account",account)
+                .withClaim("id",id)
                 .withExpiresAt(date).sign(algorithm);
     }
 
@@ -57,6 +58,7 @@ public class JwtUtil {
             JWTVerifier verifier = JWT
                     .require(algorithm)
                     .withClaim("account",member.getAccount())
+                    .withClaim("id",member.getId())
                     .build();
             verifier.verify(token);
             return true;
@@ -81,6 +83,21 @@ public class JwtUtil {
         }
         catch (JWTDecodeException e){
             return "";
+        }
+    }
+
+    /**
+     * 获得token中的用户名
+     * @param token token
+     * @return
+     */
+    public static long getUserId(String token){
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("id").asLong();
+        }
+        catch (JWTDecodeException e){
+            return -1;
         }
     }
 

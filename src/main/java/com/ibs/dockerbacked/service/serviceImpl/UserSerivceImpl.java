@@ -78,7 +78,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!one.getPwd().equals(user.getPwd())) throw new CustomExpection(Constants.CODE_Login_500, "密码错误");
         //3.登录成功
         //3.1生成token并返回
-        String token = JwtUtil.sign(one.getAccount());
+        String token = JwtUtil.sign(one.getAccount(),one.getId());
         return token;
     }
 

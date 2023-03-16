@@ -158,6 +158,10 @@
             <properties>
                 <profileActive>dev-xyl</profileActive>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
         </profile>
         <profile>
             <!-- 本地开发环境 -->

@@ -52,7 +52,7 @@ class UserSerivceImplTest {
      */
     @Test
     void batchGenerationUser() throws Exception {
-        String sign = JwtUtil.sign("1000");
+        String sign = JwtUtil.sign("1000",1);
         String token = sign;
 
         if (!sign.equals(token)) {
@@ -63,7 +63,7 @@ class UserSerivceImplTest {
         List<User> userList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             User user = new User();
-            
+
 
             String substring = IdUtil.simpleUUID().substring(0, 7);
             String substring1 = IdUtil.simpleUUID().substring(0, 7);

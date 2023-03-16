@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.connection;
 
+import com.ibs.dockerbacked.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +20,12 @@ public class TestContainer {
 
     @Test
     public void getInfo(){
+        EntityUtils.print(containerModel.inspectContainer("869a991df097"));
+    }
+
+    @Test
+    public void stop(){
+        containerModel.stopContainer("d24447f03f10b");
         containerModel.inspectContainer("");
     }
 
