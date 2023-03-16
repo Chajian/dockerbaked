@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2023/3/4 21:34
  */
 @RestController
-@RequestMapping(" /ibs/api/containers")
+@RequestMapping("/ibs/api/containers")
 public class ContainerController {
 
     @Autowired
@@ -29,16 +29,19 @@ public class ContainerController {
 
     /***
      *@descript 获取容器列表
-     *@param containerParam *
+     *@param containerParam page 页数，pagesize页大小，
      * @param token token
-     *@return
+     *@return 返回符合条件的容器
      *@author chen
      *@version 1.0
      */
     @PostMapping
-    public Result getContainers(@RequestBody ContainerParam containerParam,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public Result getContainers(@RequestBody ContainerParam containerParam,
+                                @RequestParam(value = "page",defaultValue = "1")Integer page,
+                                @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize,
+                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = JwtUtil.getUserId(token);
-        return containerService.getContainers(containerParam, userId);
+        return containerService.getContainers(containerParam,page,pageSize, userId);
     }
 
     /***

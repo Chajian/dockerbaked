@@ -52,6 +52,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         //2.1判断用户是否为null,是则抛异常
         if (one != null) throw new CustomExpection(Constants.CODE_400, "用户已存在");
         //2.2否则注册
+        one = new User();
         BeanUtil.copyProperties(user, one);
         save(one);
         return user;

@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface ContainerService extends IService<Container> {
     //查询容器
-    Result<List<Container>> getContainers(ContainerParam containerParam, Long userId);
+    Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
 
     //创建容器
     void createContainer(AddContainer addContainer);
@@ -30,4 +30,7 @@ public interface ContainerService extends IService<Container> {
 
 
     boolean pullImages(PullImages pullImages);
+
+    Result operateContainer(String containerId, String status);
+
 }

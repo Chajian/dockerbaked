@@ -1,8 +1,10 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.PortBinding;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
@@ -52,14 +54,12 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      *@version 1.0
      */
     @Override
-    public Result<List<Container>> getContainers(ContainerParam containerParam, Long userId) {
+    public Result<List<Container>> getContainers(ContainerParam containerParam,Integer page,Integer pageSize, Long userId) {
         //测试用户
-        Integer page = containerParam.getPageParam().getPage() == null ? 1 : containerParam.getPageParam().getPage(); //页数  没传页数 默认第一
-        Integer pageSize = containerParam.getPageParam().getPageSize() == null ? 5 : containerParam.getPageParam().getPageSize();//页大小 默认5条每页
         //状态
-        List<String> status = containerParam.getStatus();
+        String[] status = containerParam.getStatus();
         //容器Id
-        Long containerId = containerParam.getContainerId();
+        String containerId = containerParam.getContainerId();
         //用户名
         String account = containerParam.getAccount();
         //主要是管理员可以根据用户名查询容器用的
@@ -69,8 +69,8 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
         Page<Container> p = new Page<>(page, pageSize);
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
-        lambdaQueryWrapper.eq(userId != null, Container::getOwnerId, userId); //根据用户找
-        lambdaQueryWrapper.eq(containerId != null, Container::getId, containerId); //根据容器Id查找
+        lambdaQueryWrapper.eq(userId != null&&userId!=-1, Container::getOwnerId, userId); //根据用户找
+        lambdaQueryWrapper.eq(!StringUtils.isEmpty(containerId), Container::getId, containerId); //根据容器Id查找
         lambdaQueryWrapper.in(status != null, Container::getState, status); //根据状态找
         Page<Container> pageResult = page(p, lambdaQueryWrapper);
         List<Container> containers = pageResult.getRecords();
@@ -85,34 +85,36 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Override
     public synchronized void createContainer(AddContainer addContainer) {
         //用户Id
-        int userId = 1234;
-        //用户money
-        //:todo
-        Long userMoney = 100L;
-        //用户选择配置的价格 -->需要根据配置来计算价格
-        //:todo
-        Long userConfigMoney = 200L;
-        //判断余额
-        if (userMoney < userConfigMoney) {
-            throw new CustomExpection(500, "余额不足请充钱");
-        }
-        //要保证原子性 -->可以通过锁来实现 请求量不大的话
-        userMoney = userMoney - userConfigMoney;
+//        int userId = 1234;
+//        //用户money
+//        //:todo
+//        Long userMoney = 100L;
+//        //用户选择配置的价格 -->需要根据配置来计算价格
+//        //:todo
+//        Long userConfigMoney = 200L;
+//        //判断余额
+//        if (userMoney < userConfigMoney) {
+//            throw new CustomExpection(500, "余额不足请充钱");
+//        }
+//        //要保证原子性 -->可以通过锁来实现 请求量不大的话
+//        userMoney = userMoney - userConfigMoney;
 
         //创建容器  保存到虚拟机中
         List<String> envs = addContainer.getEnv(); //环境
         List<PortBinding> ports = addContainer.getExposedPorts(); //端口
         String imageName = addContainer.getImageName(); //镜像名字
         Container hostConfig = addContainer.getHostConfig(); //容器资料
-        containerModel.createContainer(hostConfig.getName(), imageName,
+        CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
                 ports, envs);
         //把容器信息保存到数据库
         Container container = new Container();
+        container.setId(createContainerResponse.getId());
         BeanUtils.copyProperties(hostConfig, container);
-        container.setOwnerId(userId);
+        container.setOwnerId(1234);
         container.setImageId("1234");
         container.setCreatedAt(new Date());
         boolean save = save(container);
+
         if (!save) {
             throw new CustomExpection(500, "创建容器失败");
         }
@@ -181,6 +183,33 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
         }
         return true;
+    }
+
+    @Override
+    public Result operateContainer(String containerId, String status) {
+        //根据状态来操作容器
+        //1.查找这个容器当前状态
+//        Container container = getById(containerId);
+//        if (container == null) {
+//            throw new CustomExpection(500,"当前容器不存在");
+//        }
+//        if (container.getState().equals(status)) {
+//            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
+//        }
+        switch (status) {
+            case "start":
+                containerModel.startContainer(containerId);break;
+            case "stop":
+                containerModel.stopContainer(containerId); break;
+            case "delete":
+                containerModel.deleteContaqqiner(containerId); break;
+            case "restart":
+                containerModel.restartContainer(containerId); break;
+            case  "pause":
+                containerModel.pauseContainer(containerId); break;
+
+        }
+        return Result.success(200, "success", "修改成功");
     }
 
 }

@@ -27,7 +27,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("ibs/admin/containers")
-@RequiresRoles("admin")
 public class AdminController {
     @Autowired
     private ContainerService containerService;
@@ -44,8 +43,7 @@ public class AdminController {
      */
     @GetMapping("/{id}/{status}")
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
-        Container containers = containerService.getContainersByIdOrStatus(containerId, status);
-        return Result.success(200, "", containers);
+        return containerService.operateContainer(containerId, status);
     }
 
     /** 新增容器
@@ -67,8 +65,10 @@ public class AdminController {
      *@version 1.0
      */
     @PostMapping
-    public Result<List<Container>> getContainers(@RequestBody ContainerParam containerParam) {
-        return containerService.getContainers(containerParam, null);
+    public Result<List<Container>> getContainers(@RequestBody(required = false) ContainerParam containerParam,
+                                                 @RequestParam(required = false,value = "page",defaultValue = "1")Integer page,
+                                                 @RequestParam(required = false,value = "pageSize",defaultValue = "5") Integer pageSize) {
+        return containerService.getContainers(containerParam, page, pageSize, null);
     }
 
     /***

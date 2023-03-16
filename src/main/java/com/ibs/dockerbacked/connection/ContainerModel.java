@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
@@ -45,14 +46,15 @@ public class ContainerModel {
      * @param ports 端口
      * @param envs 环境
      */
-    public synchronized void createContainer(String containerName,String imageName, List<PortBinding> ports,List<String> envs){
+    public synchronized CreateContainerResponse createContainer(String containerName,String imageName, List<PortBinding> ports,List<String> envs){
         HostConfig hostConfig = HostConfig.newHostConfig();
         hostConfig.withPortBindings(ports);
-        dockerClient.createContainerCmd(imageName)
+        CreateContainerResponse createContainerResponse =  dockerClient.createContainerCmd(imageName)
                 .withName(containerName)
                 .withHostConfig(hostConfig)
                 .withEnv(envs)
                 .exec();
+        return createContainerResponse;
     }
 
 
@@ -66,24 +68,25 @@ public class ContainerModel {
      * @param imageName 镜像名
      * @param ports 端口映射
      */
-    public synchronized void createContainer(long cpu,long memory,long disk,int network,String containerName,String imageName, List<PortBinding> ports){
+    public synchronized CreateContainerResponse createContainer(long cpu,long memory,long disk,int network,String containerName,String imageName, List<PortBinding> ports){
         HostConfig hostConfig = HostConfig.newHostConfig();
         hostConfig.withCpuCount(cpu)
                 .withMemory(1048576*memory)
                 .withDiskQuota(disk*1048576*1024)
                 .withNetworkMode("bridge")
                 .withPortBindings(ports);
-        dockerClient.createContainerCmd(imageName)
+        CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(imageName)
                 .withName(containerName)
                 .withHostConfig(hostConfig)
                 .exec();
+        return createContainerResponse;
     }
 
     /**
      * 删除容器
      * @param containerId
      */
-    public void deleteContainer(String containerId){
+    public void deleteContaqqiner(String containerId){
         dockerClient.removeContainerCmd(containerId).exec();
     }
 

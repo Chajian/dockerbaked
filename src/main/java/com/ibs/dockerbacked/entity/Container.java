@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Data
 public class Container extends TimeRecord {
-    private int id;
+    private String id;
     private String imageId;
     @TableField("name_c")
     private String name;

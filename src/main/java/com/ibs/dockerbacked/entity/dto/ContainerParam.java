@@ -12,13 +12,12 @@ import java.util.List;
 */
 @Data
 public class ContainerParam {
-    //页数
-    private PageParam pageParam;
+
     //用户名
     private String account;
     //容器Id
-    private Long containerId;
+    private String containerId;
 
     //状态
-    private List<String> status;
+    private String[] status;
 }
