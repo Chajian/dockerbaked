@@ -4,11 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.SearchItem;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ContainerModel;
-import com.ibs.dockerbacked.connection.DockerConnection;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
@@ -54,7 +52,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      *@version 1.0
      */
     @Override
-    public List<Container> getContainers(ContainerParam containerParam, Long userId) {
+    public Result<List<Container>> getContainers(ContainerParam containerParam, Long userId) {
         //测试用户
         Integer page = containerParam.getPageParam().getPage() == null ? 1 : containerParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = containerParam.getPageParam().getPageSize() == null ? 5 : containerParam.getPageParam().getPageSize();//页大小 默认5条每页
@@ -79,13 +77,13 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         if (pageResult.getSize() <= 0) {
             return null;
         }
-        return containers;
+        return Result.success(200, "success", containers);
     }
 
     //创建容器
     @Transactional
     @Override
-    public void createContainer(AddContainer addContainer) {
+    public synchronized void createContainer(AddContainer addContainer) {
         //用户Id
         int userId = 1234;
         //用户money

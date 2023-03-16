@@ -29,7 +29,7 @@ public class ImageController {
 
     /** 拉取镜像
      * author chen
-     * @return
+     * @return code 200 msg success
      */
     @PostMapping("/pull")
     public Result pull(@RequestBody String imageName,@RequestBody String tag){
