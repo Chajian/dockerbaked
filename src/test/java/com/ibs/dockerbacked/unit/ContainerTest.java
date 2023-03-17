@@ -46,7 +46,7 @@ public class ContainerTest {
     @Test
     public void containerUpdate() {
         Container container = new Container();
-        container.setId(1);
+        container.setId("1");
         container.setImageId("1234");
         container.setName("1234");
         container.setState("1");

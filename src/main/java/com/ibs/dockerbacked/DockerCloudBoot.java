@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootApplication()
+@SpringBootApplication
 @MapperScan(basePackages = {"com.ibs.dockerbacked.mapper"})
 @EnableConfigurationProperties({DockerCloudConfig.class})
 public class DockerCloudBoot {

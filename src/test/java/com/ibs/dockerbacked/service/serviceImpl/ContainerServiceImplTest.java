@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
@@ -27,6 +28,8 @@ class ContainerServiceImplTest {
 
     @Autowired
     private ImageModel imageModel;
+    @Autowired
+    private ContainerModel containerModel;
 
     //查询容器
     @Test
@@ -85,6 +88,7 @@ class ContainerServiceImplTest {
 
     @Test
     void testCreateContainer() {
+        containerModel.inspectContainer("111");
     }
 
     @Test
