@@ -22,5 +22,5 @@ docker-cloud:
   userName: "dockerxylyjy"
   passWord: "docker@123789"
   email: "xylyjy@gmail.com"
-  host: "tcp://192.168.1.197:2375"
+  host: "unix:///var/run/docker.sock"
   url: "https://index.docker.io/v1/"

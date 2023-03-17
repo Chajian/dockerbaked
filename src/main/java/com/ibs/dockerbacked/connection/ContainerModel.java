@@ -61,14 +61,14 @@ public class ContainerModel {
     /**
      * 创建容器
      * @param cpu 内核数量
-     * @param memory 内存
-     * @param disk 硬盘空间
+     * @param memory 内存-单位m
+     * @param disk 硬盘空间-单位G
      * @param network 网络带宽速度
      * @param containerName 容器名
      * @param imageName 镜像名
      * @param ports 端口映射
      */
-    public synchronized CreateContainerResponse createContainer(long cpu,long memory,long disk,int network,String containerName,String imageName, List<PortBinding> ports){
+    public synchronized CreateContainerResponse createContainer(long cpu,long memory,long disk,int network,String containerName,String imageName, List<PortBinding> ports,List<String> env){
         HostConfig hostConfig = HostConfig.newHostConfig();
         hostConfig.withCpuCount(cpu)
                 .withMemory(1048576*memory)
@@ -78,6 +78,7 @@ public class ContainerModel {
         CreateContainerResponse createContainerResponse = dockerClient.createContainerCmd(imageName)
                 .withName(containerName)
                 .withHostConfig(hostConfig)
+                .withEnv(env)
                 .exec();
         return createContainerResponse;
     }

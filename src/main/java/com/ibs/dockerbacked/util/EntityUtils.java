@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 public class EntityUtils {
 
     public static void print(Object o){
+        if(o == null)
+            return;
         Class obejctClass = o.getClass();
         Field[] fields = obejctClass.getDeclaredFields();
 
