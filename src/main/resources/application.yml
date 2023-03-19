@@ -1,4 +1,32 @@
 spring:
   profiles:
     active:  "@profileActive@"
+# 日志配置
+logging:
+  level:
+    # 设置包名的日志级别
+    com.ibs.dockerbacked: info
+  file:
+    # 设置日志文件存放路径，默认情况下，日志文件会存放在项目根目录下的logs目录下
+    path: ./logs
+    # 设置日志文件名
+    name: idocker.log
+  # 控制台输出
+  console:
+    # 控制台输出日志级别
+    level: info
+    # 颜色输出配置
+    # DEBUG: BLUE
+    # INFO: GREEN
+    # WARN: YELLOW
+    # ERROR: RED
+    # FATAL: MAGENTA
+    # TRACE: CYAN
+    color: true
+  # 日志滚动策略
+  rolling:
+    # 日志文件大小阈值，单位为KB，默认为10MB
+    file-size-threshold: 10MB
+    # 日志文件保留天数，默认为7天
+    keep-days: 7
 
