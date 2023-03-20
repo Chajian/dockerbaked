@@ -10,6 +10,7 @@ import com.ibs.dockerbacked.service.UserSerivce;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,8 @@ import java.util.List;
  * @date 2023/3/2 19:04
  */
 @RestController
-@RequestMapping("ibs/admin/containers")
+@RequestMapping("ibs/api/admin/containers")
+@RequiresRoles("admin")
 public class AdminController {
     @Autowired
     private ContainerService containerService;

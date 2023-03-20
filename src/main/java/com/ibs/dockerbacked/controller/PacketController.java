@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 套餐模块
  */
 @RestController
-@RequestMapping("ibs/admin/packet")
+@RequestMapping("ibs/api/admin/packet")
 @RequiresRoles("admin")
 public class PacketController {
     @Autowired

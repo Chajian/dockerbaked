@@ -1,5 +1,7 @@
 package com.ibs.dockerbacked.config;
 
+import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -38,7 +40,7 @@ public class AuthenFilterJwt extends BasicHttpAuthenticationFilter {
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
         String token = req.getHeader("Authorization");
-        return token != null?request.getParameter("account").equals(JwtUtil.getUserAccount(token)):false;
+        return JwtUtil.verity(token);
     }
 
     /**
@@ -61,7 +63,7 @@ public class AuthenFilterJwt extends BasicHttpAuthenticationFilter {
             }
         }
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
-        return true;
+        throw new CustomExpection(Constants.CODE_Login_500,"登陆失败!");
     }
 
     /**

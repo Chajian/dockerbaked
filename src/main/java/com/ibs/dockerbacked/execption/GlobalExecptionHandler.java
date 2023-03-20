@@ -17,4 +17,6 @@ public class GlobalExecptionHandler {
         return Result.error(customExpection.getCode(),customExpection.getMessage());
 
     }
+
+
 }

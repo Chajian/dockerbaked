@@ -29,8 +29,7 @@ import java.util.Map;
 @Configuration
 public class AppServiceConfig implements WebMvcConfigurer {
 
-    @Autowired
-    AuthorizeFilterShiro shiro;
+
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -46,6 +45,15 @@ public class AppServiceConfig implements WebMvcConfigurer {
 //        filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST);
 //        return filterRegistrationBean
 //    }
+
+    /**
+     * 普通的身份鉴权和验证realm
+     * @return
+     */
+    @Bean
+    public AuthorizeFilterShiro AuthorizeFilterShiro(){
+        return new AuthorizeFilterShiro();
+    }
 
     /**
      * 设置jwt认证bean
@@ -64,8 +72,9 @@ public class AppServiceConfig implements WebMvcConfigurer {
         shiroFilterFactoryBean.setUnauthorizedUrl("/unauthorized/无权限");
         Map<String,String> filterRuleMap = new HashMap<>();
 
-        filterRuleMap.put("/ibs/api/verify/**","jwt");
-        filterRuleMap.put("/unauthorized/**", "anon");
+        filterRuleMap.put("/ibs/api/verify/**","anon");
+        filterRuleMap.put("/**", "jwt");
+//        filterRuleMap.put("/ibs/api//**", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return shiroFilterFactoryBean;
     }
@@ -75,7 +84,7 @@ public class AppServiceConfig implements WebMvcConfigurer {
      * @param authenrizationFilter
      * @return
      */
-    @Bean
+    @Bean("securityManager")
     public SecurityManager securityManager(AuthorizeFilterShiro authenrizationFilter){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(authenrizationFilter);

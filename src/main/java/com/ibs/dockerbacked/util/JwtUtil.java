@@ -52,13 +52,15 @@ public class JwtUtil {
      * @param token token值
      * @return 验证成功返回true，否则返回false
      */
-    public static boolean verity(String token, User member){
+    public static boolean verity(String token){
+        String account = JwtUtil.getUserAccount(token);
+        long id = JwtUtil.getUserId(token);
         try {
-            Algorithm algorithm = Algorithm.HMAC256(member.getAccount()+SECRET);
+            Algorithm algorithm = Algorithm.HMAC256(account+SECRET);
             JWTVerifier verifier = JWT
                     .require(algorithm)
-                    .withClaim("account",member.getAccount())
-                    .withClaim("id",member.getId())
+                    .withClaim("account",account)
+                    .withClaim("id",id)
                     .build();
             verifier.verify(token);
             return true;

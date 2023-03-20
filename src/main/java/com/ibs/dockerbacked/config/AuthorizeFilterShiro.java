@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @author Chajian
  * @date 2020/9/14
  */
-@Component
+//@Component
 @Slf4j
 public class AuthorizeFilterShiro extends AuthorizingRealm {
 
@@ -40,6 +40,8 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
     @Autowired
     private PermissionMapper permissionMapper;
 
+    @Autowired
+    private PermissionGroupMapper permissionGroupMapper;
 
 
     @Override
@@ -62,6 +64,7 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 
         List<Permission> permissions = permissionMapper.getPermissionsByUserAccount(account);
+        List<String> groups = permissionGroupMapper.getGroup(JwtUtil.getUserId(token));
 
         //存放会员拥有的权限
         Set<String> permissionSet = new HashSet<>();
@@ -73,6 +76,12 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
                     permissionSet.add(e.getName());
                 }
         );
+        groups.stream().forEach(
+                e->{
+                    roleSet.add(e);
+                }
+        );
+
 
         simpleAuthorizationInfo.setRoles(roleSet);
         simpleAuthorizationInfo.setStringPermissions(permissionSet);
@@ -88,7 +97,7 @@ public class AuthorizeFilterShiro extends AuthorizingRealm {
         String account = JwtUtil.getUserAccount(token);
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
         log.info(account+":"+user.toString());
-        if(account == null || !JwtUtil.verity(token,user)){
+        if(account == null || !JwtUtil.verity(token)){
             log.info("身份认证失败  token和 username");
             throw new AuthenticationException("身份认证失败");
         }
