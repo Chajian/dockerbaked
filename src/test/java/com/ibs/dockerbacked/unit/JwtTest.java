@@ -19,8 +19,8 @@ public class JwtTest {
     @Test
     public void test(){
         User user = userMapper.selectById(1);
-        String token = JwtUtil.sign(user.getAccount(),user.getId());
-        if(JwtUtil.verity(token,user)){
+        String token = JwtUtil.sign(user.getAccount(),user.getId())+"1";
+        if(JwtUtil.verity(token)){
             System.out.println("验证成功!"+"账号:"+JwtUtil.getUserAccount(token)+"id:"+JwtUtil.getUserId(token));
         }
     }
