@@ -1,18 +1,18 @@
 package com.ibs.dockerbacked.controller;
 
-import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
-import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.text.ParseException;
 
 /**
  * @author chen
@@ -37,11 +37,11 @@ public class ContainerController {
      */
     @PostMapping
     public Result getContainers(@RequestBody ContainerParam containerParam,
-                                @RequestParam(value = "page",defaultValue = "1")Integer page,
-                                @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize,
+                                @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = JwtUtil.getUserId(token);
-        return containerService.getContainers(containerParam,page,pageSize, userId);
+        return containerService.getContainers(containerParam, page, pageSize, userId);
     }
 
     /***
@@ -68,6 +68,21 @@ public class ContainerController {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
+    /**
+     * 创建订单
+     *
+     * @param token
+     * @param order
+     * @return
+     */
+    @PostMapping("/order")
+    public Result<Long> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                            @RequestBody Order order) throws ParseException {
 
+        long userId = JwtUtil.getUserId(token);
+        if (userId == -1) throw new CustomExpection(500, "用户不存在或者未登录");
+
+        return Result.success(200,"创建成功",containerService.createOrder(userId, order));
+    }
 
 }

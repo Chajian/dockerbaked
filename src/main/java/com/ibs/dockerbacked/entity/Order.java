@@ -19,5 +19,6 @@ public class Order extends TimeRecord {
     private String payWay;
     private int containerId;
     private int packetId;
+    private String description;
 
 }

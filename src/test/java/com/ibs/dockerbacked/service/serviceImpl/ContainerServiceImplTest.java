@@ -1,18 +1,23 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import cn.hutool.core.date.DateUtil;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
+import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +88,7 @@ class ContainerServiceImplTest {
         containerParam.setAccount(account);
 //         containerParam.setContainerId(0L);
 //        containerParam.setStatus(List.of("1"));
-        System.out.println(containerService.getContainers(containerParam, 1,5,null));
+        System.out.println(containerService.getContainers(containerParam, 1, 5, null));
     }
 
     @Test
@@ -101,5 +106,29 @@ class ContainerServiceImplTest {
 
     @Test
     void pullImages() {
+    }
+
+    /**
+     * 创建订单
+     */
+    @Test
+    void createOrder() throws ParseException {
+/**
+ *
+ */
+        long userId = JwtUtil.getUserId("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9." +
+                "eyJpZCI6MSwiZXhwIjoxNjc5NTQ4NTE1LCJhY2NvdW50IjoiMTAwMCJ9." +
+                "SYj077kA2oEMdFRROiScQT9-jP_TRxq_Q1EX0F03wvY");
+        Order order = new Order();
+        order.setPacketId(3);
+        order.setContainerId(0);
+        order.setUserId((int) userId);
+        order.setMoney(1000);
+        order.setPayWay("0");
+        order.setDescription("1234");
+        String now = DateUtil.now();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        order.setCreatedAt(df.parse(now));
+        containerService.createOrder(userId, order);
     }
 }

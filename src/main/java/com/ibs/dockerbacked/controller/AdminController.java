@@ -74,7 +74,7 @@ public class AdminController {
     }
 
     /***
-     *@descript 批量生产账号，未完成
+     *@descript 批量生产账号
      *@param count
      *@param token
      *@return bool
