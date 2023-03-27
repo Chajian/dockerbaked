@@ -18,7 +18,9 @@ public class AddContainer {
     private List<String> Env;
 
     //端口
-    private List<PortBinding> ExposedPorts;
+    private String hostPort;
+    //docker端口
+    private int exposedPort;
 
     //镜像名称
     private String ImageName;
