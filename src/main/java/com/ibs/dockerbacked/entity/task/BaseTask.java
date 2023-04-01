@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class BaseTask<T> implements DTask {
     int time;//计时器单位秒
     TaskStatus status;//任务状态
-    private int id = 0;
+    private long id = 0;
     private static long coun = 0;
 
     public  BaseTask(int time) {
@@ -54,5 +54,10 @@ public abstract class BaseTask<T> implements DTask {
 
     public int getTime() {
         return time;
+    }
+
+    @Override
+    public long getId() {
+        return id;
     }
 }

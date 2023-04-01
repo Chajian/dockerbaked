@@ -9,7 +9,7 @@ import com.ibs.dockerbacked.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,19 +22,64 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     ExecutorService executor;
     private int maxThread;
-    TaskThread taskThread;
+    private int maxTasks;
+    List<TaskThread> taskThreads;
+    Map<Integer,Long> orderToTask = new HashMap<>();
+
 
     public OrderServiceImpl() {
         init();
     }
     public void init(){
-        executor = Executors.newFixedThreadPool(10);//线程池
         maxThread = 10;
-        taskThread = new TaskThread(20);
+        executor = Executors.newFixedThreadPool(maxThread);//线程池
+        maxTasks = 100;
+    }
+
+    /**
+     * 添加订单任务
+     * @param task 任务
+     */
+    public synchronized void addOrderTask(DTask task,int orderId) {
+        Iterator<TaskThread> iterator = taskThreads.iterator();
+        while(iterator.hasNext()){
+            TaskThread t = iterator.next();
+            if(t.add(task)) {
+                orderToTask.put(orderId,task.getId());
+                return;
+            }
+            else if(!t.isLive()){
+                iterator.remove();
+            }
+        }
+        TaskThread taskThread = new TaskThread(maxTasks);
+        taskThread.add(task);
+        orderToTask.put(orderId,task.getId());
+        taskThreads.add(taskThread);
+        executor.execute(taskThread);
+
     }
 
 
+    @Override
+    public String createOrder() {
 
 
 
+        return "";
+    }
+
+    /**
+     * 通过orderId获取对应的Task
+     * @param orderId
+     * @return
+     */
+    public DTask getDTaskByOrderId(int orderId){
+        long taskId = orderToTask.get(orderId);
+        for(TaskThread t:taskThreads){
+            DTask task = t.getDTaskById(taskId);
+            if(task!=null) return task;
+        }
+        return null;
+    }
 }

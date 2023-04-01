@@ -10,5 +10,5 @@ import com.ibs.dockerbacked.entity.Order;
  */
 public interface OrderService extends IService<Order> {
 
-    boolean createOrder();
+    String createOrder();
 }

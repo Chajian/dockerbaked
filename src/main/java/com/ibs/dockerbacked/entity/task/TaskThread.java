@@ -48,6 +48,8 @@ public class TaskThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if(list.size()==0)
+                live = false;
         }
     }
 
@@ -59,4 +61,21 @@ public class TaskThread implements Runnable {
         return false;
     }
 
+    public boolean isLive() {
+        return live;
+    }
+
+
+    /**
+     * 通过id获取任务
+     * @param id
+     * @return
+     */
+    public DTask getDTaskById(long id){
+        for(DTask t : list){
+            if(t.getId()==id)
+                return t;
+        }
+        return null;
+    }
 }
