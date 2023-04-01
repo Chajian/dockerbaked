@@ -68,21 +68,6 @@ public class ContainerController {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
-    /**
-     * 创建订单
-     *
-     * @param token
-     * @param order
-     * @return
-     */
-    @PostMapping("/order")
-    public Result<Long> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                            @RequestBody Order order) throws ParseException {
 
-        long userId = JwtUtil.getUserId(token);
-        if (userId == -1) throw new CustomExpection(500, "用户不存在或者未登录");
-
-        return Result.success(200,"创建成功",containerService.createOrder(userId, order));
-    }
 
 }

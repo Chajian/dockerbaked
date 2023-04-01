@@ -115,19 +115,12 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         //创建容器  保存到虚拟机中
         List<String> envs = addContainer.getEnv(); //环境
-        //主机端口
-        String hostPort = addContainer.getHostPort();
-        //容器端口
-        int exposedPort = addContainer.getExposedPort();
         //镜像名字
         String imageName = addContainer.getImageName();
         //容器资料
         Container hostConfig = addContainer.getHostConfig();
-        //转换端口类型
-        List<PortBinding> ports = new ArrayList<>();
-        ports.add(new PortBinding(new Ports.Binding("0.0.0.0",hostPort),new ExposedPort(exposedPort)));
         CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
-                ports, envs);
+                addContainer.generatePorts(), envs);
         //把容器信息保存到数据库
         Container container = new Container();
         container.setId(createContainerResponse.getId());
