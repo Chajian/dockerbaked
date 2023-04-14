@@ -10,5 +10,18 @@ import com.ibs.dockerbacked.entity.Order;
  */
 public interface OrderService extends IService<Order> {
 
-    String createOrder();
+    String createOrder(int packetId,long userId);
+
+    /**
+     * create qrCode
+     * @param order
+     * @return qrCodeUrl
+     */
+    String createQrCode(Order order);
+
+    /**
+     * paied method
+     * @param order orderInfo
+     */
+    void Paied(Order order);
 }

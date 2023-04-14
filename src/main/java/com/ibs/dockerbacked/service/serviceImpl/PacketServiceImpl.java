@@ -11,6 +11,7 @@ import com.ibs.dockerbacked.service.HardwareService;
 import com.ibs.dockerbacked.service.PacketService;
 import com.mysql.cj.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
 
     @Override
     @Transient
+    @RequiresRoles("admin")
     public Result<Boolean> createPacket(Hardware hardware, boolean isFree) {
         //判断是否是否是管理员 todo
 

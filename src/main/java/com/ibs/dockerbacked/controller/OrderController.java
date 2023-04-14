@@ -42,12 +42,11 @@ public class OrderController {
      */
     @PostMapping("/order")
     public Result<String> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                    @RequestBody int packetId,int hardId) throws ParseException {
+                                    @RequestBody int packetId) throws ParseException {
         Packet packet = packetMapper.selectById(packetId);
-        Hardware hardware = hardwareMapper.selectById(hardId);
-        if(packet==null||hardware==null)
+        if(packet==null)
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
-        return Result.success(Constants.CODE_200,"success",orderService.createOrder());
+        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token)));
     }
 
 }

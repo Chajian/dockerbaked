@@ -23,6 +23,15 @@ public class OrderTest {
         System.out.println(orderService.getById(1));
     }
 
+//    @Test
+//    public void testOrder(){
+//        Order order = new Order();
+//        order.setPacketId(1);
+//        order.setUserId(1);
+//        order.setName("order");
+//        System.out.println(order.toString());
+//    }
+
     @Test
     public void orderInsert() {
         Order order = new Order();
@@ -32,7 +41,9 @@ public class OrderTest {
         order.setPacketId(3);
         order.setPayWay("1");
         order.setUserId(1);
+        System.out.println(order.toString());
         orderService.save(order);
+        System.out.println(order.toString());
     }
 
     @Test
