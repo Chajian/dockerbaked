@@ -1,17 +1,16 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
-import com.ibs.dockerbacked.entity.task.BaseTask;
-import com.ibs.dockerbacked.entity.task.DTask;
-import com.ibs.dockerbacked.entity.task.OrderTask;
-import com.ibs.dockerbacked.entity.task.TaskThread;
+import com.ibs.dockerbacked.entity.task.*;
 import com.ibs.dockerbacked.mapper.OrderMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -33,6 +32,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     Map<Integer,Long> orderToTask = new HashMap<>();//get Task by OrderId
     @Autowired
     ContainerService containerService;
+    @Autowired
     OrderMapper orderMapper;
 
 
@@ -40,6 +40,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         init();
     }
     public void init(){
+        taskThreads = new ArrayList<>();
         maxThread = 10;
         executor = Executors.newFixedThreadPool(maxThread);//线程池
         maxTasks = 100;
@@ -77,26 +78,32 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Order order = new Order();
         order.setPacketId(packetId);
         order.setUserId(userId);
+        order.setState("初始化");
         order.setName("order");
         orderMapper.insert(order);
 
         AddContainer addContainer = new AddContainer();
         addContainer.setImageName("mysql:latest");
+        Container container = new Container();
+        container.setName("mysqlTest");
+        container.setImageId("mysql:latest");
+        addContainer.setHostConfig(container);
+        addContainer.setPorts(List.of("3406:3306","3480:80"));
+
         OrderTask baseTask = new OrderTask(10,order){
             @Override
             public synchronized void recall() {
                 super.recall();
                 System.out.println("test to create");
                 containerService.createContainer(addContainer,userId);
+                setStatus(TaskStatus.DEATH);
             }
-
             @Override
             public synchronized void run() {
                 super.run();
                 System.out.println("daled:"+getTime());
             }
         };
-
 
 
         addOrderTask(baseTask,order);

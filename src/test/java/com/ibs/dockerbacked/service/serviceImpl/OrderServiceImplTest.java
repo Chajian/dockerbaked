@@ -16,7 +16,10 @@ class OrderServiceImplTest {
     @Test
     void createOrder() {
         orderService.createOrder(3,1);
+        test();
+    }
 
-
+    public void test(){
+        while(true);
     }
 }

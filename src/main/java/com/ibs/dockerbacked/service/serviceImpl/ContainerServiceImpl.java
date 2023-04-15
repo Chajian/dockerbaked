@@ -30,6 +30,7 @@ import com.ibs.dockerbacked.service.PacketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.dockerjava.api.model.Image;
@@ -53,6 +54,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Autowired
     private ImageModel imageModel;
     @Autowired
+    @Lazy
     private OrderService orderService;
     @Autowired
     private PacketService packetService;
@@ -117,6 +119,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //镜像名字
         String imageName = addContainer.getImageName();
         //容器资料
+
         Container hostConfig = addContainer.getHostConfig();
         CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
                 addContainer.generatePorts(), envs);

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.beans.Transient;
@@ -28,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> implements PacketService {
     @Autowired
+    @Lazy
     private HardwareService hardwareService;
 
     @Override

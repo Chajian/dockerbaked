@@ -60,4 +60,9 @@ public abstract class BaseTask<T> implements DTask {
     public long getId() {
         return id;
     }
+
+    @Override
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
 }

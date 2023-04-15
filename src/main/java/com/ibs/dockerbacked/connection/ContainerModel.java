@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
@@ -49,11 +50,13 @@ public class ContainerModel {
     public synchronized CreateContainerResponse createContainer(String containerName,String imageName, List<PortBinding> ports,List<String> envs){
         HostConfig hostConfig = HostConfig.newHostConfig();
         hostConfig.withPortBindings(ports);
-        CreateContainerResponse createContainerResponse =  dockerClient.createContainerCmd(imageName)
-                .withName(containerName)
-                .withHostConfig(hostConfig)
-                .withEnv(envs)
-                .exec();
+        CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(imageName)
+                .withName(containerName);
+        if(hostConfig!=null)
+            createContainerCmd.withHostConfig(hostConfig);
+        if(envs!=null&&envs.size()>0)
+            createContainerCmd.withEnv(envs);
+        CreateContainerResponse createContainerResponse = createContainerCmd.exec();
         return createContainerResponse;
     }
 

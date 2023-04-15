@@ -33,6 +33,8 @@ public interface DTask {
      */
     public TaskStatus getStatus();
 
+    public void setStatus(TaskStatus status);
+
     public long getId();
 
 
