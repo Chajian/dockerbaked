@@ -8,9 +8,11 @@ import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.UserSerivce;
 
+import com.ibs.dockerbacked.util.JwtUtil;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,8 +56,9 @@ public class AdminController {
      * @return 成功为200 失败为500
      */
     @PostMapping("/create")
-    public Result create(@RequestBody AddContainer addContainer) {
-        containerService.createContainer(addContainer);
+    public Result create(@RequestBody AddContainer addContainer,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        long userId = JwtUtil.getUserId(token);
+        containerService.createContainer(addContainer,userId);
         return Result.success(200, "创建成功", null);
     }
 

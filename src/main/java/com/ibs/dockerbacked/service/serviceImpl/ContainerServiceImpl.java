@@ -97,9 +97,8 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //创建容器
     @Transactional
     @Override
-    public synchronized void createContainer(AddContainer addContainer) {
+    public synchronized void createContainer(AddContainer addContainer,long userId) {
         //用户Id
-//        int userId = 1234;
 //        //用户money
 //        //:todo
 //        Long userMoney = 100L;
