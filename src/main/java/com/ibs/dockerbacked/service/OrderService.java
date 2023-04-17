@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.dto.AddContainer;
 
 /**
  * @author sn
  */
 public interface OrderService extends IService<Order> {
 
-    String createOrder(int packetId,long userId);
+    String createOrder(int packetId, long userId, AddContainer addContainer);
 
     /**
      * create qrCode
