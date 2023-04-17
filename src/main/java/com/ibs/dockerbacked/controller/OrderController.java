@@ -46,7 +46,7 @@ public class OrderController {
         Packet packet = packetMapper.selectById(packetId);
         if(packet==null)
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
-        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token)));
+        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),null));
     }
 
 }

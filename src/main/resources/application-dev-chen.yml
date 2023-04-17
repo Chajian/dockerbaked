@@ -22,5 +22,10 @@ docker-cloud:
   userName: "dockerxylyjy"
   passWord: "docker@123789"
   email: "xylyjy@gmail.com"
+<<<<<<< HEAD
   host: "tcp://192.168.1.231:2375"
   url: "https://index.docker.io/v1/"
+=======
+  host: "tcp://8.130.92.152:2375"
+  url: "https://index.docker.io/v1/"
+>>>>>>> 0fd39528f0e28dc706ad10fecdaf6861d22e3255
