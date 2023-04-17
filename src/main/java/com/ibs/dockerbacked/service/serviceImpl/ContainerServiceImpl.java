@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -102,8 +103,8 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     public synchronized void createContainer(AddContainer addContainer,long userId) {
         //用户Id
 //        //用户money
-//        //:todo
-//        Long userMoney = 100L;
+//
+        long userMoney = userId;
 //        //用户选择配置的价格 -->需要根据配置来计算价格
 //        //:todo
 //        Long userConfigMoney = 200L;
@@ -114,26 +115,44 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 //        //要保证原子性 -->可以通过锁来实现 请求量不大的话
 //        userMoney = userMoney - userConfigMoney;
 
-        //创建容器  保存到虚拟机中
-        List<String> envs = addContainer.getEnv(); //环境
+        //2.1检查填写的是否为空 envs和imageName
+        check(addContainer);
+        //环境
+        List<String> envs = addContainer.getEnv();
         //镜像名字
         String imageName = addContainer.getImageName();
-        //容器资料
 
+        //容器资料
         Container hostConfig = addContainer.getHostConfig();
+        //2.2 创建容器
         CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
                 addContainer.generatePorts(), envs);
-        //把容器信息保存到数据库
+        //把容器信息同步到数据库
         Container container = new Container();
         container.setId(createContainerResponse.getId());
         BeanUtils.copyProperties(hostConfig, container);
-        container.setOwnerId(1234);
-        container.setImageId("1234");
+        container.setOwnerId((int)userId);
+        container.setImageId(imageName);
         container.setCreatedAt(new Date());
         boolean save = save(container);
 
         if (!save) {
             throw new CustomExpection(500, "创建容器失败");
+        }
+    }
+
+    /**
+     * author chen
+     * @param addContainer 检查参数是否合法
+     */
+    private void check(AddContainer addContainer) {
+        List<String> env = addContainer.getEnv();
+        String imageName = addContainer.getImageName();
+        if(CollectionUtils.isEmpty(env)){
+            throw new CustomExpection(500, "please fill in the envs params");
+        }
+        if (StringUtils.isEmpty(imageName)) {
+            throw new CustomExpection(500, "please fill in the imageName param");
         }
     }
 

@@ -36,7 +36,6 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
     @Transient
     @RequiresRoles("admin")
     public Result<Boolean> createPacket(Hardware hardware, boolean isFree) {
-        //判断是否是否是管理员 todo
 
         //判断全部字段是否按照条件来填
         checkParam(hardware);
