@@ -74,21 +74,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @PostMapping(value = "/createOrder")
-    public String createOrder(int packetId,long userId) {
+    public String createOrder(int packetId,long userId,AddContainer addContainer) {
         Order order = new Order();
         order.setPacketId(packetId);
         order.setUserId(userId);
         order.setState("初始化");
         order.setName("order");
         orderMapper.insert(order);
-
-        AddContainer addContainer = new AddContainer();
-        addContainer.setImageName("mysql:latest");
-        Container container = new Container();
-        container.setName("mysqlTest");
-        container.setImageId("mysql:latest");
-        addContainer.setHostConfig(container);
-        addContainer.setPorts(List.of("3406:3306","3480:80"));
 
         OrderTask baseTask = new OrderTask(10,order){
             @Override

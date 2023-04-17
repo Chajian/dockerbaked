@@ -36,7 +36,7 @@ public class TestContainer {
 
     @Before
     public void init(){
-        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://8.130.92.152:2375","https://index.docker.io/v1/");
         containerModel = new ContainerModel(dockerConnection.connect());
     }
 
@@ -50,7 +50,7 @@ public class TestContainer {
     public void create(){
 
         List list = new ArrayList<>();
-        list.add(new PortBinding(new Ports.Binding("0.0.0.0","5506"),new ExposedPort(3306)));
+        list.add(new PortBinding(new Ports.Binding("0.0.0.0","3306"),new ExposedPort(3306)));
 
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Qq123456789");
