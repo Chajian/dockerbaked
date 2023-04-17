@@ -64,10 +64,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     private ContainerModel containerModel;
 
     /***
-     *@descript 容器
+     *@descript 得到容器列表
      * @param
      *@return
-     *@author
+     *@author chen
      *@version 1.0
      */
     @Override
@@ -170,68 +170,23 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
     /**
-     * @param imagesParam
+     *  修改容器状态
+     *  author chen
+     * @param containerId
+     * @param status
      * @return
-     * @version 1.0
-     * @author sn
      */
-    //获取镜像
-    @Override
-    public List<Image> getImages(ImagesParam imagesParam) {
-
-        //通过指定的标签获取镜像,默认
-        List<Image> images = imageModel.getImages(imagesParam.getLabel());
-        int Cunrrentpage = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage();
-        int CunrrentpageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();
-
-        //判断镜像id是否为空
-        if (imagesParam.getId() != null) {
-            //不为空，通过镜像id获取指定镜像
-            List<Image> imageIDList = new ArrayList<>();
-            for (Image image : images) {
-                if (image.getId().equals(imagesParam.getId())) {
-                    imageIDList.add(image);
-                    return imageIDList;
-                }
-            }
-            return null;
-        }
-        //镜像id为空，则返回前几条数据 ，参数数据范围过大则不正确
-        if ((Cunrrentpage - 1) * CunrrentpageSize < images.size()) {
-            return images.stream().skip((Cunrrentpage - 1) * CunrrentpageSize).limit(CunrrentpageSize).
-                    collect(Collectors.toList());
-        }
-        return null;
-    }
-
-    /**
-     * @param pullImages
-     * @return
-     * @derscipt 拉取镜像
-     * @author sn
-     */
-    @Override
-    public boolean pullImages(PullImages pullImages) {
-        //通过指定的标签获取镜像,默认
-        try {
-            imageModel.pullImage(pullImages.getName(), pullImages.getTag());
-        } catch (InterruptedException e) {
-            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
-        }
-        return true;
-    }
-
     @Override
     public Result operateContainer(String containerId, String status) {
         //根据状态来操作容器
         //1.查找这个容器当前状态
-//        Container container = getById(containerId);
-//        if (container == null) {
-//            throw new CustomExpection(500,"当前容器不存在");
-//        }
-//        if (container.getState().equals(status)) {
-//            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
-//        }
+        Container container = getById(containerId);
+        if (container == null) {
+            throw new CustomExpection(500,"当前容器不存在");
+        }
+        if (container.getState().equals(status)) {
+            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
+        }
         switch (status) {
             case "start":
                 containerModel.startContainer(containerId);

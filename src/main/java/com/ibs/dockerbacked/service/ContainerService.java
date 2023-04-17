@@ -27,11 +27,7 @@ public interface ContainerService extends IService<Container> {
     //操作容器
     Container getContainersByIdOrStatus(String containerId, String status);
 
-    //查询镜像
-    List<Image> getImages(ImagesParam imagesParam);
 
-
-    boolean pullImages(PullImages pullImages);
 
     Result operateContainer(String containerId, String status);
 
