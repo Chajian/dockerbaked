@@ -27,12 +27,10 @@ class OrderServiceImplTest {
         container.setName("dockerSql");
         container.setImageId("mysql:latest");
         addContainer.setHostConfig(container);
+        container.setId("123"); //id没得拿
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
-        addContainer.setPorts(List.of("3306:3306"));
-
-
-
+        addContainer.setPorts(List.of("3307:3307"));
         orderService.createOrder(3,1,addContainer);
         test();
     }

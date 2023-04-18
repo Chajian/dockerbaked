@@ -80,6 +80,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUserId(userId);
         order.setState("初始化");
         order.setName("order");
+        order.setContainerId(Integer.parseInt(addContainer.getHostConfig().getId()));
         orderMapper.insert(order);
 
         OrderTask baseTask = new OrderTask(10,order){
@@ -87,7 +88,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             public synchronized void recall() {
                 super.recall();
                 System.out.println("test to create");
-                containerService.createContainer(addContainer,userId);
+                String containerId = containerService.createContainer(addContainer, userId);
                 setStatus(TaskStatus.DEATH);
             }
             @Override

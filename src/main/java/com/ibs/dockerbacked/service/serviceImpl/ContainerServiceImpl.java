@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
@@ -64,7 +65,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     private ContainerModel containerModel;
 
     /***
-     *@descript 得到容器列表
+     *@descript 容器列表
      * @param
      *@return
      *@author chen
@@ -100,7 +101,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //创建容器
     @Transactional
     @Override
-    public synchronized void createContainer(AddContainer addContainer,long userId) {
+    public synchronized String createContainer(AddContainer addContainer,long userId) {
         //用户Id
 //        //用户money
 //
@@ -117,33 +118,36 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         //2.1检查填写的是否为空 envs和imageName
         check(addContainer);
+
         //环境
         List<String> envs = addContainer.getEnv();
         //镜像名字
         String imageName = addContainer.getImageName();
-
         //容器资料
         Container hostConfig = addContainer.getHostConfig();
+        //容器名字
+        String containName = userId+"-"+hostConfig.getName();
         //2.2 创建容器
-        CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
-                addContainer.generatePorts(), envs);
-        //把容器信息同步到数据库
-        Container container = new Container();
-        container.setId(createContainerResponse.getId());
-        BeanUtils.copyProperties(hostConfig, container);
-<<<<<<< HEAD
-        container.setOwnerId((int)userId);
-        container.setImageId(imageName);
-=======
-        container.setOwnerId(1234);
-        container.setOwnerId(1);
-        container.setImageId("1234");
->>>>>>> 0fd39528f0e28dc706ad10fecdaf6861d22e3255
-        container.setCreatedAt(new Date());
-        boolean save = save(container);
-
-        if (!save) {
-            throw new CustomExpection(500, "创建容器失败");
+        CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
+                    addContainer.generatePorts(), envs);
+        String containId = null;
+        try {
+            containId = createContainerResponse.getId();
+            //把容器信息同步到数据库
+            Container container = new Container();
+            BeanUtils.copyProperties(hostConfig, container);
+            container.setOwnerId((int) userId);
+            container.setImageId(imageName);
+            container.setName(containName);
+            container.setCreatedAt(new Date());
+            container.setState("start");
+            container.setId(containId);
+            save(container);
+            return containId;
+        } catch (Exception e) {
+            //创建容器成功了 但是数据库保存出现异常 删除创建容器
+            containerModel.deleteContaqqiner(containId);
+            throw new CustomExpection(500, "保持数据异常");
         }
     }
 
@@ -165,6 +169,12 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //管理员接口
     @Override
     public Container getContainersByIdOrStatus(String containerId, String status) {
+        if (StringUtils.isEmpty(containerId)){
+            throw new CustomExpection(500, "容器id不能为空");
+        }
+        if (StringUtils.isEmpty(status)){
+            throw new CustomExpection(500, "容器状态不能为空");
+        }
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Container::getId, containerId); //根据Id找
         lambdaQueryWrapper.eq(Container::getState, status);  //根据状态找
@@ -211,6 +221,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
                 break;
 
         }
+        //更新数据库
+        container.setState(status);
+        container.setUpdatedAt(new Date());
+        updateById(container);
         return Result.success(200, "success", "修改成功");
     }
 
