@@ -50,6 +50,7 @@ public class ContainerModel {
     public synchronized CreateContainerResponse createContainer(String containerName,String imageName, List<PortBinding> ports,List<String> envs){
         HostConfig hostConfig = HostConfig.newHostConfig();
         hostConfig.withPortBindings(ports);
+        hostConfig.withNetworkMode("bridge");
         CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(imageName)
                 .withName(containerName);
         if(hostConfig!=null)
