@@ -25,15 +25,13 @@ class OrderServiceImplTest {
         Container container = new Container();
         container.setName("XylTest");
         addContainer.setHostConfig(container);
+        container.setId("123"); //id没得拿
         List<String> envs = new ArrayList<>();
         List<String> ports = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
         ports.add("4506:3306");
         addContainer.setPorts(ports);
         addContainer.setEnv(envs);
-
-
-
         orderService.createOrder(3,1,addContainer);
         test();
     }

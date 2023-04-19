@@ -4,7 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
+import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
@@ -83,7 +85,7 @@ class ContainerServiceImplTest {
     @Test
     void testGetContainers() {
 
-        String account = "10002";
+        String account = "1000";
         ContainerParam containerParam = new ContainerParam();
         containerParam.setAccount(account);
 //         containerParam.setContainerId(0L);
@@ -93,7 +95,7 @@ class ContainerServiceImplTest {
 
     @Test
     void testCreateContainer() {
-        containerModel.inspectContainer("111");
+        System.out.println(containerModel.inspectContainer("d00c2e6e829fec473abc4affba7f0333f408831caf9feafe23778b94a0faeeec"));
     }
 
     @Test
@@ -130,5 +132,27 @@ class ContainerServiceImplTest {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         order.setCreatedAt(df.parse(now));
         containerService.createOrder(userId, order);
+    }
+
+    @Test
+    void testCreateContainer1() {
+        AddContainer addContainer = new AddContainer();
+        addContainer.setImageName("mysql:latest");
+        Container container = new Container();
+//        container.setImageId("mysql:latest");
+        container.setName("Mysqltest");
+        container.setImageId("mysql:latest");
+        addContainer.setHostConfig(container);
+        List<String> envs = new ArrayList<>();
+        envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
+        addContainer.setEnv(envs);
+        addContainer.setPorts(List.of("3311:3306"));
+        String containId = containerService.createContainer(addContainer, 7L);
+        System.out.println(containId);
+    }
+
+    @Test
+    void operateContainer() {
+        containerService.operateContainer("d00c2e6e829fec473abc4affba7f0333f408831caf9feafe23778b94a0faeeec", "stop");
     }
 }

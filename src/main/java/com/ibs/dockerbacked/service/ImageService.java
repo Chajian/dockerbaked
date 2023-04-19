@@ -8,7 +8,7 @@ import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import java.util.List;
 
 public interface ImageService {
-    Result<List<Image>> getImages(ImagesParam imagesParam);
+    Result<List<Image>> getImages(ImagesParam imagesParam,long userId);
 
     Result pull(String imageName,String tag);
 }

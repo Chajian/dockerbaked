@@ -34,13 +34,13 @@ public class TestTaskThread {
                 }
 
                 @Override
-                public synchronized void run() {
+                public  void run() {
                     super.run();
                     System.out.print("当前倒计时:"+getTime()+"-");
                 }
 
                 @Override
-                public synchronized void death() {
+                public  void death() {
                     super.death();
                     System.out.println("wocao");
                 }

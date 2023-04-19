@@ -22,16 +22,12 @@ public interface ContainerService extends IService<Container> {
     Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
 
     //创建容器
-    void createContainer(AddContainer addContainer,long userId);
+    String createContainer(AddContainer addContainer,long userId);
 
     //操作容器
     Container getContainersByIdOrStatus(String containerId, String status);
 
-    //查询镜像
-    List<Image> getImages(ImagesParam imagesParam);
 
-
-    boolean pullImages(PullImages pullImages);
 
     Result operateContainer(String containerId, String status);
 
