@@ -23,13 +23,14 @@ class OrderServiceImplTest {
         AddContainer addContainer = new AddContainer();
         addContainer.setImageName("mysql:latest");
         Container container = new Container();
-//        container.setImageId("mysql:latest");
-        container.setName("dockerSql");
-        container.setImageId("mysql:latest");
+        container.setName("XylTest");
         addContainer.setHostConfig(container);
         List<String> envs = new ArrayList<>();
+        List<String> ports = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
-        addContainer.setPorts(List.of("3306:3306"));
+        ports.add("4506:3306");
+        addContainer.setPorts(ports);
+        addContainer.setEnv(envs);
 
 
 
