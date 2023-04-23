@@ -118,6 +118,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         //2.1检查填写的是否为空 envs和imageName
         check(addContainer);
+        //给这个contain name 规范化
 
         //环境
         List<String> envs = addContainer.getEnv();

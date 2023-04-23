@@ -26,8 +26,8 @@ public class PermissionGroupPermissionTest {
     @Test
     public void PermissionInsert() {
         PermissionGroupPermission permissionGroupPermission = new PermissionGroupPermission();
-        permissionGroupPermission.setGroupId(1);
-        permissionGroupPermission.setPermissionId(1);
+        permissionGroupPermission.setGroupId(5);
+        permissionGroupPermission.setPermissionId(3);
         permissionGroupPermissionService.save(permissionGroupPermission);
     }
 

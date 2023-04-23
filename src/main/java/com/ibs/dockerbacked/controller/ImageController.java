@@ -27,7 +27,7 @@ public class ImageController {
     public Result<List<Image>> getImages(@RequestBody ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         return imageService.getImages(imagesParam, JwtUtil.getUserId(token));
-}
+    }
 
     /** 拉取镜像
      * author chen

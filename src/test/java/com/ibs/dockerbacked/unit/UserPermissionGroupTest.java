@@ -26,8 +26,8 @@ public class UserPermissionGroupTest {
     @Test
     public void userPermissionGroupInsert() {
         UserPermissionGroup userPermissionGroup = new UserPermissionGroup();
-        userPermissionGroup.setUserId(1);
-        userPermissionGroup.setGroupId(1);
+        userPermissionGroup.setUserId(7);
+        userPermissionGroup.setGroupId(5);
         userPermissionGroupService.save(userPermissionGroup);
     }
 

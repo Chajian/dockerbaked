@@ -37,7 +37,7 @@ public class ContainerController {
      *@author chen
      *@version 1.0
      */
-    @PostMapping
+    @PostMapping("/get")
     public Result getContainers(@RequestBody ContainerParam containerParam,
                                 @RequestParam(value = "page", defaultValue = "1") Integer page,
                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
