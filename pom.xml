@@ -165,9 +165,9 @@
             <properties>
                 <profileActive>dev-xyl</profileActive>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+<!--            <activation>-->
+<!--                <activeByDefault>true</activeByDefault>-->
+<!--            </activation>-->
 
         </profile>
         <profile>
