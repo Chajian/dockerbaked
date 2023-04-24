@@ -41,7 +41,7 @@ public class UserTest {
     @Test
     public void testUpdate() {
         User user = new User();
-        user.setId(3);
+        user.setId(7);
         user.setPwd("123");
         userSerivce.updateById(user);
 

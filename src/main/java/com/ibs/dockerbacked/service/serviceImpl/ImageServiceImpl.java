@@ -25,9 +25,8 @@ public class ImageServiceImpl implements ImageService {
     private ImageModel imageModel;
     //获取镜像
     @Override
-    public Result<List<Image>> getImages(ImagesParam imagesParam) {
+    public Result<List<Image>> getImages(ImagesParam imagesParam,long userId) {
         //模拟用户
-        Long userId = 1234L;
         Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
         Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
 
@@ -46,6 +45,12 @@ public class ImageServiceImpl implements ImageService {
         return Result.success(200, null, images);
     }
 
+    /**
+     *
+     * @param imageName
+     * @param tag
+     * @return
+     */
     @Override
     public Result pull(String imageName, String tag) {
         try {

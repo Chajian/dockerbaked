@@ -4,7 +4,9 @@ import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.service.ImageService;
+import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,9 @@ public class ImageController {
      * @return 镜像列表
      */
     @GetMapping
-    public Result<List<Image>> getImages(@RequestBody ImagesParam imagesParam) {
-        return imageService.getImages(imagesParam);
+    public Result<List<Image>> getImages(@RequestBody ImagesParam imagesParam,
+                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        return imageService.getImages(imagesParam, JwtUtil.getUserId(token));
 }
 
     /** 拉取镜像

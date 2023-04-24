@@ -25,7 +25,7 @@ class ImageServiceImplTest {
         imagesParam.setPageParam(param);
 //        imagesParam.setId("sha256:3218b38490cec8d31976a40b92e09d61377359eab878db49f025e5d464367f3b");
         imagesParam.setId("86ac548fcc06");
-        System.out.println(imageService.getImages(imagesParam).getData());
+        System.out.println(imageService.getImages(imagesParam,1234l).getData());
 
     }
 

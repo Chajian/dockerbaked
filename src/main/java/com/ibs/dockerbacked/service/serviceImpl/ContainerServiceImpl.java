@@ -3,10 +3,12 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
@@ -63,10 +65,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     private ContainerModel containerModel;
 
     /***
-     *@descript 容器
+     *@descript 容器列表
      * @param
      *@return
-     *@author
+     *@author chen
      *@version 1.0
      */
     @Override
@@ -99,11 +101,11 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //创建容器
     @Transactional
     @Override
-    public synchronized void createContainer(AddContainer addContainer,long userId) {
+    public synchronized String createContainer(AddContainer addContainer,long userId) {
         //用户Id
 //        //用户money
-//        //:todo
-//        Long userMoney = 100L;
+//
+        long userMoney = userId;
 //        //用户选择配置的价格 -->需要根据配置来计算价格
 //        //:todo
 //        Long userConfigMoney = 200L;
@@ -114,33 +116,65 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 //        //要保证原子性 -->可以通过锁来实现 请求量不大的话
 //        userMoney = userMoney - userConfigMoney;
 
-        //创建容器  保存到虚拟机中
-        List<String> envs = addContainer.getEnv(); //环境
+        //2.1检查填写的是否为空 envs和imageName
+        check(addContainer);
+
+        //环境
+        List<String> envs = addContainer.getEnv();
         //镜像名字
         String imageName = addContainer.getImageName();
         //容器资料
-
         Container hostConfig = addContainer.getHostConfig();
-        CreateContainerResponse createContainerResponse = containerModel.createContainer(hostConfig.getName(), imageName,
-                addContainer.generatePorts(), envs);
-        //把容器信息保存到数据库
-        Container container = new Container();
-        container.setId(createContainerResponse.getId());
-        BeanUtils.copyProperties(hostConfig, container);
-        container.setOwnerId(1234);
-        container.setOwnerId(1);
-        container.setImageId("1234");
-        container.setCreatedAt(new Date());
-        boolean save = save(container);
+        //容器名字
+        String containName = userId+"-"+hostConfig.getName();
+        //2.2 创建容器
+        CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
+                    addContainer.generatePorts(), envs);
+        String containId = null;
+        try {
+            containId = createContainerResponse.getId();
+            //把容器信息同步到数据库
+            Container container = new Container();
+            BeanUtils.copyProperties(hostConfig, container);
+            container.setOwnerId((int) userId);
+            container.setImageId(imageName);
+            container.setName(containName);
+            container.setCreatedAt(new Date());
+            container.setState("start");
+            container.setId(containId);
+            save(container);
+            return containId;
+        } catch (Exception e) {
+            //创建容器成功了 但是数据库保存出现异常 删除创建容器
+            containerModel.deleteContaqqiner(containId);
+            throw new CustomExpection(500, "保持数据异常");
+        }
+    }
 
-        if (!save) {
-            throw new CustomExpection(500, "创建容器失败");
+    /**
+     * author chen
+     * @param addContainer 检查参数是否合法
+     */
+    private void check(AddContainer addContainer) {
+        List<String> env = addContainer.getEnv();
+        String imageName = addContainer.getImageName();
+        if(CollectionUtils.isEmpty(env)){
+            throw new CustomExpection(500, "please fill in the envs params");
+        }
+        if (StringUtils.isEmpty(imageName)) {
+            throw new CustomExpection(500, "please fill in the imageName param");
         }
     }
 
     //管理员接口
     @Override
     public Container getContainersByIdOrStatus(String containerId, String status) {
+        if (StringUtils.isEmpty(containerId)){
+            throw new CustomExpection(500, "容器id不能为空");
+        }
+        if (StringUtils.isEmpty(status)){
+            throw new CustomExpection(500, "容器状态不能为空");
+        }
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Container::getId, containerId); //根据Id找
         lambdaQueryWrapper.eq(Container::getState, status);  //根据状态找
@@ -152,68 +186,23 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
     /**
-     * @param imagesParam
+     *  修改容器状态
+     *  author chen
+     * @param containerId
+     * @param status
      * @return
-     * @version 1.0
-     * @author sn
      */
-    //获取镜像
-    @Override
-    public List<Image> getImages(ImagesParam imagesParam) {
-
-        //通过指定的标签获取镜像,默认
-        List<Image> images = imageModel.getImages(imagesParam.getLabel());
-        int Cunrrentpage = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage();
-        int CunrrentpageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();
-
-        //判断镜像id是否为空
-        if (imagesParam.getId() != null) {
-            //不为空，通过镜像id获取指定镜像
-            List<Image> imageIDList = new ArrayList<>();
-            for (Image image : images) {
-                if (image.getId().equals(imagesParam.getId())) {
-                    imageIDList.add(image);
-                    return imageIDList;
-                }
-            }
-            return null;
-        }
-        //镜像id为空，则返回前几条数据 ，参数数据范围过大则不正确
-        if ((Cunrrentpage - 1) * CunrrentpageSize < images.size()) {
-            return images.stream().skip((Cunrrentpage - 1) * CunrrentpageSize).limit(CunrrentpageSize).
-                    collect(Collectors.toList());
-        }
-        return null;
-    }
-
-    /**
-     * @param pullImages
-     * @return
-     * @derscipt 拉取镜像
-     * @author sn
-     */
-    @Override
-    public boolean pullImages(PullImages pullImages) {
-        //通过指定的标签获取镜像,默认
-        try {
-            imageModel.pullImage(pullImages.getName(), pullImages.getTag());
-        } catch (InterruptedException e) {
-            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
-        }
-        return true;
-    }
-
     @Override
     public Result operateContainer(String containerId, String status) {
         //根据状态来操作容器
         //1.查找这个容器当前状态
-//        Container container = getById(containerId);
-//        if (container == null) {
-//            throw new CustomExpection(500,"当前容器不存在");
-//        }
-//        if (container.getState().equals(status)) {
-//            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
-//        }
+        Container container = getById(containerId);
+        if (container == null) {
+            throw new CustomExpection(500,"当前容器不存在");
+        }
+        if (container.getState().equals(status)) {
+            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
+        }
         switch (status) {
             case "start":
                 containerModel.startContainer(containerId);
@@ -232,6 +221,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
                 break;
 
         }
+        //更新数据库
+        container.setState(status);
+        container.setUpdatedAt(new Date());
+        updateById(container);
         return Result.success(200, "success", "修改成功");
     }
 
