@@ -138,16 +138,12 @@ class ContainerServiceImplTest {
     void testCreateContainer1() {
         AddContainer addContainer = new AddContainer();
         addContainer.setImageName("mysql:latest");
-        Container container = new Container();
-//        container.setImageId("mysql:latest");
-        container.setName("Mysqltest");
-        container.setImageId("mysql:latest");
-        addContainer.setHostConfig(container);
+        addContainer.setContainerName("mySql");
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
-        addContainer.setEnv(envs);
+        addContainer.setEnvs(envs);
         addContainer.setPorts(List.of("3311:3306"));
-        String containId = containerService.createContainer(addContainer, 7L);
+        String containId = containerService.createContainer(addContainer, 1L);
         System.out.println(containId);
     }
 

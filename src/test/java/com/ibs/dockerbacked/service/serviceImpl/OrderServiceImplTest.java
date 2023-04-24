@@ -22,16 +22,13 @@ class OrderServiceImplTest {
     void createOrder() {
         AddContainer addContainer = new AddContainer();
         addContainer.setImageName("mysql:latest");
-        Container container = new Container();
-        container.setName("XylTest");
-        addContainer.setHostConfig(container);
-        container.setId("123"); //id没得拿
+        addContainer.setContainerName("mysql");
         List<String> envs = new ArrayList<>();
         List<String> ports = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
         ports.add("4506:3306");
         addContainer.setPorts(ports);
-        addContainer.setEnv(envs);
+        addContainer.setEnvs(envs);
         orderService.createOrder(3,1,addContainer);
         test();
     }

@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.entity.dto;
 
 import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import com.ibs.dockerbacked.entity.Container;
@@ -18,22 +19,23 @@ import java.util.List;
 @Data
 public class AddContainer {
     //环境
-    private List<String> Env;
+    private List<String> envs;
 
 
     private List<String> ports;
 
     //镜像名称
-    private String ImageName;
+    private String imageName;
 
     //工作目录
-    private String WorkingDir;
+    private String workingDir;
 
     //是否关闭容器的网络
-    private boolean NetworkDisabled;
+    private boolean networkDisabled;
 
-    //容器信息资料
-    private Container HostConfig;
+   //容器名字
+    private String containerName;
+    //容器资料 todo
 
     public List<PortBinding> generatePorts(){
         List<PortBinding> list = new ArrayList<>();

@@ -80,7 +80,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUserId(userId);
         order.setState("初始化");
         order.setName("order");
-        order.setContainerId(Integer.parseInt(addContainer.getHostConfig().getId()));
+//        order.setContainerId(Integer.parseInt(addContainer.getHostConfig().getId()));
         orderMapper.insert(order);
 
         OrderTask baseTask = new OrderTask(10,order){

@@ -31,7 +31,7 @@ public class ContainerTest {
     @Test
     public void containerInsert() {
         Container container = new Container();
-        container.setImageId("hhh");
+        container.setImageName("hhh");
         User owner = userSerivce.getById(1);
         container.setOwnerId(owner.getId());
 
@@ -47,7 +47,7 @@ public class ContainerTest {
     public void containerUpdate() {
         Container container = new Container();
         container.setId("1");
-        container.setImageId("1234");
+        container.setImageName("1234");
         container.setName("1234");
         container.setState("1");
 //        Users byId = userSerivce.getById(1);

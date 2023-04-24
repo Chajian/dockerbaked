@@ -121,13 +121,13 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //给这个contain name 规范化
 
         //环境
-        List<String> envs = addContainer.getEnv();
+        List<String> envs = addContainer.getEnvs();
         //镜像名字
         String imageName = addContainer.getImageName();
         //容器资料
-        Container hostConfig = addContainer.getHostConfig();
+        //:todo
         //容器名字
-        String containName = userId+"-"+hostConfig.getName();
+        String containName = userId + "-" + addContainer.getContainerName();
         //2.2 创建容器
         CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
                     addContainer.generatePorts(), envs);
@@ -136,12 +136,11 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             containId = createContainerResponse.getId();
             //把容器信息同步到数据库
             Container container = new Container();
-            BeanUtils.copyProperties(hostConfig, container);
             container.setOwnerId((int) userId);
-            container.setImageId(imageName);
+            container.setImageName(imageName);
             container.setName(containName);
             container.setCreatedAt(new Date());
-            container.setState("start");
+            container.setState("1");
             container.setId(containId);
             save(container);
             return containId;
@@ -157,7 +156,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      * @param addContainer 检查参数是否合法
      */
     private void check(AddContainer addContainer) {
-        List<String> env = addContainer.getEnv();
+        List<String> env = addContainer.getEnvs();
         String imageName = addContainer.getImageName();
         if(CollectionUtils.isEmpty(env)){
             throw new CustomExpection(500, "please fill in the envs params");
