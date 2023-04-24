@@ -137,7 +137,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             Container container = new Container();
             BeanUtils.copyProperties(hostConfig, container);
             container.setOwnerId((int) userId);
-            container.setImageId(imageName);
+            container.setImageName(imageName);
             container.setName(containName);
             container.setCreatedAt(new Date());
             container.setState("start");

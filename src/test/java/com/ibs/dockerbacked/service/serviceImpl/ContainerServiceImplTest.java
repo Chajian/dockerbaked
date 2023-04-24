@@ -141,7 +141,7 @@ class ContainerServiceImplTest {
         Container container = new Container();
 //        container.setImageId("mysql:latest");
         container.setName("Mysqltest");
-        container.setImageId("mysql:latest");
+        container.setImageName("mysql:latest");
         addContainer.setHostConfig(container);
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
