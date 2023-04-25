@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Date;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = DockerCloudBoot.class)
 public class PacketServiceImplTest {
     @Autowired
     private PacketService packetService;

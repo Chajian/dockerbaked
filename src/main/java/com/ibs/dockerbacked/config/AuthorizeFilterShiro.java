@@ -17,6 +17,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
  * @author Chajian
  * @date 2020/9/14
  */
-@Component
 @Slf4j
 public class AuthorizeFilterShiro extends AuthorizingRealm {
 
