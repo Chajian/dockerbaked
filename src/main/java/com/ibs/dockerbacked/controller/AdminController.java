@@ -3,9 +3,11 @@ package com.ibs.dockerbacked.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.service.PacketService;
 import com.ibs.dockerbacked.service.UserSerivce;
 
 import com.ibs.dockerbacked.util.JwtUtil;
@@ -36,7 +38,8 @@ public class AdminController {
     private ContainerService containerService;
     @Autowired
     private UserSerivce userSerivce;
-
+    @Autowired
+    private PacketService packetService;
 
     /***
      *@descript 操纵容器
@@ -50,15 +53,17 @@ public class AdminController {
         return containerService.operateContainer(containerId, status);
     }
 
-    /** 新增容器
-     *  author chen
+    /**
+     * 新增容器
+     * author chen
+     *
      * @param addContainer
      * @return 成功为200 失败为500
      */
     @PostMapping("/create")
-    public Result create(@RequestBody AddContainer addContainer,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public Result create(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         long userId = JwtUtil.getUserId(token);
-        containerService.createContainer(addContainer,userId);
+        containerService.createContainer(addContainer, userId);
         return Result.success(200, "创建成功", null);
     }
 
@@ -71,8 +76,8 @@ public class AdminController {
      */
     @PostMapping
     public Result<List<Container>> getContainers(@RequestBody(required = false) ContainerParam containerParam,
-                                                 @RequestParam(required = false,value = "page",defaultValue = "1")Integer page,
-                                                 @RequestParam(required = false,value = "pageSize",defaultValue = "5") Integer pageSize) {
+                                                 @RequestParam(required = false, value = "page", defaultValue = "1") Integer page,
+                                                 @RequestParam(required = false, value = "pageSize", defaultValue = "5") Integer pageSize) {
         return containerService.getContainers(containerParam, page, pageSize, null);
     }
 
@@ -90,6 +95,7 @@ public class AdminController {
         boolean isSuccess = userSerivce.batchGenerationUser(count, token);
         return isSuccess;
     }
+
 
 
 

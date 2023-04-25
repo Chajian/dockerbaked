@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.connection.ContainerModel;
@@ -20,10 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -142,7 +140,7 @@ class ContainerServiceImplTest {
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
         addContainer.setEnvs(envs);
-        addContainer.setPorts(List.of("4313:3306"));
+//        addContainer.setPorts(List.of("4313:3306"));
         String containId = containerService.createContainer(addContainer, 1L);
         System.out.println(containId);
     }

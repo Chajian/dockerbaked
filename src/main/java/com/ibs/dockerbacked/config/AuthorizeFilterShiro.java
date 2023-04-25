@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @author Chajian
  * @date 2020/9/14
  */
-//@Component
+@Component
 @Slf4j
 public class AuthorizeFilterShiro extends AuthorizingRealm {
 
