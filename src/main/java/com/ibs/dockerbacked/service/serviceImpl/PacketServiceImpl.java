@@ -38,7 +38,6 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
 
 
     @Override
-    @RequiresRoles("admin")
     public Result<HardwareDto> createPacket(HardwareDto hardware, boolean isFree) {
 
         //弹性收费
