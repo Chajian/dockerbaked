@@ -22,7 +22,7 @@ public class PacketServiceImplTest {
    public void createPacket() {
         HardwareDto hardwareDto = new HardwareDto();
         hardwareDto.setCpuCoreNumber(20);
-        hardwareDto.setCpuType("R7-500");
+        hardwareDto.setCpuType("20");
         hardwareDto.setNetworkSpeed(20);
         hardwareDto.setDisk(20);
         hardwareDto.setCreatedAt(new Date());
