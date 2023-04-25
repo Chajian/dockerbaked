@@ -55,10 +55,11 @@ public class ContainerController {
      *@version 1.0
      */
     @PostMapping("/create")
-    public void createContainer(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public Result createContainer(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
         long userId = JwtUtil.getUserId(token);
-        containerService.createContainer(addContainer, userId);
+        String containerId = containerService.createContainer(addContainer, userId);
+        return Result.success(200,"success",containerId);
     }
 
     /***

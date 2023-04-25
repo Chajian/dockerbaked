@@ -192,6 +192,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      * @param status
      * @return
      */
+    @Transactional
     @Override
     public Result operateContainer(String containerId, String status) {
         //根据状态来操作容器
@@ -203,23 +204,32 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         if (container.getState().equals(status)) {
             throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
         }
-        switch (status) {
-            case "start":
-                containerModel.startContainer(containerId);
-                break;
-            case "stop":
-                containerModel.stopContainer(containerId);
-                break;
-            case "delete":
-                containerModel.deleteContaqqiner(containerId);
-                break;
-            case "restart":
-                containerModel.restartContainer(containerId);
-                break;
-            case "pause":
-                containerModel.pauseContainer(containerId);
-                break;
+        try {
+            switch (status) {
+                case "start":
+                    status="1";
+                    containerModel.startContainer(containerId);
+                    break;
+                case "stop":
+                    status="2";
+                    containerModel.stopContainer(containerId);
+                    break;
+                case "delete":
+                    status="3";
+                    containerModel.deleteContaqqiner(containerId);
+                    break;
+                case "restart":
+                    status = "4";
+                    containerModel.restartContainer(containerId);
+                    break;
+                case "pause":
+                    status = "5";
+                    containerModel.pauseContainer(containerId);
+                    break;
 
+            }
+        }catch (Exception e){
+            throw new CustomExpection(500, "更改状态失败");
         }
         //更新数据库
         container.setState(status);

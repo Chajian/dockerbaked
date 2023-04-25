@@ -95,7 +95,7 @@ class ContainerServiceImplTest {
 
     @Test
     void testCreateContainer() {
-        System.out.println(containerModel.inspectContainer("d00c2e6e829fec473abc4affba7f0333f408831caf9feafe23778b94a0faeeec"));
+        System.out.println(containerModel.inspectContainer("7f556fb466c5244b071ed4790d074f2f6f9fa74c4edbf1077b34a6b6f077fff6"));
     }
 
     @Test
@@ -138,17 +138,17 @@ class ContainerServiceImplTest {
     void testCreateContainer1() {
         AddContainer addContainer = new AddContainer();
         addContainer.setImageName("mysql:latest");
-        addContainer.setContainerName("mySql");
+        addContainer.setContainerName("mySqlsfa23");
         List<String> envs = new ArrayList<>();
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
         addContainer.setEnvs(envs);
-        addContainer.setPorts(List.of("3311:3306"));
+        addContainer.setPorts(List.of("4313:3306"));
         String containId = containerService.createContainer(addContainer, 1L);
         System.out.println(containId);
     }
 
     @Test
     void operateContainer() {
-        containerService.operateContainer("d00c2e6e829fec473abc4affba7f0333f408831caf9feafe23778b94a0faeeec", "stop");
+        containerService.operateContainer("960d455fc8a73d67f3ad1212147360a0545cc90799ae822053b9f6039d7bc181", "stop");
     }
 }
