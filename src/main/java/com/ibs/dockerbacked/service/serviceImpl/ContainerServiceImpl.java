@@ -17,6 +17,7 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
@@ -101,7 +102,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     //创建容器
     @Transactional
     @Override
-    public synchronized String createContainer(AddContainer addContainer,long userId) {
+    public synchronized String createContainer(AddContainer addContainer, long userId,Hardware hardware) {
         //用户Id
 //        //用户money
 //
@@ -126,12 +127,12 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         String imageName = addContainer.getImageName();
         //容器资料
         //:todo
+
         //容器名字
         String containName = userId + "-" + addContainer.getContainerName();
         //2.2 创建容器
         CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
                     addContainer.generatePorts(), envs);
-
 
 
         String containId = null;

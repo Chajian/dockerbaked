@@ -5,6 +5,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Hardware;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class AddContainer {
    //容器名字
     private String containerName;
     //容器资料 todo
-
+    Hardware hardware;
     public List<PortBinding> generatePorts(){
         List<PortBinding> list = new ArrayList<>();
         if(ports.size()>0){
