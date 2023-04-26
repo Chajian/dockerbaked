@@ -2,9 +2,12 @@ package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.task.*;
+import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.OrderMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.OrderService;
@@ -34,6 +37,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     ContainerService containerService;
     @Autowired
     OrderMapper orderMapper;
+    @Autowired
+    HardwareMapper hardwareMapper;
 
 
     public OrderServiceImpl() {
@@ -74,14 +79,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @PostMapping(value = "/createOrder")
-    public String createOrder(int packetId,long userId,AddContainer addContainer) {
+    public String createOrder(int packetId, long userId, AddContainer addContainer) {
+        Packet packet = null;//套餐
         Order order = new Order();
         order.setPacketId(packetId);
         order.setUserId(userId);
         order.setState("初始化");
         order.setName("order");
-//        order.setContainerId(Integer.parseInt(addContainer.getHostConfig().getId()));
         orderMapper.insert(order);
+        //获取硬件信息
+        int basePacketId = 1;
+        Hardware hardware = packet==null?hardwareMapper.selectById(basePacketId):hardwareMapper.selectById(packet.getHardwareId());
 
         OrderTask baseTask = new OrderTask(10,order){
             @Override
@@ -89,6 +97,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 super.recall();
                 System.out.println("test to create");
                 String containerId = containerService.createContainer(addContainer, userId);
+                if(containerId!=null){
+                    order.setContainerId(containerId);
+                }
+                else{
+                    orderMapper.deleteById(order);
+                }
                 setStatus(TaskStatus.DEATH);
             }
             @Override
@@ -97,8 +111,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 System.out.println("daled:"+getTime());
             }
         };
-
-
         addOrderTask(baseTask,order);
         return "";
     }

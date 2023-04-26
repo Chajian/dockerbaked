@@ -24,7 +24,7 @@ public class Order extends TimeRecord {
     private long userId;
     private float money;
     private String payWay;
-    private int containerId;
+    private String containerId;
     private int packetId;
     private String description;
     private String state;//支付状态
