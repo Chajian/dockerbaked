@@ -121,7 +121,7 @@ class ContainerServiceImplTest {
                 "SYj077kA2oEMdFRROiScQT9-jP_TRxq_Q1EX0F03wvY");
         Order order = new Order();
         order.setPacketId(3);
-        order.setContainerId(0);
+        order.setContainerId("0");
         order.setUserId((int) userId);
         order.setMoney(1000);
         order.setPayWay("0");
@@ -141,7 +141,7 @@ class ContainerServiceImplTest {
         envs.add("MYSQL_ROOT_PASSWORD=Aa123456789");
         addContainer.setEnvs(envs);
 //        addContainer.setPorts(List.of("4313:3306"));
-        String containId = containerService.createContainer(addContainer, 1L);
+        String containId = containerService.createContainer(addContainer, 1L,null);
         System.out.println(containId);
     }
 

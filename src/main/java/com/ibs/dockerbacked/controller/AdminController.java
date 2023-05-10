@@ -63,7 +63,7 @@ public class AdminController {
     @PostMapping("/create")
     public Result create(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         long userId = JwtUtil.getUserId(token);
-        containerService.createContainer(addContainer, userId);
+        containerService.createContainer(addContainer, userId,null);
         return Result.success(200, "创建成功", null);
     }
 

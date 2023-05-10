@@ -35,7 +35,7 @@ public class OrderTest {
     @Test
     public void orderInsert() {
         Order order = new Order();
-        order.setContainerId(0);
+        order.setContainerId("0");
         order.setMoney(1000);
         order.setName("1");
         order.setPacketId(3);
@@ -50,7 +50,7 @@ public class OrderTest {
     public void orderUpdate() {
         Order order = new Order();
         order.setId(2);
-        order.setContainerId(0);
+        order.setContainerId("0");
         order.setPacketId(3);
         order.setUserId(4);
         orderService.saveOrUpdate(order);

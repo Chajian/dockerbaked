@@ -69,7 +69,7 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
         HardwareDto hardwareDto = new HardwareDto();
         Hardware hard = hardwareService.getById(3);
         if (hard == null) throw new CustomExpection(500, "error");
-        Packet packet = getById(4);
+        Packet packet = getById(5);
         if (packet == null) throw new CustomExpection(500, "error");
         BeanUtils.copyProperties(hard, hardwareDto);
         BeanUtils.copyProperties(packet, hardwareDto);

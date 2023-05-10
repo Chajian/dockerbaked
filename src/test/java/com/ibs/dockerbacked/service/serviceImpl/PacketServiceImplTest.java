@@ -2,6 +2,7 @@ package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.ibs.dockerbacked.DockerCloudBoot;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.dto.HardwareDto;
 import com.ibs.dockerbacked.service.PacketService;
 import org.junit.Test;
@@ -29,8 +30,11 @@ public class PacketServiceImplTest {
         hardwareDto.setCpuCoreNumberMoney(20);
         hardwareDto.setDiskMoney(20);
         hardwareDto.setNetworkSpeedMoney(20);
-        hardwareDto.setMemory(1200);
+        hardwareDto.setMemory(1600);
+
         Result<HardwareDto> packet = packetService.createPacket(hardwareDto, true);
+
+
 
     }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
@@ -22,7 +23,7 @@ public interface ContainerService extends IService<Container> {
     Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
 
     //创建容器
-    String createContainer(AddContainer addContainer,long userId);
+    String createContainer(AddContainer addContainer, long userId, Hardware hardware);
 
     //操作容器
     Container getContainersByIdOrStatus(String containerId, String status);

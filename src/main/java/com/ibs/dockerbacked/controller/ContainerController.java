@@ -58,7 +58,7 @@ public class ContainerController {
     public Result createContainer(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
         long userId = JwtUtil.getUserId(token);
-        String containerId = containerService.createContainer(addContainer, userId);
+        String containerId = containerService.createContainer(addContainer, userId,null);
         return Result.success(200,"success",containerId);
     }
 
