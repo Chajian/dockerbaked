@@ -14,4 +14,5 @@ public class Packet extends TimeRecord {
     @TableField("name_p")
     private String name;
     private int hardwareId;
+    private float money;
 }
