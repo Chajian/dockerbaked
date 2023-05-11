@@ -41,12 +41,12 @@ public class OrderController {
      * @return
      */
     @PostMapping("/order")
-    public Result<String> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public Result<Order> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                     @RequestBody int packetId) throws ParseException {
         Packet packet = packetMapper.selectById(packetId);
         if(packet==null)
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
-        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),null));
+        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),null,120));
     }
 
 }

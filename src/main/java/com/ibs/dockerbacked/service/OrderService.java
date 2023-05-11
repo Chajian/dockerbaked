@@ -11,7 +11,7 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
  */
 public interface OrderService extends IService<Order> {
 
-    String createOrder(int packetId, long userId, AddContainer addContainer);
+    Order createOrder(int packetId, long userId, AddContainer addContainer,int lifetime);
 
     /**
      * create qrCode

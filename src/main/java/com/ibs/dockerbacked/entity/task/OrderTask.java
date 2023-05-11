@@ -27,7 +27,7 @@ public class OrderTask extends BaseTask<Order> {
         reentrantLock.lock();
         try {
             super.run();
-            if(order.getState().equals("支付成功")||order.getState().equals("未支付")){
+            if(order.getState().equals("支付成功")){
                 recall();
             }
         }finally {
@@ -36,25 +36,25 @@ public class OrderTask extends BaseTask<Order> {
 
     }
 
-    @Override
-    public void recall() {
-
-        reentrantLock.lock();
-        try {
-            super.recall();
-            //check order statue
-            if(order.getState().equals("支付成功")){
-                //create container and update user's info TODO
-            }
-            else if(order.getState().equals("未支付")){
-                death();
-            }
-        }finally {
-            reentrantLock.unlock();
-        }
-
-
-   }
+//    @Override
+//    public void recall() {
+//
+////        reentrantLock.lock();
+////        try {
+////            super.recall();
+////            //check order statue
+////            if(order.getState().equals("支付成功")){
+////                //create container and update user's info TODO
+////            }
+////            else if(order.getState().equals("未支付")){
+////                death();
+////            }
+////        }finally {
+////            reentrantLock.unlock();
+////        }
+//
+//
+//   }
 
     /**
      * 判断Task是否指定指定的order

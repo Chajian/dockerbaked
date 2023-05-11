@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,8 @@ class OrderServiceImplTest {
         ports.add("4506:3306");
         addContainer.setPorts(ports);
         addContainer.setEnvs(envs);
-        orderService.createOrder(3,1,addContainer);
+        Order order = orderService.createOrder(5,1,addContainer,5);
+        orderService.Paied(order);
         test();
     }
 

@@ -77,35 +77,40 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
 
-    @Override
-    @PostMapping(value = "/createOrder")
-    public String createOrder(int packetId, long userId, AddContainer addContainer) {
+//    @Override
+//    @PostMapping(value = "/createOrder")
+    public Order createOrder(int packetId, long userId, AddContainer addContainer,int lifeTime) {
         Packet packet = null;//套餐
         Order order = new Order();
         order.setPacketId(packetId);
         order.setUserId(userId);
-        order.setState("初始化");
+        order.setState("未支付");
         order.setName("order");
         orderMapper.insert(order);
         //获取硬件信息
         int basePacketId = 1;
         Hardware hardware = packet==null?hardwareMapper.selectById(basePacketId):hardwareMapper.selectById(packet.getHardwareId());
 
-        OrderTask baseTask = new OrderTask(120,order){
+        OrderTask baseTask = new OrderTask(lifeTime,order){
             @Override
             public synchronized void recall() {
                 super.recall();
-                System.out.println("test to create");
-                String containerId = containerService.createContainer(addContainer, userId,hardware);
-                if(containerId!=null){
-                    order.setContainerId(containerId);
-                    order.setState("支付成功!");
+                switch (order.getState()){
+                    case "支付成功":
+                        System.out.println("test to create");
+                        String containerId = containerService.createContainer(addContainer, userId, hardware);
+                        if (containerId != null) {
+                            order.setContainerId(containerId);
+                            order.setState("支付成功!");
+                        } else {
+                            order.setState("创建容器失败!");
+                        }
+                        orderMapper.updateById(order);
+                        break;
+                    case "未支付":
+                        log.info("创建订单失败！");
+                        death();
                 }
-                else{
-                    order.setState("创建容器失败!");
-                }
-                orderMapper.updateById(order);
-                setStatus(TaskStatus.DEATH);
             }
             @Override
             public synchronized void run() {
@@ -114,7 +119,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
         };
         addOrderTask(baseTask,order);
-        return "";
+
+        return order;
     }
 
     @Override
