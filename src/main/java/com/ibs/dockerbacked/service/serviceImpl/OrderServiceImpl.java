@@ -91,7 +91,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         int basePacketId = 1;
         Hardware hardware = packet==null?hardwareMapper.selectById(basePacketId):hardwareMapper.selectById(packet.getHardwareId());
 
-        OrderTask baseTask = new OrderTask(10,order){
+        OrderTask baseTask = new OrderTask(120,order){
             @Override
             public synchronized void recall() {
                 super.recall();

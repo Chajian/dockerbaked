@@ -11,6 +11,8 @@ public enum TaskStatus {
     WAITING,
     /*运行状态*/
     RUNNING,
+    /*回调状态*/
+    RECALL,
     /*死亡状态*/
     DEATH;
 }
