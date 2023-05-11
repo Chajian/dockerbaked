@@ -96,13 +96,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             public synchronized void recall() {
                 super.recall();
                 System.out.println("test to create");
-                String containerId = containerService.createContainer(addContainer, userId,null);
+                String containerId = containerService.createContainer(addContainer, userId,hardware);
                 if(containerId!=null){
                     order.setContainerId(containerId);
+                    order.setState("支付成功!");
                 }
                 else{
-                    orderMapper.deleteById(order);
+                    order.setState("创建容器失败!");
                 }
+                orderMapper.updateById(order);
                 setStatus(TaskStatus.DEATH);
             }
             @Override

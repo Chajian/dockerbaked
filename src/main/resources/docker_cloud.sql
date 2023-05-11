@@ -11,7 +11,7 @@
  Target Server Version : 80023
  File Encoding         : 65001
 
- Date: 22/04/2023 22:45:37
+ Date: 10/05/2023 23:42:45
 */
 
 SET NAMES utf8mb4;
@@ -61,13 +61,15 @@ CREATE TABLE `hardware` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of hardware
 -- ----------------------------
 BEGIN;
 INSERT INTO `hardware` VALUES (2, '1', 2, 0, 0, 0, '2023-03-01 14:39:29', '2023-03-01 14:39:29');
+INSERT INTO `hardware` VALUES (3, '2', 2, 2, 2000, 2, '2023-05-07 22:34:17', '2023-05-07 22:34:33');
+INSERT INTO `hardware` VALUES (5, '20', 20, 20, 1600, 20, '2023-05-07 22:51:13', '2023-05-07 22:51:13');
 COMMIT;
 
 -- ----------------------------
@@ -93,7 +95,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_o_c_cid` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_o_p_pid` FOREIGN KEY (`packet_id`) REFERENCES `packet` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_o_u_uid` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of orders
@@ -122,6 +124,7 @@ INSERT INTO `orders` VALUES (20, '0', NULL, 'order', '2023-04-17 20:10:59', '202
 INSERT INTO `orders` VALUES (21, '0', NULL, 'order', '2023-04-18 14:31:45', '2023-04-18 14:31:45', 1, 0.00, 3, NULL, '初始化');
 INSERT INTO `orders` VALUES (22, '0', NULL, 'order', '2023-04-18 14:39:21', '2023-04-18 14:39:21', 1, 0.00, 3, NULL, '初始化');
 INSERT INTO `orders` VALUES (23, '0', NULL, 'order', '2023-04-18 14:47:07', '2023-04-18 14:47:07', 1, 0.00, 3, NULL, '初始化');
+INSERT INTO `orders` VALUES (24, '0', NULL, 'order', '2023-04-26 00:00:43', '2023-04-26 00:00:43', 1, 0.00, 3, NULL, '初始化');
 COMMIT;
 
 -- ----------------------------
@@ -135,17 +138,19 @@ CREATE TABLE `packet` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hardware_id` int NOT NULL,
+  `money` float(6,2) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `fk_p_h_hid` (`hardware_id`) USING BTREE,
-  CONSTRAINT `fk_p_h_hid` FOREIGN KEY (`hardware_id`) REFERENCES `hardware` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  KEY `fk_p_h_hid` (`hardware_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of packet
 -- ----------------------------
 BEGIN;
-INSERT INTO `packet` VALUES (3, '1', '1', '2023-03-01 14:51:55', '2023-03-01 14:51:55', 2);
-INSERT INTO `packet` VALUES (4, '1', NULL, '2023-03-02 14:24:09', '2023-03-02 14:24:09', 2);
+INSERT INTO `packet` VALUES (3, '1', '1', '2023-03-01 14:51:55', '2023-03-01 14:51:55', 2, NULL);
+INSERT INTO `packet` VALUES (4, '1', NULL, '2023-03-02 14:24:09', '2023-03-02 14:24:09', 2, NULL);
+INSERT INTO `packet` VALUES (5, '基本套餐', '基本套餐', '2023-04-25 00:14:20', '2023-04-25 00:14:20', 2, NULL);
+INSERT INTO `packet` VALUES (7, '1', '222', '2023-05-07 22:51:13', '2023-05-07 22:51:13', 0, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -251,7 +256,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of users
@@ -261,6 +266,7 @@ INSERT INTO `users` VALUES (1, '1000', '1234', '2023-02-28 23:14:27', '2023-02-2
 INSERT INTO `users` VALUES (4, '1001', '1234', '2023-02-28 23:58:58', '2023-03-02 16:53:36');
 INSERT INTO `users` VALUES (5, '1002', '1234', '2023-03-02 14:24:09', '2023-03-02 16:53:38');
 INSERT INTO `users` VALUES (6, '1000', '1234', '2023-03-02 17:00:56', '2023-03-02 17:00:56');
+INSERT INTO `users` VALUES (7, '10001', '1234', '2023-04-24 15:56:09', '2023-04-24 15:56:09');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
