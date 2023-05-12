@@ -11,6 +11,7 @@ import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.OrderMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.OrderService;
+import com.ibs.dockerbacked.service.PacketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -39,6 +40,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     OrderMapper orderMapper;
     @Autowired
     HardwareMapper hardwareMapper;
+    @Autowired
+    @Lazy
+    PacketService packetService;
 
 
     public OrderServiceImpl() {
@@ -80,12 +84,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 //    @Override
 //    @PostMapping(value = "/createOrder")
     public Order createOrder(int packetId, long userId, AddContainer addContainer,int lifeTime) {
-        Packet packet = null;//套餐
+        Packet packet = packetService.getById(packetId);//套餐
         Order order = new Order();
         order.setPacketId(packetId);
         order.setUserId(userId);
         order.setState("未支付");
         order.setName("order");
+        order.setMoney(packet.getMoney());
         orderMapper.insert(order);
         //获取硬件信息
         int basePacketId = 1;

@@ -5,6 +5,7 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
+import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.PacketMapper;
@@ -40,13 +41,12 @@ public class OrderController {
      * @param token
      * @return
      */
-    @PostMapping("/order")
-    public Result<Order> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                    @RequestBody int packetId) throws ParseException {
+    @PostMapping("/create")
+    public Result<Order> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("id") int packetId,@RequestBody AddContainer addContainer) throws ParseException {
         Packet packet = packetMapper.selectById(packetId);
         if(packet==null)
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
-        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),null,120));
+        return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),addContainer,120));
     }
 
 }

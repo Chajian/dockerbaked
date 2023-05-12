@@ -11,6 +11,14 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
  */
 public interface OrderService extends IService<Order> {
 
+    /**
+     *
+     * @param packetId 套餐id
+     * @param userId 用户id
+     * @param addContainer 容器配置
+     * @param lifetime 订单生命周期
+     * @return
+     */
     Order createOrder(int packetId, long userId, AddContainer addContainer,int lifetime);
 
     /**

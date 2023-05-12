@@ -37,6 +37,7 @@ public class TaskThread implements Runnable {
             Iterator<DTask> iterator = list.iterator();
             while(iterator.hasNext()){
                 DTask task = iterator.next();
+                //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
                 if(task.getStatus()==TaskStatus.DEATH)
                     iterator.remove();
                 else
