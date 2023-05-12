@@ -6,7 +6,9 @@ import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
  * @date 2023/3/4 20:34
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddContainer {
     //环境
     private List<String> envs;
