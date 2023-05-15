@@ -23,14 +23,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @author sn
+ *
+ * @author xyl
  */
 @Slf4j
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
     ExecutorService executor;
+    /*总容量等于maxThread✖️maxTasks */
+    /*最大线程池容量*/
     private int maxThread;
+    /*最大线程任务容量*/
     private int maxTasks;
     List<TaskThread> taskThreads;
     Map<Integer,Long> orderToTask = new HashMap<>();//get Task by OrderId
@@ -52,7 +56,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         taskThreads = new ArrayList<>();
         maxThread = 10;
         executor = Executors.newFixedThreadPool(maxThread);//线程池
-        maxTasks = 100;
+        maxTasks = 1000;
     }
 
     /**
@@ -81,8 +85,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
 
-//    @Override
-//    @PostMapping(value = "/createOrder")
     public Order createOrder(int packetId, long userId, AddContainer addContainer,int lifeTime) {
         Packet packet = packetService.getById(packetId);//套餐
         Order order = new Order();
