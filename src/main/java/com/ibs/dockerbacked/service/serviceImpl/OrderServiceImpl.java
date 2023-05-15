@@ -7,6 +7,7 @@ import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.task.*;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.OrderMapper;
 import com.ibs.dockerbacked.service.ContainerService;
@@ -90,7 +91,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setUserId(userId);
         order.setState("未支付");
         order.setName("order");
-        order.setMoney(packet.getMoney());
+        Hardware hard = hardwareMapper.selectById(packet.getHardwareId());
+        if (hard == null) throw new CustomExpection(500,"硬件不存在");
+
+        order.setMoney(hard.getMoney());
         orderMapper.insert(order);
         //获取硬件信息
         int basePacketId = 1;
