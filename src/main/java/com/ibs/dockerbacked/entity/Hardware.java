@@ -22,6 +22,7 @@ public class Hardware extends TimeRecord {
     private int networkSpeed;
     @Min(message = "磁盘不能小于等于0",value = 0)
     private int disk;
-    @Min(message = "金钱不能小于等于0",value = 0)
+    @Min(message = "内存不能小于等于0",value = 0)
     private float memory;
+    private float money;
 }

@@ -46,7 +46,8 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserDto userRegist(UserDto user) {
 
         //1.user为空抛出异常
-        if (user == null) throw new CustomExpection(Constants.CODE_400, "添加的用户数据不正确");
+        if (user.getAccount() == null || user.getAccount() == "" || user.getPwd() == null || user.getPwd() == "")
+            throw new CustomExpection(Constants.CODE_400, "添加的用户数据不正确");
         //2.用户账号存在抛异常
         User one = getOne(new LambdaQueryWrapper<User>().eq(User::getAccount, user.getAccount()));
         //2.1判断用户是否为null,是则抛异常
@@ -79,7 +80,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!one.getPwd().equals(user.getPwd())) throw new CustomExpection(Constants.CODE_Login_500, "密码错误");
         //3.登录成功
         //3.1生成token并返回
-        String token = JwtUtil.sign(one.getAccount(),one.getId());
+        String token = JwtUtil.sign(one.getAccount(), one.getId());
         return token;
     }
 

@@ -30,9 +30,8 @@ public class PacketServiceImplTest {
         hardwareDto.setCpuCoreNumberMoney(20);
         hardwareDto.setDiskMoney(20);
         hardwareDto.setNetworkSpeedMoney(20);
-        hardwareDto.setMemory(1600);
-
-        Result<HardwareDto> packet = packetService.createPacket(hardwareDto, true);
+        hardwareDto.setMemory(20);
+        packetService.createPacket(hardwareDto, true);
 
 
 
