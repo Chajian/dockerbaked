@@ -37,7 +37,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private int maxThread;
     /*最大线程任务容量*/
     private int maxTasks;
-    List<TaskThread> taskThreads;
+    List<TaskThread> priorityThreads;
+    List<TaskThread> fullThreahds;
     Map<Integer,Long> orderToTask = new HashMap<>();//get Task by OrderId
     @Autowired
     ContainerService containerService;
@@ -54,10 +55,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         init();
     }
     public void init(){
-        taskThreads = new ArrayList<>();
+        fullThreahds = new ArrayList<>();
+        priorityThreads = new ArrayList<>();
         maxThread = 10;
         executor = Executors.newFixedThreadPool(maxThread);//线程池
-        maxTasks = 1000;
+        maxTasks = 200;
     }
 
     /**
@@ -67,20 +69,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     public synchronized void addOrderTask(OrderTask task, Order order) {
 
-        Iterator<TaskThread> iterator = taskThreads.iterator();
+        Iterator<TaskThread> iterator = priorityThreads.iterator();
         while (iterator.hasNext()) {
             TaskThread t = iterator.next();
             if (t.add(task)) {
                 orderToTask.put(order.getId(), task.getId());
                 return;
-            } else if (!t.isLive()) {
+            } else{
+                fullThreahds.add(t);
                 iterator.remove();
+            }
+        }
+        //checkFullThread
+        Iterator<TaskThread> fullIterator = fullThreahds.iterator();
+        while(fullIterator.hasNext()){
+            TaskThread taskThread = fullIterator.next();
+            if(taskThread.getDensity()<0.8){
+                priorityThreads.add(taskThread);
+                fullIterator.remove();
             }
         }
         TaskThread taskThread = new TaskThread(maxTasks);
         taskThread.add(task);
         orderToTask.put(order.getId(), task.getId());
-        taskThreads.add(taskThread);
+        priorityThreads.add(taskThread);
         executor.execute(taskThread);
 
     }
@@ -160,7 +172,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     public DTask getDTaskByOrderId(int orderId){
         long taskId = orderToTask.get(orderId);
-        for(TaskThread t:taskThreads){
+        for(TaskThread t:priorityThreads){
+            DTask task = t.getDTaskById(taskId);
+            if(task!=null) return task;
+        }
+        for(TaskThread t:fullThreahds){
             DTask task = t.getDTaskById(taskId);
             if(task!=null) return task;
         }

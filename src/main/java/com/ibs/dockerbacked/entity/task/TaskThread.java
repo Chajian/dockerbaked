@@ -4,6 +4,7 @@ package com.ibs.dockerbacked.entity.task;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * 任务线程池
@@ -33,6 +34,7 @@ public class TaskThread implements Runnable {
 
     @Override
     public void run() {
+        //TODO 加锁提升线程安全
         while(live){
             Iterator<DTask> iterator = list.iterator();
             while(iterator.hasNext()){
@@ -78,5 +80,9 @@ public class TaskThread implements Runnable {
                 return t;
         }
         return null;
+    }
+
+    public float getDensity(){
+        return list.size()/max;
     }
 }
