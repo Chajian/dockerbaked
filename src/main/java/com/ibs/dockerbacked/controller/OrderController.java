@@ -6,11 +6,13 @@ import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
+import com.ibs.dockerbacked.entity.task.DTask;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.PacketMapper;
 import com.ibs.dockerbacked.service.OrderService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import org.apache.ibatis.jdbc.Null;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -48,5 +50,19 @@ public class OrderController {
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
         return Result.success(Constants.CODE_200,"success",orderService.createOrder(packetId,JwtUtil.getUserId(token),addContainer,10));
     }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping("/pay")
+    public Result payOrder(@RequestParam("id") int orderId){
+        Order order = orderService.getById(orderId);
+        if(orderService.paied(order))
+            return Result.success(Constants.CODE_200,"支付成功!", null);
+        return Result.error(Constants.CODE_BatchREgister_501,"支付失败！");
+    }
+
+
 
 }

@@ -31,7 +31,7 @@ class OrderServiceImplTest {
         addContainer.setPorts(ports);
         addContainer.setEnvs(envs);
         Order order = orderService.createOrder(5,1,addContainer,5);
-        orderService.Paied(order);
+        orderService.paied(order);
         test();
     }
 

@@ -152,9 +152,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void Paied(Order order) {
+    public boolean paied(Order order) {
         OrderTask orderTask = (OrderTask) getDTaskByOrderId(order.getId());
+        if(orderTask==null||orderTask.getStatus()!=TaskStatus.RUNNING)
+            return false;
         setPayedFromTask(orderTask);
+        return true;
     }
 
     /**

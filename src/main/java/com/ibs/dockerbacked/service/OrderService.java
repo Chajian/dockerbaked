@@ -5,6 +5,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
+import com.ibs.dockerbacked.entity.task.DTask;
 
 /**
  * @author sn
@@ -32,5 +33,12 @@ public interface OrderService extends IService<Order> {
      * paied method
      * @param order orderInfo
      */
-    void Paied(Order order);
+    boolean paied(Order order);
+
+    /**
+     * get Dtask
+     * @param orderId
+     * @return
+     */
+    public DTask getDTaskByOrderId(int orderId);
 }
