@@ -5,6 +5,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
+import com.ibs.dockerbacked.entity.dto.AddOrder;
 import com.ibs.dockerbacked.entity.task.DTask;
 
 /**
@@ -34,6 +35,8 @@ public interface OrderService extends IService<Order> {
      * @param order orderInfo
      */
     boolean paied(Order order);
+
+    public void sendMessage(AddOrder addOrder);
 
     /**
      * get Dtask

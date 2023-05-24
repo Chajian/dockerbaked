@@ -1,11 +1,13 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
+import com.ibs.dockerbacked.entity.dto.AddOrder;
 import com.ibs.dockerbacked.entity.task.*;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
@@ -14,11 +16,21 @@ import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.OrderService;
 import com.ibs.dockerbacked.service.PacketService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,6 +62,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Lazy
     PacketService packetService;
 
+    //kafka config
+    Properties props = new Properties();
+    Properties summerprops = new Properties();
+    Producer<Long, String> producer;
+    KafkaConsumer<Long, String> consumer;
+
 
     public OrderServiceImpl() {
         init();
@@ -59,7 +77,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         priorityThreads = new ArrayList<>();
         maxThread = 10;
         executor = Executors.newFixedThreadPool(maxThread);//线程池
-        maxTasks = 200;
+        maxTasks = 1000;
+
+        //kafka config
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("linger.ms", 1000);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.LongSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producer = new KafkaProducer<>(props);
+
+        summerprops.setProperty("bootstrap.servers", "localhost:9092");
+        summerprops.setProperty("group.id", "test");
+        summerprops.setProperty("enable.auto.commit", "true");
+        summerprops.setProperty("auto.commit.interval.ms", "1000");
+        summerprops.setProperty("key.deserializer", "org.apache.kafka.common.serialization.LongDeserializer");
+        summerprops.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        consumer = new KafkaConsumer<>(summerprops);
+        consumer.subscribe(Arrays.asList("docker-order"));
+
+        executor.execute(()->{
+            receiveMessage();
+        });
     }
 
     /**
@@ -96,6 +134,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         executor.execute(taskThread);
 
     }
+
+    //生产者生产消息
+    public void sendMessage(AddOrder addOrder){
+
+        producer.send(new ProducerRecord<Long,String>("docker-order", addOrder.getUserId(), JSON.toJSONString(addOrder)));
+    }
+
+    //消费者消费消息
+    public void receiveMessage(){
+        while (true) {
+            ConsumerRecords<Long, String> records = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord<Long, String> record : records) {
+                AddOrder addOrder = JSON.parseObject(record.value(),AddOrder.class);
+                //创建订单
+                createOrder(addOrder.getPacketId(),addOrder.getUserId(),addOrder.getAddContainer(),addOrder.getLifeTime());
+//                log.info("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+            }
+        }
+    }
+
 
 
     public Order createOrder(int packetId, long userId, AddContainer addContainer,int lifeTime) {
