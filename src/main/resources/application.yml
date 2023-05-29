@@ -29,4 +29,8 @@ logging:
     file-size-threshold: 10MB
     # 日志文件保留天数，默认为7天
     keep-days: 7
-
+pay:
+  ali:
+    id:
+    publickey:
+    privatekey:
