@@ -38,10 +38,10 @@ public class ContainerController {
      *@author chen
      *@version 1.0
      */
-    @PostMapping("/get")
+    @GetMapping("/get/{page}/{pageSize}")
     public Result getContainers(@RequestBody ContainerParam containerParam,
-                                @RequestParam(value = "page", defaultValue = "1") Integer page,
-                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                @PathVariable(value = "page") Integer page,
+                                @PathVariable(value = "pageSize") Integer pageSize,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = JwtUtil.getUserId(token);
         return containerService.getContainers(containerParam, page, pageSize, userId);
