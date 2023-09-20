@@ -60,7 +60,7 @@ public class OrderController {
      *
      * @return
      */
-    @PostMapping("/pay")
+    @PutMapping("/pay")
     public Result payOrder(@RequestParam("id") int orderId){
         Order order = orderService.getById(orderId);
         if(orderService.paied(order))
