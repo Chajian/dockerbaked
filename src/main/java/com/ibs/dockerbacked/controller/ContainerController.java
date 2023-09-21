@@ -69,9 +69,9 @@ public class ContainerController {
      *@author chen  /ibs/api/containers/{id}/{action}
      *@version 1.0
      */
-    @GetMapping("/{id}/{status}")
-    public Container operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
-        return containerService.getContainersByIdOrStatus(containerId, status);
+    @PostMapping("/{id}/{status}")
+    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
+        return containerService.operateContainer(containerId, status);
     }
 
 
