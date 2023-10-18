@@ -39,12 +39,12 @@ public class ContainerController {
      *@version 1.0
      */
     @GetMapping("/get/{page}/{pageSize}")
-    public Result getContainers(@RequestBody ContainerParam containerParam,
+    public Result getContainers(@RequestBody(required = false) ContainerParam containerParam,
                                 @PathVariable(value = "page") Integer page,
                                 @PathVariable(value = "pageSize") Integer pageSize,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = JwtUtil.getUserId(token);
-        return containerService.getContainers(containerParam, page, pageSize, userId);
+        return containerService.getContainers( page, pageSize, userId);
     }
 
     /***
@@ -69,7 +69,7 @@ public class ContainerController {
      *@author chen  /ibs/api/containers/{id}/{action}
      *@version 1.0
      */
-    @GetMapping("/{id}/{status}")
+    @PostMapping("/{id}/{status}")
     public Container operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }

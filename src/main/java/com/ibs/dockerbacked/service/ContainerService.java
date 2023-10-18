@@ -20,7 +20,8 @@ import java.util.List;
 
 public interface ContainerService extends IService<Container> {
     //查询容器
-    Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
+//    Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
+    Result<List<Container>> getContainers(Integer page, Integer pageSize, Long userId);
 
     //创建容器
     String createContainer(AddContainer addContainer, long userId, Hardware hardware);
