@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.controller;
 import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class ImageController {
      * @return code 200 msg success
      */
     @PostMapping("/pull")
-    public Result pull(@RequestBody String imageName,@RequestBody String tag){
-        return imageService.pull(imageName,tag);
+    public Result pull(@RequestBody PullImages pullImages){
+        return imageService.pull(pullImages.getName(),pullImages.getTag());
     }
 }

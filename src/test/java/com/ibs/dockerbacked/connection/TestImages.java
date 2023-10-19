@@ -53,4 +53,8 @@ public class TestImages {
         item.isTrusted();
         log.info(Arrays.toString(list.toArray()));
     }
+
+    public void buildIamge(){
+
+    }
 }
