@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.controller;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson2.JSON;
+import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * @author chen
@@ -74,6 +76,15 @@ public class ContainerController {
         return containerService.getContainersByIdOrStatus(containerId, status);
     }
 
-
+    /**
+     * 执行sh语句
+     */
+    @PostMapping("exec/{id}/{exec}")
+    public Result execContainer(@PathVariable("id") String containerId,@PathVariable("exec")String exec){
+        List list = containerService.execCommand(containerId,exec);
+        if(list == null)
+            return Result.error(Constants.CODE_Login_500,Constants.CODE_Login_500.toString());
+        return Result.success(Constants.CODE_200,Constants.CODE_200.toString(),list);
+    }
 
 }

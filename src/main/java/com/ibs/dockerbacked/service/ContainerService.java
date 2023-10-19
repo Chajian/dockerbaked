@@ -20,7 +20,7 @@ import java.util.List;
 
 public interface ContainerService extends IService<Container> {
     //查询容器
-//    Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
+    Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId);
     Result<List<Container>> getContainers(Integer page, Integer pageSize, Long userId);
 
     //创建容器
@@ -34,4 +34,12 @@ public interface ContainerService extends IService<Container> {
     Result operateContainer(String containerId, String status);
 
     Long createOrder(long userId, Order order) throws ParseException;
+
+    /**
+     * 执行指令并返回执行结果
+     * @param containerId 容器id
+     * @param command 指令
+     * @return
+     */
+    List<String> execCommand(String containerId,String command);
 }

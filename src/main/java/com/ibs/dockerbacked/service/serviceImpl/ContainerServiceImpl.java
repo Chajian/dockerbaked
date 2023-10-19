@@ -78,39 +78,39 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
         return Result.success(200, "success", containers);
     }
-//    /***
-//     *@descript 容器列表
-//     * @param
-//     *@return
-//     *@author chen
-//     *@version 1.0
-//     */
-//    @Override
-//    public Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId) {
-//        //测试用户
-//        //状态
-//        String[] status = containerParam.getStatus();
-//        //容器Id
-//        String containerId = containerParam.getContainerId();
-//        //用户名
-//        String account = containerParam.getAccount();
-//        //主要是管理员可以根据用户名查询容器用的
-//        if (account != null) {
-//            //拿到用户Id
-//            userId = userMapper.getUserIdByAccount(account);
-//        }
-//        Page<Container> p = new Page<>(page, pageSize);
-//        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
-//        lambdaQueryWrapper.eq(userId != null && userId != -1, Container::getOwnerId, userId); //根据用户找
-//        lambdaQueryWrapper.eq(!StringUtils.isEmpty(containerId), Container::getId, containerId); //根据容器Id查找
-//        lambdaQueryWrapper.in(status != null, Container::getState, status); //根据状态找
-//        Page<Container> pageResult = page(p, lambdaQueryWrapper);
-//        List<Container> containers = pageResult.getRecords();
-//        if (pageResult.getSize() <= 0) {
-//            return null;
-//        }
-//        return Result.success(200, "success", containers);
-//    }
+    /***
+     *@descript 容器列表
+     * @param
+     *@return
+     *@author chen
+     *@version 1.0
+     */
+    @Override
+    public Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId) {
+        //测试用户
+        //状态
+        String[] status = containerParam.getStatus();
+        //容器Id
+        String containerId = containerParam.getContainerId();
+        //用户名
+        String account = containerParam.getAccount();
+        //主要是管理员可以根据用户名查询容器用的
+        if (account != null) {
+            //拿到用户Id
+            userId = userMapper.getUserIdByAccount(account);
+        }
+        Page<Container> p = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        lambdaQueryWrapper.eq(userId != null && userId != -1, Container::getOwnerId, userId); //根据用户找
+        lambdaQueryWrapper.eq(!StringUtils.isEmpty(containerId), Container::getId, containerId); //根据容器Id查找
+        lambdaQueryWrapper.in(status != null, Container::getState, status); //根据状态找
+        Page<Container> pageResult = page(p, lambdaQueryWrapper);
+        List<Container> containers = pageResult.getRecords();
+        if (pageResult.getSize() <= 0) {
+            return null;
+        }
+        return Result.success(200, "success", containers);
+    }
 
 
     //创建容器
@@ -295,6 +295,18 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
 
         return Integer.toUnsignedLong(order.getId());
+    }
+
+
+    public List<String> execCommand(String containerId,String command){
+        List list = new ArrayList();
+        //TODO 1.完成容器的检测
+        //TODO 2.完成容器和用户身份的检测
+        //TODO 3.完成容器的指令执行
+        //TODO 4.完成返回结果的收集
+
+
+        return list;
     }
 
 }
