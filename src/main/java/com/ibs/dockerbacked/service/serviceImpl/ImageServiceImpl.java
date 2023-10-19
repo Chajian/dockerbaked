@@ -61,4 +61,10 @@ public class ImageServiceImpl implements ImageService {
 
         return Result.success(200,"拉取成功",null);
     }
+
+    @Override
+    public Result build(String dockerFile) {
+        imageModel.buildImage(dockerFile);
+        return Result.success(200,"构建成功!",null);
+    }
 }

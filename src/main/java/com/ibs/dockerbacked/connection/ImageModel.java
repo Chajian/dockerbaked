@@ -1,12 +1,14 @@
 package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.SearchItem;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -65,6 +67,24 @@ public class ImageModel {
      */
     public List<Image> getImages(String imageName){
         return dockerClient.listImagesCmd().withImageNameFilter(imageName).exec();
+    }
+
+    /**
+     * buidImage通过Dockerfile
+     * @param dockerFile
+     */
+    public void buildImage(String dockerFile){
+        File file = new File(dockerFile);
+        if(file!=null) {
+            dockerClient.buildImageCmd()
+                    .withDockerfile(file)
+                    .exec(new BuildImageResultCallback() {
+                        @Override
+                        public void onComplete() {
+                            super.onComplete();
+                        }
+                    });
+        }
     }
 
 }
