@@ -24,7 +24,7 @@ public class JwtUtil {
      * token 验证码存在时间
      * 10分钟
      * */
-    private static final long EXPIRE_TIME = 10*60*1000;
+    private static final long EXPIRE_TIME = 100*60*1000;
     /**密钥*/
     private static final String SECRET = "SHIRO+JWT+DOCKER+CS";
 
