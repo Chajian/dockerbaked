@@ -65,6 +65,19 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Autowired
     private ContainerModel containerModel;
 
+    public Result<List<Container>> getContainers( Integer page, Integer pageSize, Long userId) {
+        //测试用户
+        //状态
+        Page<Container> p = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        lambdaQueryWrapper.eq(userId != null && userId != -1, Container::getOwnerId, userId); //根据用户找
+        Page<Container> pageResult = page(p, lambdaQueryWrapper);
+        List<Container> containers = pageResult.getRecords();
+        if (pageResult.getSize() <= 0) {
+            return null;
+        }
+        return Result.success(200, "success", containers);
+    }
     /***
      *@descript 容器列表
      * @param
@@ -282,6 +295,18 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
 
         return Integer.toUnsignedLong(order.getId());
+    }
+
+
+    public List<String> execCommand(String containerId,String command){
+        List list = new ArrayList();
+        //TODO 1.完成容器的检测
+        //TODO 2.完成容器和用户身份的检测
+        //TODO 3.完成容器的指令执行
+        //TODO 4.完成返回结果的收集
+
+
+        return list;
     }
 
 }

@@ -11,4 +11,7 @@ public interface ImageService {
     Result<List<Image>> getImages(ImagesParam imagesParam,long userId);
 
     Result pull(String imageName,String tag);
+
+    Result build(String dockerFile);
+
 }

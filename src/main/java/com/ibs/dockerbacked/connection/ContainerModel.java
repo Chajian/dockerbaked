@@ -1,9 +1,12 @@
 package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
@@ -16,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,4 +139,35 @@ public class ContainerModel {
         dockerClient.renameContainerCmd(newName);
     }
 
+
+    /**
+     * 执行指令
+     * @return 返回结果
+     */
+    public List<String> execCommand(String containerId,String command){
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
+                .withTimestamps(true)
+                .withStdOut(true)
+                .withStdErr(true);
+        List<String> logs = new ArrayList<>();
+        try {
+            logContainerCmd.exec(new ResultCallback.Adapter<>() {
+                @Override
+                public void onNext(Frame object) {
+                    logs.add(object.toString());
+                }
+                @Override
+                public void onError(Throwable throwable) {
+                    logs.add(throwable.getMessage()    );
+                }
+            }).awaitCompletion();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Size of logs: " + logs.size());
+        for (String log: logs) {
+            System.out.println("Logging log: " + log);
+        }
+        return logs;
+    }
 }
