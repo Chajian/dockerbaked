@@ -87,4 +87,15 @@ public class ImageModel {
         }
     }
 
+    /**
+     * build镜像
+     * @param dockerFile
+     * @param buildDir
+     */
+    public void buildIamge(File  dockerFile,File buildDir){
+        dockerClient.buildImageCmd(buildDir)
+                .withDockerfile(dockerFile)
+                .start().awaitImageId();
+    }
+
 }

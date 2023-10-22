@@ -83,11 +83,6 @@ public class TestContainer {
     @Test
     public void exec(){
         DockerClient dockerClient = dockerConnection.connect();
-        ExecCreateCmdResponse response = dockerClient.execCreateCmd("3a6be1bb8217")
-                .withCmd("ls")
-                .withUser("root")
-                .exec();
-        log.info(dockerClient.inspectExecCmd(response.getId()).exec().toString());
 
         ExecCreateCmdResponse execCreateCmd =  dockerClient.execCreateCmd("3a6be1bb8217")
                 .withCmd("/bin/sh", "-c", "echo hello; echo 0 >> /tmp/test_result")
