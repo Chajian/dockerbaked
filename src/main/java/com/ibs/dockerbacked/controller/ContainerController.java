@@ -72,8 +72,8 @@ public class ContainerController {
      *@version 1.0
      */
     @PostMapping("/{id}/{status}")
-    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
-        return containerService.operateContainer(containerId, status);
+    public Result operateContainer(@PathVariable("id") int containerId, @PathVariable("status") int status) {
+        return containerService.operateContainer(String.valueOf(containerId), String.valueOf(status));
     }
 
     /**

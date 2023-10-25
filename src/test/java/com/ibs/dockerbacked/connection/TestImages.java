@@ -1,12 +1,20 @@
 package com.ibs.dockerbacked.connection;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.BuildImageCmd;
+import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.SearchImagesCmd;
+import com.github.dockerjava.api.model.BuildResponseItem;
 import com.github.dockerjava.api.model.SearchItem;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,7 +62,15 @@ public class TestImages {
         log.info(Arrays.toString(list.toArray()));
     }
 
-    public void buildIamge(){
-
+    @Test
+    public void buildIamge() throws IOException {
+        DockerClient dockerClient = dockerConnection.connect();
+        File file = new File("builddir/Dockerfile");
+        File dir = new File("builddir");
+        System.out.println(Arrays.toString(dir.list()));
+        String id = dockerClient.buildImageCmd(dir)
+                .withDockerfile(file)
+                .start().awaitImageId();
+        System.out.println(id);
     }
 }
