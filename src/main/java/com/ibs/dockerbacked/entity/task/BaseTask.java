@@ -10,6 +10,7 @@ public abstract class BaseTask<T> implements DTask {
     TaskStatus status;//任务状态
     private long id = 0;
     private static long coun = 0;
+    protected T t;
     private ReentrantLock reentrantLock = new ReentrantLock();
     public BaseTask(int time) {
         reentrantLock.lock();
@@ -89,7 +90,7 @@ public abstract class BaseTask<T> implements DTask {
 
 
     public void showStatus(){
-        log.info("Task"+id+":"+getStatus().toString());
+        log.info("Task"+t!=null?t.toString():""+":"+getStatus().toString());
     }
 
     @Override

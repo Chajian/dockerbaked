@@ -10,11 +10,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class OrderTask extends BaseTask<Order> {
     //order info
-   private Order order;
    private ReentrantLock reentrantLock = new ReentrantLock();
     public OrderTask(int time, Order order) {
         super(time);
-        this.order = order;
+        super.t = order;
     }
 
     @Override
@@ -27,7 +26,7 @@ public class OrderTask extends BaseTask<Order> {
         reentrantLock.lock();
         try {
             super.run();
-            if(order.getState().equals("支付成功")){
+            if(t.getState().equals("支付成功")){
                 recall();
             }
         }finally {
@@ -62,18 +61,18 @@ public class OrderTask extends BaseTask<Order> {
      * @return
      */
     public boolean isTargetTask(int id){
-        return order.getId() == id;
+        return t.getId() == id;
     }
 
     public String getOrderState(){
-        return order.getState();
+        return t.getState();
     }
 
     public void setOrderState(String state){
-        order.setState(state);
+        t.setState(state);
     }
 
     public int getOrderId(){
-        return order.getId();
+        return t.getId();
     }
 }
