@@ -51,7 +51,7 @@ public class OrderController {
         if(packet==null||hard==null)
             return Result.error(Constants.CODE_401,"packet or hardware have problems!");
         //发送消息
-        AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,10);
+        AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
         orderService.sendMessage(addOrder);
         return Result.success(Constants.CODE_200,"success",null);
     }
@@ -60,8 +60,8 @@ public class OrderController {
      *
      * @return
      */
-    @PutMapping("/pay")
-    public Result payOrder(@RequestParam("id") int orderId){
+    @PutMapping("/pay/{id}")
+    public Result payOrder(@PathVariable("id") int orderId){
         Order order = orderService.getById(orderId);
         if(orderService.paied(order))
             return Result.success(Constants.CODE_200,"支付成功!", null);

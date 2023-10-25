@@ -16,12 +16,14 @@ import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.OrderService;
 import com.ibs.dockerbacked.service.PacketService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -78,6 +81,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         maxThread = 10;
         executor = Executors.newFixedThreadPool(maxThread);//线程池
         maxTasks = 1000;
+
+        //kafka topic check
+        Properties properties = new Properties();
+        properties.put("bootstrap.servers", "localhost:9092");
+        properties.put("linger.ms", 1000);
+        properties.put("key.serializer", "org.apache.kafka.common.serialization.LongSerializer");
+        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        AdminClient adminClient = AdminClient.create(properties);
+        KafkaFuture<Set<String>> set = adminClient.listTopics().names();;
+        try {
+            set.get();
+            if(!set.get().contains("docker-order")){
+                //创建主题
+                NewTopic newTopic = new NewTopic("docker-order", 1, (short) 1);
+                CreateTopicsResult result = adminClient.createTopics(Collections.singleton(newTopic));
+                result.all().get();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
 
         //kafka config
         props.put("bootstrap.servers", "localhost:9092");
