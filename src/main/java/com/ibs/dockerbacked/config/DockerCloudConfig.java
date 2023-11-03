@@ -2,6 +2,7 @@ package com.ibs.dockerbacked.config;
 
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -21,4 +22,7 @@ public class DockerCloudConfig {
     private String host;
 
     private String url;
+
+    String kafkaIp;
+    String kafkaPort;
 }

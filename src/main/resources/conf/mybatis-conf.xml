@@ -16,5 +16,9 @@
 <!--        <typeAlias type="com.szpt.szpc.cs.entity.user.WxUser" alias="wxuser"/>-->
 <!--        <typeAlias type="com.szpt.szpc.cs.data.define.request.LeagueRequest" alias="leaguerequest"/>-->
 <!--    </typeAliases>-->
-
+    <plugins>
+        <plugin interceptor="com.ibs.dockerbacked.interceptor.MybatisInterceptor"/>
+        <plugin interceptor="com.ibs.dockerbacked.interceptor.PrepareInterceptor"/>
+        <!-- Add more interceptors if needed -->
+    </plugins>
 </configuration>

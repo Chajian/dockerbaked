@@ -5,6 +5,7 @@ import com.ibs.dockerbacked.config.DockerCloudConfig;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.DockerConnection;
 import com.ibs.dockerbacked.connection.ImageModel;
+import com.ibs.dockerbacked.connection.KafkaModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.annotation.MapperScans;
@@ -31,6 +32,12 @@ public class DockerCloudBoot {
         DockerConnection dockerConnection = new DockerConnection(dockerCloudConfig.getUserName(),dockerCloudConfig.getPassWord(),
                 dockerCloudConfig.getEmail(),dockerCloudConfig.getHost(),dockerCloudConfig.getUrl());
         return dockerConnection.connect();
+    }
+
+    @Bean
+    public KafkaModel kafkaModel(DockerCloudConfig dockerCloudConfig){
+        KafkaModel kafkaModel = new KafkaModel(dockerCloudConfig.getKafkaIp(),dockerCloudConfig.getKafkaPort());
+        return kafkaModel;
     }
 
     @Bean

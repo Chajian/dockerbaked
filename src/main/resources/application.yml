@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active:  "@profileActive@"
+    active:  dev-xyl
 # 日志配置
 logging:
   level:
