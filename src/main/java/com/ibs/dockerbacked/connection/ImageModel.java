@@ -71,10 +71,9 @@ public class ImageModel {
 
     /**
      * buidImage通过Dockerfile
-     * @param dockerFile
+     * @param file dockerfile
      */
-    public void buildImage(String dockerFile){
-        File file = new File(dockerFile);
+    public void buildImage(File file){
         if(file!=null) {
             dockerClient.buildImageCmd()
                     .withDockerfile(file)

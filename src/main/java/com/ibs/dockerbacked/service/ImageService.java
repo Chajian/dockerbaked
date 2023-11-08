@@ -5,6 +5,7 @@ import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 
+import java.io.File;
 import java.util.List;
 
 public interface ImageService {
@@ -12,6 +13,6 @@ public interface ImageService {
 
     Result pull(String imageName,String tag);
 
-    Result build(String dockerFile);
+    Result build(File dockerFile);
 
 }

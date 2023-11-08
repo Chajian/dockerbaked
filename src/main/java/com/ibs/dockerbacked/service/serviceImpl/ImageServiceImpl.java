@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Result build(String dockerFile) {
+    public Result build(File dockerFile) {
         imageModel.buildImage(dockerFile);
         return Result.success(200,"构建成功!",null);
     }
