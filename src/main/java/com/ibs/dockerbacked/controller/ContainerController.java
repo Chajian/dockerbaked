@@ -9,6 +9,7 @@ import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
+import com.ibs.dockerbacked.entity.dto.ExecParam;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
@@ -79,9 +80,9 @@ public class ContainerController {
     /**
      * 执行sh语句
      */
-    @PostMapping("exec/{id}/{exec}")
-    public Result execContainer(@PathVariable("id") String containerId,@PathVariable("exec")String exec){
-        List list = containerService.execCommand(containerId,exec);
+    @PostMapping("exec/{id}/")
+    public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec){
+        List list = containerService.execCommand(containerId,exec.getCommand());
         if(list == null)
             return Result.error(Constants.CODE_Login_500,Constants.CODE_Login_500.toString());
         return Result.success(Constants.CODE_200,Constants.CODE_200.toString(),list);
