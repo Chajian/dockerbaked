@@ -90,7 +90,8 @@ public abstract class BaseTask<T> implements DTask {
 
 
     public void showStatus(){
-        log.info("Task"+t!=null?t.toString():""+":"+getStatus().toString());
+        if(t!=null)
+            log.info("Task"+t!=null?t.toString():""+":"+getStatus().toString());
     }
 
     @Override

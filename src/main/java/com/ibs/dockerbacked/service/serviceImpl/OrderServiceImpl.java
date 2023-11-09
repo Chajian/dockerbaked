@@ -116,12 +116,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     //消费者消费消息
     public void receiveMessage(){
         while (true) {
-            ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(100));
-            for (ConsumerRecord<Long, String> record : records) {
-                AddOrder addOrder = JSON.parseObject(record.value(),AddOrder.class);
-                //创建订单
-                createOrder(addOrder.getPacketId(),addOrder.getUserId(),addOrder.getAddContainer(),addOrder.getLifeTime());
+            try {
+                if(kafkaModel!=null) {
+                    ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(100));
+                    for (ConsumerRecord<Long, String> record : records) {
+                        AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
+                        //创建订单
+                        createOrder(addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
 //                log.info("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+                    }
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
