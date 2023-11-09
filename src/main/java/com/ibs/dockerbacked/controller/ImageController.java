@@ -23,8 +23,6 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
-    @Autowired
-    private String imageDir;
     /**
      * 获取镜像列表
      * author chen
