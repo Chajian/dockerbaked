@@ -6,6 +6,8 @@ import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.DockerConnection;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.connection.KafkaModel;
+import com.ibs.dockerbacked.task.BaseTask;
+import com.ibs.dockerbacked.task.TaskThreadPool;
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.annotation.MapperScans;
@@ -47,5 +49,10 @@ public class DockerCloudBoot {
     @Bean
     public ImageModel imageModel(DockerClient dockerClient){
         return new ImageModel(dockerClient);
+    }
+
+    @Bean
+    public TaskThreadPool taskThreadPool(){
+        return TaskThreadPool.getTaskThreadPool();
     }
 }
