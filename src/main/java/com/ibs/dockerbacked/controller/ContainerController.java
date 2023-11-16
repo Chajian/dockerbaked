@@ -73,14 +73,14 @@ public class ContainerController {
      *@version 1.0
      */
     @PostMapping("/{id}/{status}")
-    public Result operateContainer(@PathVariable("id") int containerId, @PathVariable("status") int status) {
-        return containerService.operateContainer(String.valueOf(containerId), String.valueOf(status));
+    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
+        return containerService.operateContainer(containerId, status);
     }
 
     /**
      * 执行sh语句
      */
-    @PostMapping("exec/{id}/")
+    @PostMapping("/{id}/exec")
     public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec){
         List list = containerService.execCommand(containerId,exec.getCommand());
         if(list == null)

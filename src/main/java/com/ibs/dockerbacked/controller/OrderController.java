@@ -7,14 +7,17 @@ import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
-import com.ibs.dockerbacked.entity.task.DTask;
-import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.PacketMapper;
 import com.ibs.dockerbacked.service.OrderService;
+import com.ibs.dockerbacked.task.BaseTask;
+import com.ibs.dockerbacked.task.TaskThreadPool;
+import com.ibs.dockerbacked.task.event.BaseListener;
+import com.ibs.dockerbacked.task.event.DelayDriver;
+import com.ibs.dockerbacked.task.event.Event;
+import com.ibs.dockerbacked.task.event.Listener;
 import com.ibs.dockerbacked.util.JwtUtil;
-import org.apache.ibatis.jdbc.Null;
-import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +41,9 @@ public class OrderController {
     @Autowired
     HardwareMapper hardwareMapper;
 
+    @Autowired
+    TaskThreadPool taskThreadPool;
+
     /**
      * 创建订单
      *
@@ -53,7 +59,8 @@ public class OrderController {
         //发送消息
         AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
         orderService.sendMessage(addOrder);
-        return Result.success(Constants.CODE_200,"success",null);
+        Order result = orderService.receiveMessage();
+        return Result.success(Constants.CODE_200,"success",result);
     }
 
     /**
