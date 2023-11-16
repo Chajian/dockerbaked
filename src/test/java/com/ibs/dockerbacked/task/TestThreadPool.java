@@ -1,7 +1,5 @@
 package com.ibs.dockerbacked.task;
 
-import com.ibs.dockerbacked.entity.task.BaseTask;
-import com.ibs.dockerbacked.entity.task.TaskThread;
 import org.junit.Before;
 import org.junit.Test;
 
