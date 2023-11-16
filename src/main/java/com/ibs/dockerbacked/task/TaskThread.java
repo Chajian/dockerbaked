@@ -1,13 +1,12 @@
-package com.ibs.dockerbacked.entity.task;
+package com.ibs.dockerbacked.task;
 
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 /**
- * 任务线程池
+ * 定时任务线程池
  * 采用时间片轮转
  * @author Yanglin
  */

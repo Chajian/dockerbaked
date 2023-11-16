@@ -1,12 +1,14 @@
-package com.ibs.dockerbacked.entity.task;
+package com.ibs.dockerbacked.task;
 
+import com.ibs.dockerbacked.entity.Order;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 @Slf4j
-public abstract class BaseTask<T> implements DTask {
-    int time;//计时器单位秒
+public abstract class BaseTask<T> implements DTask,Comparable<BaseTask>{
+    int time;//定时器单位秒
     TaskStatus status;//任务状态
     private long id = 0;
     private static long coun = 0;
@@ -63,34 +65,27 @@ public abstract class BaseTask<T> implements DTask {
         status = TaskStatus.DEATH;
         showStatus();
    }
-//    @Override
-//    public synchronized void run() {
-//        status=TaskStatus.RUNNING;
-//        showStatus();
-//        if(time>0){
-//            time--;//减少活动时间
-//        }
-//        else{
-//            recall();//回调
-//            death();//死亡
-//        }
-//    }
-//
-//    @Override
-//    public synchronized void recall() {
-//        status = TaskStatus.WAITING;
-//        showStatus();
-//    }
-//
-//    @Override
-//    public synchronized void death() {
-//        status = TaskStatus.DEATH;
-//        showStatus();
-//    }
 
+    public T getT() {
+        return t;
+    }
+
+    public void setT(T t) {
+        this.t = t;
+    }
+
+    /**
+     * 优先队列优先级比较
+     * @param o the object to be compared.
+     * @return
+     */
+    @Override
+    public int compareTo(@NotNull BaseTask o) {
+        return 0;
+    }
 
     public void showStatus(){
-        if(t!=null)
+        if(t!=null&&t instanceof Order)
             log.info("Task"+t!=null?t.toString():""+":"+getStatus().toString());
     }
 

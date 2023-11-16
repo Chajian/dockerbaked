@@ -1,7 +1,7 @@
-package com.ibs.dockerbacked.entity.task;
+package com.ibs.dockerbacked.task;
 
 /**
- * 任务接口
+ * 定时任务接口
  * @author Yanglin
  */
 public interface DTask {

@@ -1,4 +1,4 @@
-package com.ibs.dockerbacked.entity.task;
+package com.ibs.dockerbacked.task;
 
 /**
  * 任务状态
