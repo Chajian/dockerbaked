@@ -33,7 +33,7 @@ public class JwtUtil {
      * @param account 账号
      * @return
      */
-    public static String sign(String account,long id){
+    public static String sign(String account,int id){
         Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
 
         Algorithm algorithm = Algorithm.HMAC256(account+SECRET);
@@ -54,7 +54,7 @@ public class JwtUtil {
      */
     public static boolean verity(String token){
         String account = JwtUtil.getUserAccount(token);
-        long id = JwtUtil.getUserId(token);
+        int id = JwtUtil.getUserId(token);
         try {
             Algorithm algorithm = Algorithm.HMAC256(account+SECRET);
             JWTVerifier verifier = JWT
@@ -93,10 +93,10 @@ public class JwtUtil {
      * @param token token
      * @return
      */
-    public static long getUserId(String token){
+    public static int getUserId(String token){
         try {
             DecodedJWT jwt = JWT.decode(token);
-            return jwt.getClaim("id").asLong();
+            return jwt.getClaim("id").asInt();
         }
         catch (JWTDecodeException e){
             return -1;

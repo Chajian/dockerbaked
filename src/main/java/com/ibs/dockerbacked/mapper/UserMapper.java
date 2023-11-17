@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
 public interface UserMapper extends BaseMapper<User> {
 
     @Select("select id from users where account =  #{account}")
-    public Long getUserIdByAccount(String account);
+    public int getUserIdByAccount(String account);
 
 
 }

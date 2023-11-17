@@ -33,6 +33,7 @@ public class AppServiceConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new ContainerHandler());
     }
 
 
@@ -73,6 +74,7 @@ public class AppServiceConfig implements WebMvcConfigurer {
         Map<String,String> filterRuleMap = new HashMap<>();
 
         filterRuleMap.put("/ibs/api/verify/**","anon");
+        filterRuleMap.put("/404","anon");//404
         filterRuleMap.put("/**", "jwt");
 //        filterRuleMap.put("/ibs/api//**", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);

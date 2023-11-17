@@ -47,11 +47,11 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //1.user为空抛出异常
         if (user.getAccount() == null || user.getAccount() == "" || user.getPwd() == null || user.getPwd() == "")
-            throw new CustomExpection(Constants.CODE_400, "添加的用户数据不正确");
+            throw new CustomExpection(Constants.CODE_400.getCode(), "添加的用户数据不正确");
         //2.用户账号存在抛异常
         User one = getOne(new LambdaQueryWrapper<User>().eq(User::getAccount, user.getAccount()));
         //2.1判断用户是否为null,是则抛异常
-        if (one != null) throw new CustomExpection(Constants.CODE_400, "用户已存在");
+        if (one != null) throw new CustomExpection(Constants.CODE_400.getCode(), "用户已存在");
         //2.2否则注册
         one = new User();
         BeanUtil.copyProperties(user, one);
@@ -69,15 +69,15 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public String userLogin(UserDto user) {
         //1.判断user是否为空
-        if (user == null) throw new CustomExpection(Constants.CODE_Login_500, "用户数据为空");
+        if (user == null) throw new CustomExpection(Constants.CODE_Login_500.getCode(), "用户数据为空");
         //2.判断用户是否存在数据库
         //2.1获取用户数据
         LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userLambdaQueryWrapper.eq(User::getAccount, user.getAccount());
         User one = getOne(userLambdaQueryWrapper);
         //为null,拦截
-        if (one == null) throw new CustomExpection(Constants.CODE_Login_500, "账号不存在");
-        if (!one.getPwd().equals(user.getPwd())) throw new CustomExpection(Constants.CODE_Login_500, "密码错误");
+        if (one == null) throw new CustomExpection(Constants.CODE_Login_500.getCode(), "账号不存在");
+        if (!one.getPwd().equals(user.getPwd())) throw new CustomExpection(Constants.CODE_Login_500.getCode(), "密码错误");
         //3.登录成功
         //3.1生成token并返回
         String token = JwtUtil.sign(one.getAccount(), one.getId());
@@ -104,7 +104,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //保存
         boolean batch = saveBatch(userList);
-        if (!batch) throw new CustomExpection(Constants.CODE_BatchREgister_501, "批量注册失败");
+        if (!batch) throw new CustomExpection(Constants.CODE_BatchREgister_501.getCode(), "批量注册失败");
         return batch;
 
     }

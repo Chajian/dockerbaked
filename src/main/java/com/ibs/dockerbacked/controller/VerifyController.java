@@ -31,7 +31,7 @@ public class VerifyController {
      */
     @PostMapping("/register")
     public Result register(@RequestBody UserDto user) {
-        return Result.success(Constants.CODE_200, "新增成功", userSerivce.userRegist(user));
+        return Result.success(Constants.CODE_200, userSerivce.userRegist(user));
     }
     /***
      *@descript 用户的登录
@@ -43,7 +43,7 @@ public class VerifyController {
     @PostMapping("/login")
     public Result<String> userLogin(@RequestBody UserDto user) {
         String userLoginToken = userSerivce.userLogin(user);
-        return Result.success(Constants.CODE_200, "登录成功", userLoginToken);
+        return Result.success(Constants.CODE_200, userLoginToken);
     }
 
 

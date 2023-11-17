@@ -55,12 +55,12 @@ public class OrderController {
         Packet packet = packetMapper.selectById(packetId);
         Hardware hard = hardwareMapper.selectById(packet.getHardwareId());
         if(packet==null||hard==null)
-            return Result.error(Constants.CODE_401,"packet or hardware have problems!");
+            return Result.error(Constants.CODE_401.getCode(),"packet or hardware have problems!");
         //发送消息
         AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
         orderService.sendMessage(addOrder);
         Order result = orderService.receiveMessage();
-        return Result.success(Constants.CODE_200,"success",result);
+        return Result.success(Constants.CODE_200.getCode(),"success",result);
     }
 
     /**
@@ -71,8 +71,8 @@ public class OrderController {
     public Result payOrder(@PathVariable("id") int orderId){
         Order order = orderService.getById(orderId);
         if(orderService.paied(order))
-            return Result.success(Constants.CODE_200,"支付成功!", null);
-        return Result.error(Constants.CODE_BatchREgister_501,"支付失败！");
+            return Result.success(Constants.CODE_200.getCode(),"支付成功!", null);
+        return Result.error(Constants.CODE_BatchREgister_501.getCode(),"支付失败！");
     }
 
 

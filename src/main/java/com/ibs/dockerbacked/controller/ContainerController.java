@@ -18,7 +18,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author chen
@@ -29,6 +31,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/ibs/api/containers")
 public class ContainerController {
+    Map<Integer,String> containerMap = new HashMap<>();
+
 
     @Autowired
     private ContainerService containerService;
@@ -46,7 +50,7 @@ public class ContainerController {
                                 @PathVariable(value = "page") Integer page,
                                 @PathVariable(value = "pageSize") Integer pageSize,
                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = JwtUtil.getUserId(token);
+        int userId = JwtUtil.getUserId(token);
         return containerService.getContainers( page, pageSize, userId);
     }
 
@@ -60,7 +64,7 @@ public class ContainerController {
     @PostMapping("/create")
     public Result createContainer(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
-        long userId = JwtUtil.getUserId(token);
+        int userId = JwtUtil.getUserId(token);
         String containerId = containerService.createContainer(addContainer, userId,null);
         return Result.success(200,"success",containerId);
     }
@@ -73,7 +77,9 @@ public class ContainerController {
      *@version 1.0
      */
     @PostMapping("/{id}/{status}")
-    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
+    public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
+            return Result.error(Constants.CODE_400);
         return containerService.operateContainer(containerId, status);
     }
 
@@ -81,11 +87,11 @@ public class ContainerController {
      * 执行sh语句
      */
     @PostMapping("/{id}/exec")
-    public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec){
+    public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         List list = containerService.execCommand(containerId,exec.getCommand());
         if(list == null)
-            return Result.error(Constants.CODE_Login_500,Constants.CODE_Login_500.toString());
-        return Result.success(Constants.CODE_200,Constants.CODE_200.toString(),list);
+            return Result.error(Constants.CODE_Login_500);
+        return Result.success(Constants.CODE_200,list);
     }
 
 }

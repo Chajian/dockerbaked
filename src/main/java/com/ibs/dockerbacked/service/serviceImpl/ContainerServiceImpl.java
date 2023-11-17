@@ -65,7 +65,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Autowired
     private ContainerModel containerModel;
 
-    public Result<List<Container>> getContainers( Integer page, Integer pageSize, Long userId) {
+    public Result<List<Container>> getContainers( Integer page, Integer pageSize, Integer userId) {
         //测试用户
         //状态
         Page<Container> p = new Page<>(page, pageSize);
@@ -86,7 +86,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
      *@version 1.0
      */
     @Override
-    public Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Long userId) {
+    public Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Integer userId) {
         //测试用户
         //状态
         String[] status = containerParam.getStatus();
@@ -307,6 +307,14 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
 
         return list;
+    }
+
+    @Override
+    public boolean hasContainer(String id, int userId) {
+
+
+
+        return false;
     }
 
 }

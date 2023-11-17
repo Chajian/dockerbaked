@@ -25,14 +25,31 @@ public class Result<T> {
         result.message = message;
         return result;
     }
+    //成功的信息
+    public static <T> Result<T> success(Constants constants,T object) {
+        Result<T> result = new Result<>();
+        result.data = object;
+        result.code = constants.getCode();
+        result.message = constants.getMsg();
+        return result;
+    }
 
     //失败的信息
-
     public static <T> Result<T> error(Integer code,String message) {
         Result<T> result = new Result<>();
         result.data = null;
         result.code = code;
         result.message = message;
+        return result;
+    }
+
+    //失败的信息
+
+    public static <T> Result<T> error(Constants constants) {
+        Result<T> result = new Result<>();
+        result.data = null;
+        result.code = constants.getCode();
+        result.message = constants.getMsg();
         return result;
     }
 }
