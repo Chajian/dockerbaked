@@ -58,8 +58,8 @@ public class OrderController {
             return Result.error(Constants.CODE_401.getCode(),"packet or hardware have problems!");
         //发送消息
         AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
-        orderService.sendMessage(addOrder);
-        Order result = orderService.receiveMessage();
+        Order result = orderService.sendMessage(addOrder);
+
         return Result.success(Constants.CODE_200.getCode(),"success",result);
     }
 

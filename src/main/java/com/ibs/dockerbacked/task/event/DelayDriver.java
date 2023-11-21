@@ -5,6 +5,11 @@ package com.ibs.dockerbacked.task.event;
  */
 public class DelayDriver extends BaseDriver {
     int delay;
+
+    public DelayDriver(int delay) {
+        this.delay = delay;
+    }
+
     @Override
     public void Triger(Event event) {
         try {

@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
+import com.ibs.dockerbacked.mapper.OrderMapper;
 import com.ibs.dockerbacked.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ class OrderServiceImplTest {
 
     @Autowired
     OrderService orderService;
+    @Autowired
+    OrderMapper orderMapper;
 
     @Test
     void createOrder() {
@@ -30,7 +33,9 @@ class OrderServiceImplTest {
         ports.add("4506:3306");
         addContainer.setPorts(ports);
         addContainer.setEnvs(envs);
-        Order order = orderService.createOrder(5,1,addContainer,5);
+        Order order = new Order();
+        orderMapper.insert(order);
+        orderService.createOrderTask(order,5,1,addContainer,5);
         orderService.paied(order);
         test();
     }

@@ -34,8 +34,7 @@ public interface OrderService extends IService<Order> {
      */
     boolean paied(Order order);
 
-    public void sendMessage(AddOrder addOrder);
-    public Order receiveMessage();
+    public Order sendMessage(AddOrder addOrder);
 
     /**
      * get Dtask

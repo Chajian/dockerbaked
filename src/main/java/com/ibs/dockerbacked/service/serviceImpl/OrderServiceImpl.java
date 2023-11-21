@@ -17,7 +17,6 @@ import com.ibs.dockerbacked.service.PacketService;
 import com.ibs.dockerbacked.task.DTask;
 import com.ibs.dockerbacked.task.OrderTask;
 import com.ibs.dockerbacked.task.TaskStatus;
-import com.ibs.dockerbacked.task.TaskThread;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -28,10 +27,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 import com.ibs.dockerbacked.connection.KafkaModel;
+import org.springframework.util.ObjectUtils;
+
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -56,31 +56,51 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     TaskThreadPool taskThreadPool;
 
-
-    //生产者生产消息
-    public void sendMessage(AddOrder addOrder){
-        kafkaModel.getProducer().send(new ProducerRecord<Long,String>("docker-order", addOrder.getUserId(), JSON.toJSONString(addOrder)));
+    @PostConstruct
+    public void init(){
+        //order订单接收线程
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true){
+                    ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(1));
+                    for (ConsumerRecord<Long, String> record : records) {
+                        AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
+                        //创建订单
+                        if(!ObjectUtils.isEmpty(addOrder.getOrder()))
+                            createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+        thread.setName("docker-order");
+        thread.start();
     }
 
-    //消费者消费消息
-    @Override
-    public Order receiveMessage(){
+    public TaskThreadPool getTaskThreadPool() {
+        return taskThreadPool;
+    }
+
+
+    //生产者生产消息
+    public Order sendMessage(AddOrder addOrder){
         if(kafkaModel!=null) {
             Order order = new Order();
             order.setState("未支付");
             order.setName("order");
             orderMapper.insert(order);
-            ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(100));
-            for (ConsumerRecord<Long, String> record : records) {
-                AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
-                //创建订单
-                createOrderTask(order,addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
-//                log.info("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
-            }
+            addOrder.setOrder(order);
+            kafkaModel.getProducer().send(new ProducerRecord<Long,String>("docker-order", addOrder.getUserId(), JSON.toJSONString(addOrder)));
             return order;
         }
         return null;
     }
+
 
 
 

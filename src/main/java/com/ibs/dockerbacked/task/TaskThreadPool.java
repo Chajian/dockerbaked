@@ -23,6 +23,7 @@ public class TaskThreadPool {
      * get Task by OrderId
      */
     Map<Integer,Long> orderToTask = new HashMap<>();
+    List<TaskThread> cache;
     /*最大线程任务容量*/
     private int maxTasks;
     int corePoolSize = Runtime.getRuntime().availableProcessors(); // cpu理想的任务边界
@@ -38,6 +39,7 @@ public class TaskThreadPool {
                 new ArrayBlockingQueue<>(queueCapacity)
         );
         queue = new PriorityQueue<>();
+        cache = new ArrayList<>();
     }
     private TaskThreadPool(){
 
@@ -46,6 +48,11 @@ public class TaskThreadPool {
 
     public void addTaskThread(TaskThread taskThread){
         executor.submit(taskThread);
+        cache.add(taskThread);
+    }
+
+    public void addThread(Runnable runnable){
+        executor.submit(runnable);
     }
 
 
@@ -77,7 +84,7 @@ public class TaskThreadPool {
      * @param task 任务
      */
     public synchronized void addOrderTask(DTask task, Order order) {
-        Iterator<TaskThread> iterator = queue.iterator();
+        Iterator<TaskThread> iterator = cache.iterator();
         while(iterator.hasNext()){
             TaskThread taskThread = iterator.next();
             if(taskThread.isLive())
@@ -88,10 +95,12 @@ public class TaskThreadPool {
         }
         TaskThread taskThread = new TaskThread();
         taskThread.add(task);
+        orderToTask.put(order.getId(), task.getId());
         addTaskThread(taskThread);
     }
+
     public synchronized void addTask(DTask task){
-        Iterator<TaskThread> iterator = queue.iterator();
+        Iterator<TaskThread> iterator = cache.iterator();
         while(iterator.hasNext()){
             TaskThread taskThread = iterator.next();
             if(taskThread.isLive())
@@ -112,7 +121,8 @@ public class TaskThreadPool {
      */
     public DTask getTaskFromOrder(int orderId){
         long taskId = orderToTask.get(orderId);
-        Iterator<TaskThread> iterator = queue.iterator();
+        Iterator<TaskThread> iterator = cache.iterator();
+
         while(iterator.hasNext()){
             TaskThread taskThread = iterator.next();
             DTask task = taskThread.getDTaskById(taskId);
