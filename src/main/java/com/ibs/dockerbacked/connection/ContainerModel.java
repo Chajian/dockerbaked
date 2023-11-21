@@ -18,6 +18,8 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +146,7 @@ public class ContainerModel {
      * 执行指令
      * @return 返回结果
      */
-    public List<String> execCommand(String containerId,String command){
+    public List<String> getLogs(String containerId){
         LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
                 .withTimestamps(true)
                 .withStdOut(true)
@@ -169,5 +171,28 @@ public class ContainerModel {
             System.out.println("Logging log: " + log);
         }
         return logs;
+    }
+
+    /**
+     * 执行指令
+     * @return 返回结果
+     */
+    public List<String> execCommand(String containerId,String command,String location){
+        String execId = dockerClient.execCreateCmd(containerId).withCmd(command).withWorkingDir(location).withAttachStdout(true).withAttachStderr(true).exec().getId();
+        final StringBuilder output = new StringBuilder();
+        List<String> out = new ArrayList<>();
+        try {
+            dockerClient.execStartCmd(execId).exec(new ResultCallback.Adapter<>(){
+                @Override
+                public void onNext(Frame object) {
+                    output.append(new String(object.getPayload(), StandardCharsets.UTF_8));
+                    super.onNext(object);
+                }
+            }).awaitCompletion();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        out.add(output.toString());
+        return out;
     }
 }

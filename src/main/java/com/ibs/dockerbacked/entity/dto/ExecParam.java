@@ -18,5 +18,9 @@ public class ExecParam {
      * 指令
      */
     private String command;
+    /**
+     * 执行命令的地址
+     */
+    private String loc;
 
 }

@@ -80,6 +80,7 @@ public class ContainerController {
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
             return Result.error(Constants.CODE_400);
+
         return containerService.operateContainer(containerId, status);
     }
 
@@ -88,7 +89,11 @@ public class ContainerController {
      */
     @PostMapping("/{id}/exec")
     public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        List list = containerService.execCommand(containerId,exec.getCommand());
+        if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
+            return Result.error(Constants.CODE_400);
+
+
+        List list = containerService.execCommand(containerId,exec.getCommand(), exec.getLoc());
         if(list == null)
             return Result.error(Constants.CODE_Login_500);
         return Result.success(Constants.CODE_200,list);

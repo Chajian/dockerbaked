@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -54,6 +55,8 @@ import java.util.stream.Collectors;
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private ContainerMapper containerMapper;
     @Autowired
     private ImageModel imageModel;
     @Autowired
@@ -298,23 +301,19 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
 
-    public List<String> execCommand(String containerId,String command){
-        List list = new ArrayList();
-        //TODO 1.完成容器的检测
-        //TODO 2.完成容器和用户身份的检测
-        //TODO 3.完成容器的指令执行
-        //TODO 4.完成返回结果的收集
-
-
+    public List<String> execCommand(String containerId,String command,String location){
+        List<String> list = containerModel.execCommand(containerId,command,location);
         return list;
     }
 
+
     @Override
     public boolean hasContainer(String id, int userId) {
-
-
-
-        return false;
+        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        lambdaQueryWrapper.eq(Container::getOwnerId,userId);
+        lambdaQueryWrapper.eq(Container::getId,id);
+        Container container = containerMapper.selectOne(lambdaQueryWrapper);
+        return container!=null;
     }
 
 }
