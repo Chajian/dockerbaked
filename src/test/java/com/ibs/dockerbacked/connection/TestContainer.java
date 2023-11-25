@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,7 +39,8 @@ public class TestContainer {
 
     @Before
     public void init(){
-        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+//        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
         containerModel = new ContainerModel(dockerConnection.connect());
     }
 
@@ -84,7 +86,7 @@ public class TestContainer {
     public void exec(){
         DockerClient dockerClient = dockerConnection.connect();
 
-        ExecCreateCmdResponse execCreateCmd =  dockerClient.execCreateCmd("3a6be1bb8217")
+        ExecCreateCmdResponse execCreateCmd =  dockerClient.execCreateCmd("41ce0447dc53dd1da4430487386af5eff8d8455c5009041b084a0da35b3c0cd9")
                 .withCmd("/bin/sh", "-c", "echo hello; echo 0 >> /tmp/test_result")
                 .withAttachStderr(true)
                 .withAttachStdout(true)
@@ -109,6 +111,12 @@ public class TestContainer {
                 super.onComplete();
             }
         });
+    }
+
+    @Test
+    public void exec2(){
+        List<String> info = containerModel.execCommand("41ce0447dc53dd1da4430487386af5eff8d8455c5009041b084a0da35b3c0cd9","ls");
+        System.out.println(Arrays.toString(info.toArray()));
     }
 
     /**

@@ -29,7 +29,7 @@ public class TestImages {
 
     @Before
     public void init(){
-        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
         imageModel = new ImageModel(dockerConnection.connect());
     }
 
