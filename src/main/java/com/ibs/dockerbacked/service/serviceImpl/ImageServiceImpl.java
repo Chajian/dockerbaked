@@ -2,13 +2,19 @@ package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.PullResponseItem;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.execption.CustomExpection;
+import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.service.UserSerivce;
+import com.ibs.dockerbacked.task.EventTask;
+import com.ibs.dockerbacked.task.TaskStatus;
+import com.ibs.dockerbacked.task.event.BaseListener;
+import com.ibs.dockerbacked.task.event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,9 @@ import java.util.stream.Collectors;
 public class ImageServiceImpl implements ImageService {
     @Autowired
     private ImageModel imageModel;
+
+    @Autowired
+    private ImageMapper imageMapper;
     //获取镜像
     @Override
     public Result<List<Image>> getImages(ImagesParam imagesParam,long userId) {
@@ -55,6 +64,28 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Result pull(String imageName, String tag) {
         try {
+            //事件监听-异步
+            EventTask eventTask = new EventTask(100){
+                @Override
+                public void start() {
+                    super.start();
+                    BaseListener baseListener = new BaseListener(){
+                        @Override
+                        public void onListen(Event event) {
+                            super.onListen(event);
+                            if(event.getStatus().equals("complete")){
+                                PullResponseItem pullResponseItem = (PullResponseItem) event.getT();
+                                com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
+                                image.setImageId(pullResponseItem.getId());
+                                imageMapper.insert(image);
+                                setStatus(TaskStatus.DEATH);
+                            }
+                        }
+                    };
+                    baseListener.addDriver(imageModel);
+                    baseListener.setT(this);
+                }
+            };
             imageModel.pullImage(imageName,tag);
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -1,11 +1,15 @@
 package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.PullResponseItem;
 import com.github.dockerjava.api.model.SearchItem;
 
+import com.ibs.dockerbacked.task.event.BaseDriver;
+import com.ibs.dockerbacked.task.event.PullImageEvent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -14,16 +18,13 @@ import java.util.List;
 
 /**
  * image服务模块
+ * Image事件触发器
  * @author Chajian
  */
 @Slf4j
-public class ImageModel {
+public class ImageModel extends BaseDriver {
 
     DockerClient dockerClient = null;
-
-
-
-
     public ImageModel(DockerClient dockerClient) {
         this.dockerClient = dockerClient;
     }
@@ -45,9 +46,34 @@ public class ImageModel {
      * @throws InterruptedException
      */
     public void pullImage(String imageName,String tag) throws InterruptedException {
-        dockerClient.pullImageCmd(imageName)
+        //PullImage事件
+        PullImageEvent pullImageEvent = new PullImageEvent();
+        var parent = this;
+         ResultCallback resultCallback =  dockerClient.pullImageCmd(imageName)
                 .withTag(tag)
-                .start().awaitCompletion();
+                .exec(new ResultCallback.Adapter<>(){
+                    @Override
+                    public void onComplete() {
+                        //触发事件
+                        parent.Triger(pullImageEvent);
+                        super.onComplete();
+                    }
+
+                    @Override
+                    public void onNext(PullResponseItem object) {
+                        pullImageEvent.setT(object);
+                        pullImageEvent.setStatus("complete");
+                        super.onNext(object);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        pullImageEvent.setStatus("error");
+                        pullImageEvent.setDesc(throwable.getMessage());
+                        super.onError(throwable);
+                    }
+                })
+                 .awaitCompletion();
     }
 
     /**

@@ -25,7 +25,6 @@ public abstract class BaseTask<T> implements DTask,Comparable<BaseTask>{
         }finally {
             reentrantLock.unlock();
         }
-
     }
 
     @Override
