@@ -5,6 +5,8 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.HardwareDto;
 
+import java.util.List;
+
 /**
  * @author sn
  */
@@ -19,4 +21,12 @@ public interface PacketService extends IService<Packet> {
     Result<HardwareDto> createPacket(HardwareDto hardware, boolean isFree);
 
     boolean addHardwarePacketDP(HardwareDto hardware,boolean isFree,float money);
+
+    /**
+     * 获取套餐列表
+     * @param page
+     * @param size
+     * @return
+     */
+    List<Packet> getPackets(int page,int size);
 }

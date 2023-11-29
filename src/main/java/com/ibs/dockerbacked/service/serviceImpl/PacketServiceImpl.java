@@ -1,7 +1,10 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AtomicFloat;
@@ -112,4 +115,21 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
         return true;
     }
 
+    /**
+     * 分页查询
+     * @param page
+     * @param size
+     * @return
+     */
+    @Override
+    public List<Packet> getPackets(int page, int size) {
+        Page<Packet> p = new Page<>(page, size);
+        LambdaQueryWrapper<Packet> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        Page<Packet> pageResult = page(p, lambdaQueryWrapper);
+        List<Packet> containers = pageResult.getRecords();
+        if (pageResult.getSize() <= 0) {
+            return null;
+        }
+        return containers;
+    }
 }
