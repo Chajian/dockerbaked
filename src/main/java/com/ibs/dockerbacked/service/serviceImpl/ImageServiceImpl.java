@@ -13,6 +13,7 @@ import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.service.UserSerivce;
 import com.ibs.dockerbacked.task.EventTask;
 import com.ibs.dockerbacked.task.TaskStatus;
+import com.ibs.dockerbacked.task.TaskThreadPool;
 import com.ibs.dockerbacked.task.event.BaseListener;
 import com.ibs.dockerbacked.task.event.Event;
 import lombok.extern.slf4j.Slf4j;
@@ -63,34 +64,40 @@ public class ImageServiceImpl implements ImageService {
      */
     @Override
     public Result pull(String imageName, String tag) {
-        try {
-            //事件监听-异步
-            EventTask eventTask = new EventTask(100){
-                @Override
-                public void start() {
-                    super.start();
-                    BaseListener baseListener = new BaseListener(){
-                        @Override
-                        public void onListen(Event event) {
-                            super.onListen(event);
-                            if(event.getStatus().equals("complete")){
-                                PullResponseItem pullResponseItem = (PullResponseItem) event.getT();
-                                com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
-                                image.setImageId(pullResponseItem.getId());
-                                imageMapper.insert(image);
-                                setStatus(TaskStatus.DEATH);
-                            }
+        //事件监听
+        //TODO 异步处理
+        log.info("pull之前:"+Thread.currentThread().getId());
+        EventTask pullEvent = new EventTask(100){
+            @Override
+            public void start(){
+                //主线程执行
+            }
+            //异步执行
+            @Override
+            public void asyncStart() {
+                log.info("pullTask:"+Thread.currentThread().getId());
+                BaseListener baseListener = new BaseListener(){
+                    @Override
+                    public void onListen(Event event) {
+                        super.onListen(event);
+                        log.info("pull监听:"+Thread.currentThread().getId());
+                        if(event.getStatus().equals("complete")){
+                            PullResponseItem pullResponseItem = (PullResponseItem) event.getT();
+                            com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
+                            image.setImageId(pullResponseItem.getId());
+                            imageMapper.insert(image);
+                            setStatus(TaskStatus.DEATH);
                         }
-                    };
-                    baseListener.addDriver(imageModel);
-                    baseListener.setT(this);
-                }
-            };
-            imageModel.pullImage(imageName,tag);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+                    }
+                };
+                baseListener.addDriver(imageModel);
+                baseListener.setT(this);
+                imageModel.pullImage(imageName,tag);
+                super.asyncStart();
+            }
+        };
+        TaskThreadPool.getTaskThreadPool().addTask(pullEvent);
+        log.info("pull结束:"+Thread.currentThread().getId());
         return Result.success(200,"拉取成功",null);
     }
 

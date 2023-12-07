@@ -45,35 +45,42 @@ public class ImageModel extends BaseDriver {
      * @param tag
      * @throws InterruptedException
      */
-    public void pullImage(String imageName,String tag) throws InterruptedException {
+    public void pullImage(String imageName,String tag) {
         //PullImage事件
+        log.info("pull:"+Thread.currentThread().getId());
         PullImageEvent pullImageEvent = new PullImageEvent();
         var parent = this;
-         ResultCallback resultCallback =  dockerClient.pullImageCmd(imageName)
-                .withTag(tag)
-                .exec(new ResultCallback.Adapter<>(){
-                    @Override
-                    public void onComplete() {
-                        //触发事件
-                        parent.Triger(pullImageEvent);
-                        super.onComplete();
-                    }
+        try {
+            ResultCallback resultCallback =  dockerClient.pullImageCmd(imageName)
+                   .withTag(tag)
+                   .exec(new ResultCallback.Adapter<>(){
+                       @Override
+                       public void onComplete() {
+                           //触发事件
+                           parent.Triger(pullImageEvent);
+                           log.info("pull完成:"+Thread.currentThread().getId());
+                           super.onComplete();
+                       }
 
-                    @Override
-                    public void onNext(PullResponseItem object) {
-                        pullImageEvent.setT(object);
-                        pullImageEvent.setStatus("complete");
-                        super.onNext(object);
-                    }
+                       @Override
+                       public void onNext(PullResponseItem object) {
+                           pullImageEvent.setT(object);
+                           pullImageEvent.setStatus("complete");
+                           log.info("pull过程中:"+Thread.currentThread().getId());
+                           super.onNext(object);
+                       }
 
-                    @Override
-                    public void onError(Throwable throwable) {
-                        pullImageEvent.setStatus("error");
-                        pullImageEvent.setDesc(throwable.getMessage());
-                        super.onError(throwable);
-                    }
-                })
-                 .awaitCompletion();
+                       @Override
+                       public void onError(Throwable throwable) {
+                           pullImageEvent.setStatus("error");
+                           pullImageEvent.setDesc(throwable.getMessage());
+                           super.onError(throwable);
+                       }
+                   })
+                    .awaitCompletion();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

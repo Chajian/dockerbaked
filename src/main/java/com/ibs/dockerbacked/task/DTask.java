@@ -7,23 +7,27 @@ package com.ibs.dockerbacked.task;
 public interface DTask {
 
     /**
-     * 任务运行函数
+     * 同步-任务初始化
+     * 主线程运行
      */
     public void start();
 
 
     /**
-     * 运行方法
+     * 异步-运行方法
+     * 子线程运行
      */
     public void run();
 
     /**
-     * 回调函数
+     * 异步-回调函数
+     * 子线程运行
      */
     public void recall();
 
     /**
-     * 任务死亡的任务
+     * 异步-任务死亡的任务
+     * 子线程运行
      */
     public void death();
 
