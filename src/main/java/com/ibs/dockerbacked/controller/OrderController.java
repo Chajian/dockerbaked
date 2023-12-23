@@ -20,6 +20,7 @@ import com.ibs.dockerbacked.util.JwtUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -50,6 +51,7 @@ public class OrderController {
      * @param token
      * @return
      */
+    @Transactional
     @PostMapping("/create")
     public Result<Order> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("id") int packetId,@RequestBody AddContainer addContainer) throws ParseException {
         Packet packet = packetMapper.selectById(packetId);
@@ -67,6 +69,7 @@ public class OrderController {
      *
      * @return
      */
+    @Transactional
     @PutMapping("/pay/{id}")
     public Result payOrder(@PathVariable("id") int orderId){
         Order order = orderService.getById(orderId);

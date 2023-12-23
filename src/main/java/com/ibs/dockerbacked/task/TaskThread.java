@@ -1,6 +1,8 @@
 package com.ibs.dockerbacked.task;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,10 +12,12 @@ import java.util.List;
  * 采用时间片轮转
  * @author Yanglin
  */
+@Slf4j
 public class TaskThread implements Runnable {
     /*任务队列*/
     private List<DTask> list;
     private boolean live;
+    List<String> logs;
     /*线程池最大容量*/
     int max = 20;
 
@@ -29,23 +33,28 @@ public class TaskThread implements Runnable {
     public void init(){
         live = true;
         list = new ArrayList<>();
+        logs = new ArrayList<>();
     }
 
     @Override
     public void run() {
         //TODO 加锁提升线程安全
         while(live){
+            String info = "当前线程名:"+Thread.currentThread().getName()+":"+Thread.currentThread().getId();
+            logs.add(info);
+            log.info(info);
             Iterator<DTask> iterator = list.iterator();
-            while(iterator.hasNext()){
-                DTask task = iterator.next();
-                //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
-                if(task.getStatus()==TaskStatus.DEATH)
-                    iterator.remove();
-                else
-                    task.run();
-            }
-            //休眠
             try {
+                while(iterator.hasNext()){
+                    DTask task = iterator.next();
+                    //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
+                    if(task.getStatus()==TaskStatus.DEATH) {
+                        iterator.remove();
+                    }
+                    else {
+                        task.run();
+                    }
+                }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

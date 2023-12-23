@@ -19,6 +19,7 @@ import com.ibs.dockerbacked.task.event.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -63,6 +64,7 @@ public class ImageServiceImpl implements ImageService {
      * @return
      */
     @Override
+    @Transactional
     public Result pull(String imageName, String tag) {
         //事件监听
         //TODO 异步处理
@@ -82,10 +84,8 @@ public class ImageServiceImpl implements ImageService {
                         super.onListen(event);
                         log.info("pull监听:"+Thread.currentThread().getId());
                         if(event.getStatus().equals("complete")){
-                            PullResponseItem pullResponseItem = (PullResponseItem) event.getT();
-                            com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
-                            image.setImageId(pullResponseItem.getId());
-                            imageMapper.insert(image);
+                            com.ibs.dockerbacked.entity.Image pullResponseItem = (com.ibs.dockerbacked.entity.Image) event.getT();
+                            imageMapper.insert(pullResponseItem);
                             setStatus(TaskStatus.DEATH);
                         }
                     }

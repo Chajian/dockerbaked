@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.task;
 
 import cn.hutool.cron.task.Task;
 import com.ibs.dockerbacked.entity.Order;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -12,6 +13,7 @@ import java.util.concurrent.*;
  * 单例模式
  * @author Yanglin
  */
+@Slf4j
 public class TaskThreadPool {
 
     private static volatile TaskThreadPool taskThreadPool;
@@ -37,7 +39,13 @@ public class TaskThreadPool {
                 keepAliveTime,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(queueCapacity)
-        );
+        ){
+            @Override
+            protected void beforeExecute(Thread t, Runnable r) {
+                super.beforeExecute(t, r);
+                log.info("Thread:"+t.toString()+"Runnable:"+r.toString());
+            }
+        };
         queue = new PriorityQueue<>();
         cache = new ArrayList<>();
     }

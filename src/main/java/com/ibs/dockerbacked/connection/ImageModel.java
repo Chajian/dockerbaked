@@ -57,6 +57,10 @@ public class ImageModel extends BaseDriver {
                        @Override
                        public void onComplete() {
                            //触发事件
+                           com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
+                           image.setTag(tag);
+                           image.setName(imageName);
+                           pullImageEvent.setT(image);
                            parent.Triger(pullImageEvent);
                            log.info("pull完成:"+Thread.currentThread().getId());
                            super.onComplete();
@@ -64,7 +68,6 @@ public class ImageModel extends BaseDriver {
 
                        @Override
                        public void onNext(PullResponseItem object) {
-                           pullImageEvent.setT(object);
                            pullImageEvent.setStatus("complete");
                            log.info("pull过程中:"+Thread.currentThread().getId());
                            super.onNext(object);
