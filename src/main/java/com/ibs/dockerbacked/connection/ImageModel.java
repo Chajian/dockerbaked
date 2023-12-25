@@ -102,7 +102,7 @@ public class ImageModel extends BaseDriver {
      * @return
      */
     public List<Image> getImages(String imageName){
-        return dockerClient.listImagesCmd().withImageNameFilter(imageName).exec();
+        return dockerClient.listImagesCmd().exec();
     }
 
     /**

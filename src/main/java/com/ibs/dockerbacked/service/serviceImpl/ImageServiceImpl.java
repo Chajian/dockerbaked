@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.github.dockerjava.api.model.DockerObject;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PullResponseItem;
 import com.ibs.dockerbacked.common.Result;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,22 +39,27 @@ public class ImageServiceImpl implements ImageService {
     private ImageMapper imageMapper;
     //获取镜像
     @Override
-    public Result<List<Image>> getImages(ImagesParam imagesParam,long userId) {
+    public Result<List<? extends DockerObject>> getImages(ImagesParam imagesParam, long userId) {
         //模拟用户
-        Integer page = imagesParam.getPageParam().getPage() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
-        Integer pageSize = imagesParam.getPageParam().getPageSize() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+        Integer page = imagesParam.getPageParam() == null ? null : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
+        Integer pageSize = imagesParam.getPageParam() == null ? null : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
 
         String imageName = imagesParam.getId();
+        List<? extends DockerObject> images = new ArrayList<>();
         if (StringUtils.isEmpty(imageName)) {
             imageName = "";
+            images = imageModel.getImages(imageName);
+            //2.分页处理
+            if(page!=null&&pageSize!=null)
+                if ((page - 1) * pageSize < images.size()) {
+                    images = images.stream()
+                            .skip((page - 1) * pageSize)
+                            .limit(pageSize)
+                            .collect(Collectors.toList());
+                }
         }
-        List<Image> images = imageModel.getImages(imageName);
-        //2.分页处理
-        if ((page - 1) * pageSize < images.size()) {
-            images = images.stream()
-                    .skip((page - 1) * pageSize)
-                    .limit(pageSize)
-                    .collect(Collectors.toList());
+        else{
+            images = imageModel.searchImage(imageName,pageSize);
         }
         return Result.success(200, null, images);
     }

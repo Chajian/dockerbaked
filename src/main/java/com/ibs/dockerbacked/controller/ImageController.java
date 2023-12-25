@@ -29,7 +29,7 @@ public class ImageController {
      * @return 镜像列表
      */
     @GetMapping
-    public Result<List<Image>> getImages(@RequestBody ImagesParam imagesParam,
+    public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         return imageService.getImages(imagesParam, JwtUtil.getUserId(token));
     }
