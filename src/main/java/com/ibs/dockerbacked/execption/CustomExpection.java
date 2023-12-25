@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.execption;
 
+import com.ibs.dockerbacked.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,8 @@ public class CustomExpection extends RuntimeException implements Serializable {
 
     private String message; //异常消息
 
-
+    public CustomExpection(Constants result){
+        this.code = result.getCode();
+        this.message = result.getMsg();
+    }
 }
