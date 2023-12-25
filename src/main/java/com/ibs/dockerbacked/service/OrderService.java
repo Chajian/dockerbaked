@@ -6,6 +6,8 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
 import com.ibs.dockerbacked.task.DTask;
 
+import java.util.List;
+
 /**
  * @author sn
  */
@@ -42,4 +44,10 @@ public interface OrderService extends IService<Order> {
      * @return
      */
     public DTask getDTaskByOrderId(int orderId);
+
+    /**
+     * 获取当前用户相关的order
+     * @return
+     */
+    public List<Order> getAllOrderByUser(int userId);
 }

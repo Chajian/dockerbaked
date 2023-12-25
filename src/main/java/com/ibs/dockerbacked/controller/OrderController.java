@@ -24,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 订单接口
@@ -77,6 +79,19 @@ public class OrderController {
             return Result.success(Constants.CODE_200.getCode(),"支付成功!", null);
         return Result.error(Constants.CODE_BatchREgister_501.getCode(),"支付失败！");
     }
+
+
+    /**
+     * 获取用户的订单
+     * @param token
+     * @return
+     */
+    @GetMapping("/get/{page}/{pageSize}")
+    public Result getOrders(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable(value = "page") Integer page,
+                            @PathVariable(value = "pageSize") Integer pageSize){
+        return Result.success(Constants.CODE_200,orderService.getAllOrderByUser(JwtUtil.getUserId(token)));
+    }
+
 
 
 

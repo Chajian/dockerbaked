@@ -1,10 +1,12 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
+import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
 import com.ibs.dockerbacked.task.*;
@@ -27,6 +29,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 
 import com.ibs.dockerbacked.connection.KafkaModel;
 import org.springframework.util.ObjectUtils;
@@ -70,6 +73,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                         if(!ObjectUtils.isEmpty(addOrder.getOrder()))
                             createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
                     }
+                    log.info("order接收端id:"+Thread.currentThread().getId());
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
@@ -93,6 +97,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             Order order = new Order();
             order.setState("未支付");
             order.setName("order");
+            order.setUserId(addOrder.getUserId());
+            order.setPacketId(addOrder.getPacketId());
             orderMapper.insert(order);
             addOrder.setOrder(order);
             kafkaModel.getProducer().send(new ProducerRecord<Long,String>("docker-order", addOrder.getUserId(), JSON.toJSONString(addOrder)));
@@ -175,5 +181,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     public DTask getDTaskByOrderId(int orderId){
         return taskThreadPool.getTaskFromOrder(orderId);
+    }
+
+    @Override
+    public List<Order> getAllOrderByUser(int userId) {
+        List<Order> orders = orderMapper.selectList(new QueryWrapper<Order>().eq("user_id",userId));
+        return orders;
     }
 }
