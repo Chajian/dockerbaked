@@ -130,15 +130,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                         String containerId = containerService.createContainer(addContainer, userId, hardware);
                         if (containerId != null) {
                             order.setContainerId(containerId);
-                            order.setState("支付成功!");
+                            order.setState("创建成功!");
                         } else {
                             order.setState("创建容器失败!");
                         }
-                        orderMapper.updateById(order);
                         break;
                     case "未支付":
                         log.info("创建订单失败！");
+                        order.setState("创建失败，未支付");
                 }
+                orderMapper.updateById(order);
                 death();
             }
             @Override
