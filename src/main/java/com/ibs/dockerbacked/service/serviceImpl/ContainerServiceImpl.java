@@ -302,7 +302,8 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
 
     public List<String> execCommand(String containerId,String command,String location){
-        List<String> list = containerModel.execCommand(containerId,command,location);
+        String[] commands = command.split(" ");
+        List<String> list = containerModel.execCommand(containerId,location,commands);
         return list;
     }
 

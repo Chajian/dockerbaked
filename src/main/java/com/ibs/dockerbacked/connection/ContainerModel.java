@@ -15,6 +15,8 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.command.InspectContainerCmdImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -177,7 +179,7 @@ public class ContainerModel {
      * 执行指令
      * @return 返回结果
      */
-    public List<String> execCommand(String containerId,String command,String location){
+    public List<String> execCommand(String containerId,String location, String... command){
         String execId = dockerClient.execCreateCmd(containerId).withCmd(command).withWorkingDir(location).withAttachStdout(true).withAttachStderr(true).exec().getId();
         final StringBuilder output = new StringBuilder();
         List<String> out = new ArrayList<>();
@@ -185,9 +187,19 @@ public class ContainerModel {
             dockerClient.execStartCmd(execId).exec(new ResultCallback.Adapter<>(){
                 @Override
                 public void onNext(Frame object) {
-                    output.append(new String(object.getPayload(), StandardCharsets.UTF_8));
+                    String payLoad = new String(object.getPayload(),StandardCharsets.UTF_8);
+                    output.append(payLoad);
+                    if(payLoad.contains("failed"))
+                        onError(new Throwable(payLoad));
                     super.onNext(object);
                 }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    super.onError(throwable);
+                    throw new CustomExpection(Constants.EXEC_ERROR.getCode(),throwable.getMessage());
+                }
+
             }).awaitCompletion();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
