@@ -39,29 +39,23 @@ public class TaskThread implements Runnable {
     @Override
     public void run() {
         //TODO 加锁提升线程安全
-        while(live){
-            String info = "当前线程名:"+Thread.currentThread().getName()+":"+Thread.currentThread().getId();
-            logs.add(info);
-            log.info(info);
-            Iterator<DTask> iterator = list.iterator();
-            try {
-                while(iterator.hasNext()){
-                    DTask task = iterator.next();
-                    //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
-                    if(task.getStatus()==TaskStatus.DEATH) {
-                        iterator.remove();
-                    }
-                    else {
-                        task.run();
-                    }
+        String info = "当前线程名:"+Thread.currentThread().getName()+":"+Thread.currentThread().getId();
+        logs.add(info);
+        log.info(info);
+        Iterator<DTask> iterator = list.iterator();
+            while(iterator.hasNext()){
+                DTask task = iterator.next();
+                //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
+                if(task.getStatus()==TaskStatus.DEATH) {
+                    iterator.remove();
                 }
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                else {
+                    task.run();
+                }
             }
-            if(list.size()==0)
-                live = false;
-        }
+
+        if(list.size()==0)
+            live = false;
     }
 
     public boolean add(DTask task){

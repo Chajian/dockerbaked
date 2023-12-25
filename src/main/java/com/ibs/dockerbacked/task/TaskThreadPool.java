@@ -17,6 +17,7 @@ import java.util.concurrent.*;
 public class TaskThreadPool {
 
     private static volatile TaskThreadPool taskThreadPool;
+    ScheduledExecutorService scheduledExecutorService;
     ThreadPoolExecutor executor;
     /*加密队列*/
     Queue<TaskThread> queue;
@@ -30,22 +31,23 @@ public class TaskThreadPool {
     private int maxTasks;
     int corePoolSize = Runtime.getRuntime().availableProcessors(); // cpu理想的任务边界
     int maximumPoolSize = corePoolSize * 2; // 调整任务需求
-    long keepAliveTime = 60; // 任务存活时间
+    long keepAliveTime = Long.MAX_VALUE; // 任务存活时间
     int queueCapacity = 100; // 队列长度
     {
-        executor = new ThreadPoolExecutor(
-                corePoolSize,
-                maximumPoolSize,
-                keepAliveTime,
-                TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(queueCapacity)
-        ){
-            @Override
-            protected void beforeExecute(Thread t, Runnable r) {
-                super.beforeExecute(t, r);
-                log.info("Thread:"+t.toString()+"Runnable:"+r.toString());
-            }
-        };
+//        executor = new ThreadPoolExecutor(
+//                corePoolSize,
+//                maximumPoolSize,
+//                keepAliveTime,
+//                TimeUnit.SECONDS,
+//                new ArrayBlockingQueue<>(queueCapacity)
+//        ){
+//            @Override
+//            protected void beforeExecute(Thread t, Runnable r) {
+//                super.beforeExecute(t, r);
+//                log.info("Thread:"+t.toString()+"Runnable:"+r.toString());
+//            }
+//        };
+        scheduledExecutorService = Executors.newScheduledThreadPool(corePoolSize);
         queue = new PriorityQueue<>();
         cache = new ArrayList<>();
     }
@@ -54,12 +56,13 @@ public class TaskThreadPool {
     }
 
 
-    public void addTaskThread(TaskThread taskThread){
-        executor.submit(taskThread);
+    public synchronized void addTaskThread(TaskThread taskThread){
+        scheduledExecutorService.scheduleAtFixedRate(taskThread,1,1,TimeUnit.SECONDS);
+//        executor.submit(taskThread);
         cache.add(taskThread);
     }
 
-    public void addThread(Runnable runnable){
+    public synchronized void addThread(Runnable runnable){
         executor.submit(runnable);
     }
 
@@ -138,5 +141,9 @@ public class TaskThreadPool {
                 return task;
         }
         return null;
+    }
+    public synchronized void awak(){
+        if(executor.getTaskCount()>0)
+            executor.notifyAll();
     }
 }
