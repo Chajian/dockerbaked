@@ -1,7 +1,8 @@
 package com.ibs.dockerbacked.controller;
 
-import com.github.dockerjava.api.model.Image;
+import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.service.ImageService;
@@ -31,7 +32,10 @@ public class ImageController {
     @PostMapping
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        return imageService.getImages(imagesParam, JwtUtil.getUserId(token));
+        List<Image> images = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
+
+
+        return Result.success(Constants.CODE_200,images);
     }
 
     /** 拉取镜像

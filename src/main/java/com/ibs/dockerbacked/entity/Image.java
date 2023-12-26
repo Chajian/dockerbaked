@@ -24,7 +24,7 @@ public class Image extends TimeRecord{
     /*镜像id*/
     private String imageId;
     /*存储大小*/
-    private int size;
+    private long size;
     /*存储单位*/
     private String unit;
     /*作者*/
