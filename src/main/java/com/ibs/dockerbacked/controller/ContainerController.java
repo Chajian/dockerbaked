@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.controller;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
@@ -93,10 +94,10 @@ public class ContainerController {
             return Result.error(Constants.CODE_400);
 
 
-        List list = containerService.execCommand(containerId,exec.getCommand(), exec.getLoc());
-        if(list == null)
+        String result = containerService.execCommand(containerId,exec.getCommand(), exec.getLoc());
+        if(StringUtils.isEmpty(result))
             return Result.error(Constants.CODE_Login_500);
-        return Result.success(Constants.CODE_200,list);
+        return Result.success(Constants.CODE_200,result);
     }
 
 }

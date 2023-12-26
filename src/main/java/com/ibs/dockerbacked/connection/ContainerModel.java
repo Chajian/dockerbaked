@@ -179,10 +179,9 @@ public class ContainerModel {
      * 执行指令
      * @return 返回结果
      */
-    public List<String> execCommand(String containerId,String location, String... command){
+    public String execCommand(String containerId,String location, String... command){
         String execId = dockerClient.execCreateCmd(containerId).withCmd(command).withWorkingDir(location).withAttachStdout(true).withAttachStderr(true).exec().getId();
         final StringBuilder output = new StringBuilder();
-        List<String> out = new ArrayList<>();
         try {
             dockerClient.execStartCmd(execId).exec(new ResultCallback.Adapter<>(){
                 @Override
@@ -204,7 +203,6 @@ public class ContainerModel {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        out.add(output.toString());
-        return out;
+        return output.toString();
     }
 }

@@ -301,10 +301,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
 
-    public List<String> execCommand(String containerId,String command,String location){
+    public String execCommand(String containerId,String command,String location){
         String[] commands = command.split(" ");
-        List<String> list = containerModel.execCommand(containerId,location,commands);
-        return list;
+        String result = containerModel.execCommand(containerId,location,commands);
+        return result;
     }
 
 

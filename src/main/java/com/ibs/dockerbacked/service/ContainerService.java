@@ -40,7 +40,7 @@ public interface ContainerService extends IService<Container> {
      * @param command 指令
      * @return
      */
-    List<String> execCommand(String containerId,String command,String location);
+    String execCommand(String containerId,String command,String location);
 
     /**
      * 查询操作容器是否归属User
