@@ -28,7 +28,7 @@ public class ImageController {
      * author chen
      * @return 镜像列表
      */
-    @GetMapping
+    @PostMapping
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         return imageService.getImages(imagesParam, JwtUtil.getUserId(token));
