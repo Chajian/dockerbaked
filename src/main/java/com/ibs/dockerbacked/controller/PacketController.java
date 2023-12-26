@@ -44,7 +44,7 @@ public class PacketController {
      * @return
      */
     @GetMapping
-    public Result<List<Packet>> getPackets(@Param("page") int page, @Param("size") int size){
+    public Result<List<Packet>> getPackets(@Param("page") int page, @Param("pageSize") int size){
         List<Packet> list = packetService.getPackets(page,size);
         return Result.success(Constants.CODE_200,list);
 

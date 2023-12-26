@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.github.dockerjava.api.model.DockerObject;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PullResponseItem;
+import com.github.dockerjava.api.model.SearchItem;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.User;
@@ -39,14 +40,14 @@ public class ImageServiceImpl implements ImageService {
     private ImageMapper imageMapper;
     //获取镜像
     @Override
-    public Result<List<? extends DockerObject>> getImages(ImagesParam imagesParam, long userId) {
+    public List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId) {
         //模拟用户
-        Integer page = imagesParam.getPageParam() == null ? null : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
-        Integer pageSize = imagesParam.getPageParam() == null ? null : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
+        Integer page = imagesParam.getPageParam() == null ? 1 : imagesParam.getPageParam().getPage(); //页数  没传页数 默认第一
+        Integer pageSize = imagesParam.getPageParam() == null ? 5 : imagesParam.getPageParam().getPageSize();//页大小 默认5条每页
 
-        String imageName = imagesParam.getId();
+        String imageName = imagesParam.getLabel();
         List<? extends DockerObject> images = new ArrayList<>();
-        if (StringUtils.isEmpty(imageName)) {
+        if (imageName==null) {
             imageName = "";
             images = imageModel.getImages(imageName);
             //2.分页处理
@@ -61,7 +62,7 @@ public class ImageServiceImpl implements ImageService {
         else{
             images = imageModel.searchImage(imageName,pageSize);
         }
-        return Result.success(200, null, images);
+        return images;
     }
 
     /**
@@ -112,5 +113,33 @@ public class ImageServiceImpl implements ImageService {
     public Result build(File dockerFile) {
         imageModel.buildImage(dockerFile);
         return Result.success(200,"构建成功!",null);
+    }
+
+    @Override
+    public List<com.ibs.dockerbacked.entity.Image> dockerObjectToImage(List<? extends DockerObject> objects) {
+        List<com.ibs.dockerbacked.entity.Image> images = new ArrayList<>();
+        for(DockerObject object:objects ){
+            com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
+            if(object instanceof SearchItem){
+                SearchItem item = (SearchItem) object;
+                image.setName(item.getName());
+
+            }
+            else if(object instanceof Image){
+                Image dockerImage = (Image) object;
+                if(dockerImage.getRepoTags().length>0){
+                    image.setName(dockerImage.getRepoTags()[0]);
+                }
+                if(dockerImage.getSize()>0)
+                    image.setSize(dockerImage.getSize());
+            }
+            if(image.getName()!=null){
+                images.add(image);
+            }
+        }
+
+
+
+        return images;
     }
 }

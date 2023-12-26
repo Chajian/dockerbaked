@@ -203,6 +203,9 @@ public class ContainerModel {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        //字符串预处理
+        if(output.charAt(0)=='['&&output.charAt(output.length()-1)!=']')
+            output.deleteCharAt(0);
         return output.toString();
     }
 }
