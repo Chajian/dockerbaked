@@ -95,8 +95,8 @@ public class ContainerController {
 
 
         String result = containerService.execCommand(containerId,exec.getCommand(), exec.getLoc());
-        if(StringUtils.isEmpty(result))
-            return Result.error(Constants.CODE_Login_500);
+        if(result==null)
+            return Result.error(Constants.EXEC_ERROR);
         return Result.success(Constants.CODE_200,result);
     }
 

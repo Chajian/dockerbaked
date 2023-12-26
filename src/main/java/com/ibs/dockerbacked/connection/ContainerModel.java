@@ -188,7 +188,7 @@ public class ContainerModel {
                 public void onNext(Frame object) {
                     String payLoad = new String(object.getPayload(),StandardCharsets.UTF_8);
                     output.append(payLoad);
-                    if(payLoad.contains("failed"))
+                    if(payLoad.contains("failed")||payLoad.contains("No such file or directory"))
                         onError(new Throwable(payLoad));
                     super.onNext(object);
                 }
@@ -196,7 +196,7 @@ public class ContainerModel {
                 @Override
                 public void onError(Throwable throwable) {
                     super.onError(throwable);
-                    throw new CustomExpection(Constants.EXEC_ERROR.getCode(),throwable.getMessage());
+//                    throw new CustomExpection(Constants.EXEC_ERROR.getCode(),throwable.getMessage());
                 }
 
             }).awaitCompletion();
