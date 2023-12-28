@@ -7,4 +7,5 @@ import com.ibs.dockerbacked.entity.Hardware;
  * @author sn
  */
 public interface HardwareService extends IService<Hardware> {
+    Hardware getHardwareById(int id);
 }

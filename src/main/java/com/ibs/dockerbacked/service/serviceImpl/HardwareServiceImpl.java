@@ -5,12 +5,23 @@ import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.service.HardwareService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @author sn
+ * @author xieyanglin
  */
 @Slf4j
 @Service
 public class HardwareServiceImpl extends ServiceImpl<HardwareMapper, Hardware> implements HardwareService {
+
+    @Autowired
+    HardwareMapper hardwareMapper;
+
+    @Override
+    public Hardware getHardwareById(int id) {
+        Hardware hardware = hardwareMapper.selectById(id);
+
+        return hardware;
+    }
 }
