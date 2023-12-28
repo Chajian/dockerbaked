@@ -18,6 +18,7 @@ import com.ibs.dockerbacked.task.TaskStatus;
 import com.ibs.dockerbacked.task.TaskThreadPool;
 import com.ibs.dockerbacked.task.event.BaseListener;
 import com.ibs.dockerbacked.task.event.Event;
+import com.ibs.dockerbacked.util.EntityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,20 +120,7 @@ public class ImageServiceImpl implements ImageService {
     public List<com.ibs.dockerbacked.entity.Image> dockerObjectToImage(List<? extends DockerObject> objects) {
         List<com.ibs.dockerbacked.entity.Image> images = new ArrayList<>();
         for(DockerObject object:objects ){
-            com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
-            if(object instanceof SearchItem){
-                SearchItem item = (SearchItem) object;
-                image.setName(item.getName());
-
-            }
-            else if(object instanceof Image){
-                Image dockerImage = (Image) object;
-                if(dockerImage.getRepoTags().length>0){
-                    image.setName(dockerImage.getRepoTags()[0]);
-                }
-                if(dockerImage.getSize()>0)
-                    image.setSize(dockerImage.getSize());
-            }
+            com.ibs.dockerbacked.entity.Image image = EntityUtils.dockerObjectToImage(object);
             if(image.getName()!=null){
                 images.add(image);
             }

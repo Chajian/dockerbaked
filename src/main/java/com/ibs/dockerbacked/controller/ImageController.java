@@ -34,7 +34,6 @@ public class ImageController {
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         List<Image> images = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
 
-
         return Result.success(Constants.CODE_200,images);
     }
 

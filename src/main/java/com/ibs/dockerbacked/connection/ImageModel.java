@@ -59,7 +59,7 @@ public class ImageModel extends BaseDriver {
                            //触发事件
                            com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
                            image.setTag(tag);
-                           image.setName(imageName);
+                           image.setName(imageName+":"+tag);
                            pullImageEvent.setT(image);
                            parent.Triger(pullImageEvent);
                            log.info("pull完成:"+Thread.currentThread().getId());
