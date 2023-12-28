@@ -2,6 +2,11 @@ package com.ibs.dockerbacked.util;
 
 
 
+import cn.hutool.core.util.ObjectUtil;
+import com.github.dockerjava.api.model.DockerObject;
+import com.github.dockerjava.api.model.SearchItem;
+import com.ibs.dockerbacked.entity.Image;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -74,6 +79,26 @@ public class EntityUtils {
     public static Object excuteMethod(Object cMain,String methodName, Class[] parameteType, Object[] invokeParamete) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = cMain.getClass().getDeclaredMethod(methodName,parameteType);
         return method.invoke(cMain,invokeParamete);
+    }
+    public static Image dockerObjectToImage(DockerObject object){
+        if(ObjectUtil.isEmpty(object))
+            return null;
+        com.ibs.dockerbacked.entity.Image image = new com.ibs.dockerbacked.entity.Image();
+        if(object instanceof SearchItem){
+            SearchItem item = (SearchItem) object;
+            image.setName(item.getName());
+
+        }
+        else if(object instanceof com.github.dockerjava.api.model.Image){
+            com.github.dockerjava.api.model.Image dockerImage = (com.github.dockerjava.api.model.Image) object;
+            if(dockerImage.getRepoTags().length>0){
+                image.setName(dockerImage.getRepoTags()[0]);
+            }
+            if(dockerImage.getSize()>0)
+                image.setSize(dockerImage.getSize());
+        }
+
+        return image;
     }
 
 }
