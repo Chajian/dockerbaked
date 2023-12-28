@@ -11,6 +11,7 @@ import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ExecParam;
+import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
@@ -99,5 +100,23 @@ public class ContainerController {
             return Result.error(Constants.EXEC_ERROR);
         return Result.success(Constants.CODE_200,result);
     }
+
+    /**
+     * dashboard面板数据
+     * @return
+     */
+    @GetMapping("/dashboard/{id}")
+    public Result dashBoard(@PathVariable("id") String containerId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
+            return Result.error(Constants.CODE_400);
+        Dashboard dashboard = new Dashboard();
+        dashboard.setContainer(containerService.getContainerById(containerId));
+
+
+
+        return Result.success(Constants.CODE_200,dashboard);
+    }
+
+
 
 }

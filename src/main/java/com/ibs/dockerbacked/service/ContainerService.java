@@ -28,6 +28,7 @@ public interface ContainerService extends IService<Container> {
 
     Container getContainersByIdOrStatus(String containerId, String status);
 
+    Container getContainerById(String containerId);
 
     //操作容器
     Result operateContainer(String containerId, String status);

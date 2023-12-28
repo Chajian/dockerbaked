@@ -317,4 +317,12 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         return container!=null;
     }
 
+    @Override
+    public Container getContainerById(String containerId) {
+        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        lambdaQueryWrapper.eq(Container::getId,containerId);
+        Container container = containerMapper.selectOne(lambdaQueryWrapper);
+
+        return container;
+    }
 }
