@@ -7,8 +7,12 @@ import com.ibs.dockerbacked.service.HardwareService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.websocket.server.PathParam;
+import java.util.List;
 
 /**
  * 硬件接口
@@ -25,10 +29,22 @@ public class HardwardController {
      * @return
      */
     @GetMapping
-    public Result getHardwares(@Param("hardwareId") int hardwareId){
+    public Result getHardware(@Param("hardwareId") int hardwareId){
         Hardware hardware = hardwareService.getHardwareById(hardwareId);
         if(hardware!=null)
             return Result.success(Constants.CODE_200,hardware);
+        return Result.error(Constants.CODE_401);
+    }
+
+    /**
+     * 获取套餐信息
+     * @return
+     */
+    @GetMapping("/{page}/{pageSize}")
+    public Result getHardwares(@PathVariable("page")int page,@PathVariable("pageSize") int pageSize){
+        List<Hardware> hardwares = hardwareService.getHardwares(page,pageSize);
+        if(hardwares!=null)
+            return Result.success(Constants.CODE_200,hardwares);
         return Result.error(Constants.CODE_401);
     }
 }
