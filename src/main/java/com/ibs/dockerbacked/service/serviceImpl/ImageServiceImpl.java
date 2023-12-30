@@ -39,6 +39,9 @@ public class ImageServiceImpl implements ImageService {
 
     @Autowired
     private ImageMapper imageMapper;
+
+    @Autowired
+    private TaskThreadPool taskThreadPool;
     //获取镜像
     @Override
     public List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId) {
@@ -105,7 +108,7 @@ public class ImageServiceImpl implements ImageService {
                 super.asyncStart();
             }
         };
-        TaskThreadPool.getTaskThreadPool().addTask(pullEvent);
+        taskThreadPool.addTask(pullEvent);
         log.info("pull结束:"+Thread.currentThread().getId());
         return Result.success(200,"拉取成功",null);
     }

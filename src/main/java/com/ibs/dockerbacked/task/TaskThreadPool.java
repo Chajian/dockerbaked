@@ -3,8 +3,13 @@ package com.ibs.dockerbacked.task;
 
 import cn.hutool.cron.task.Task;
 import com.ibs.dockerbacked.entity.Order;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -14,9 +19,11 @@ import java.util.concurrent.*;
  * @author Yanglin
  */
 @Slf4j
+@Component
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskThreadPool {
 
-    private static volatile TaskThreadPool taskThreadPool;
     ScheduledExecutorService scheduledExecutorService;
     ThreadPoolExecutor executor;
     /*加密队列*/
@@ -33,7 +40,9 @@ public class TaskThreadPool {
     int maximumPoolSize = corePoolSize * 2; // 调整任务需求
     long keepAliveTime = Long.MAX_VALUE; // 任务存活时间
     int queueCapacity = 100; // 队列长度
-    {
+
+    @PostConstruct
+    public void init(){
 //        executor = new ThreadPoolExecutor(
 //                corePoolSize,
 //                maximumPoolSize,
@@ -51,14 +60,8 @@ public class TaskThreadPool {
         queue = new PriorityQueue<>();
         cache = new ArrayList<>();
     }
-    private TaskThreadPool(){
-
-    }
-
 
     public synchronized void addTaskThread(TaskThread taskThread){
-        scheduledExecutorService.scheduleAtFixedRate(taskThread,1,1,TimeUnit.SECONDS);
-//        executor.submit(taskThread);
         cache.add(taskThread);
     }
 
@@ -66,28 +69,17 @@ public class TaskThreadPool {
         executor.submit(runnable);
     }
 
-
-    /**
-     * DCL双检测机制
-     * @return
-     */
-    public static TaskThreadPool getTaskThreadPool(){
-            try {
-                if(taskThreadPool==null){
-                    Thread.sleep(3000);
-                    synchronized (TaskThreadPool.class){
-                        if(taskThreadPool==null)
-                            taskThreadPool = new TaskThreadPool();
-                    }
-
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+    @Scheduled(fixedRate = 1000)
+    public void allCacheRun(){
+        synchronized (cache){
+            Iterator<TaskThread> iterator = cache.iterator();
+            while(iterator.hasNext()){
+                TaskThread taskThread = iterator.next();
+                taskThread.run();
             }
-        return taskThreadPool;
+        }
     }
+
 
     /**
      * 添加订单任务
@@ -130,7 +122,7 @@ public class TaskThreadPool {
      * @param orderId
      * @return
      */
-    public DTask getTaskFromOrder(int orderId){
+    public synchronized DTask getTaskFromOrder(int orderId){
         long taskId = orderToTask.get(orderId);
         Iterator<TaskThread> iterator = cache.iterator();
 

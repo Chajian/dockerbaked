@@ -26,6 +26,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -59,37 +60,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     TaskThreadPool taskThreadPool;
 
-    @PostConstruct
-    public void init(){
-        //order订单接收线程
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(1));
-                    for (ConsumerRecord<Long, String> record : records) {
-                        AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
-                        //创建订单
-                        if(!ObjectUtils.isEmpty(addOrder.getOrder()))
-                            createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
-                    }
-                    log.info("order接收端id:"+Thread.currentThread().getId());
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        });
-        thread.setName("docker-order");
-        thread.start();
-    }
 
     public TaskThreadPool getTaskThreadPool() {
         return taskThreadPool;
     }
 
+    @Scheduled(fixedRate = 1000)
+    public void receiveMessage(){
+        ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(1));
+        for (ConsumerRecord<Long, String> record : records) {
+            AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
+            //创建订单
+            if(!ObjectUtils.isEmpty(addOrder.getOrder()))
+                createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
+        }
+        log.info("order接收端id:"+Thread.currentThread().getId());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     //生产者生产消息
     public Order sendMessage(AddOrder addOrder){

@@ -31,7 +31,7 @@ import java.util.List;
  * @date 2023/3/2 19:04
  */
 @RestController
-@RequestMapping("ibs/api/admin/containers")
+@RequestMapping("/ibs/api/admin")
 @RequiresRoles("admin")
 public class AdminController {
     @Autowired
@@ -48,7 +48,7 @@ public class AdminController {
      *@author chen  /ibs/api/admin/containers/{id}/{status}
      *@version 1.0
      */
-    @GetMapping("/{id}/{status}")
+    @GetMapping("/containers/{id}/{status}")
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.operateContainer(containerId, status);
     }
@@ -60,7 +60,7 @@ public class AdminController {
      * @param addContainer
      * @return 成功为200 失败为500
      */
-    @PostMapping("/create")
+    @PostMapping("/containers/create")
     public Result create(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         long userId = JwtUtil.getUserId(token);
         containerService.createContainer(addContainer, userId,null);
@@ -74,7 +74,7 @@ public class AdminController {
      *@author chen /ibs/api/admin/containers/
      *@version 1.0
      */
-    @PostMapping
+    @PostMapping("/containers/{page}/{pageSize}")
     public Result<List<Container>> getContainers(@RequestBody(required = false) ContainerParam containerParam,
                                                  @RequestParam(required = false, value = "page", defaultValue = "1") Integer page,
                                                  @RequestParam(required = false, value = "pageSize", defaultValue = "5") Integer pageSize) {

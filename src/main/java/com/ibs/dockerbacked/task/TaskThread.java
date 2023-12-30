@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 定时任务线程池
@@ -39,26 +40,28 @@ public class TaskThread implements Runnable {
     @Override
     public void run() {
         //TODO 加锁提升线程安全
-        String info = "当前线程名:"+Thread.currentThread().getName()+":"+Thread.currentThread().getId();
-        logs.add(info);
-        log.info(info);
-        Iterator<DTask> iterator = list.iterator();
-            while(iterator.hasNext()){
-                DTask task = iterator.next();
-                //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
-                if(task.getStatus()==TaskStatus.DEATH) {
-                    iterator.remove();
+            synchronized(this) {
+                Iterator<DTask> iterator = list.iterator();
+                while (iterator.hasNext()) {
+                    DTask task = iterator.next();
+                    //iterator.remove();会导致异常报错，原因在多线程情况下，list没有上锁就进行删除操作
+                    if (task.getStatus() == TaskStatus.DEATH) {
+                        iterator.remove();
+                    } else {
+                        try {
+                            task.run();
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                else {
-                    task.run();
-                }
+                String info = "当前线程名:" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId();
+                log.info(info);
             }
-
-        if(list.size()==0)
-            live = false;
     }
 
-    public boolean add(DTask task){
+    public synchronized boolean add(DTask task){
         if(list.size() < max) {
             list.add(task);
             return true;
@@ -76,7 +79,7 @@ public class TaskThread implements Runnable {
      * @param id
      * @return
      */
-    public DTask getDTaskById(long id){
+    public synchronized DTask getDTaskById(long id){
         for(DTask t : list){
             if(t.getId()==id)
                 return t;
@@ -84,7 +87,7 @@ public class TaskThread implements Runnable {
         return null;
     }
 
-    public float getDensity(){
+    public synchronized float getDensity(){
         return list.size()/max;
     }
 }

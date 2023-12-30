@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @MapperScan(basePackages = {"com.ibs.dockerbacked.mapper"})
+@EnableScheduling
 @EnableConfigurationProperties({DockerCloudConfig.class})
 public class DockerCloudBoot {
     public static void main(String[] args) {
@@ -50,8 +51,4 @@ public class DockerCloudBoot {
         return new ImageModel(dockerClient);
     }
 
-    @Bean
-    public TaskThreadPool taskThreadPool(){
-        return TaskThreadPool.getTaskThreadPool();
-    }
 }
