@@ -48,7 +48,7 @@ public class AdminController {
      *@author chen  /ibs/api/admin/containers/{id}/{status}
      *@version 1.0
      */
-    @GetMapping("/containers/{id}/{status}")
+    @GetMapping("/container/{id}/{status}")
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.operateContainer(containerId, status);
     }
@@ -74,11 +74,10 @@ public class AdminController {
      *@author chen /ibs/api/admin/containers/
      *@version 1.0
      */
-    @PostMapping("/containers/{page}/{pageSize}")
-    public Result<List<Container>> getContainers(@RequestBody(required = false) ContainerParam containerParam,
-                                                 @RequestParam(required = false, value = "page", defaultValue = "1") Integer page,
-                                                 @RequestParam(required = false, value = "pageSize", defaultValue = "5") Integer pageSize) {
-        return containerService.getContainers(containerParam, page, pageSize, null);
+    @GetMapping("/containers/{page}/{pageSize}")
+    public Result<List<Container>> getContainers(@PathVariable("page") Integer page,
+                                                 @PathVariable("pageSize") Integer pageSize) {
+        return containerService.getContainers( page, pageSize);
     }
 
     /***

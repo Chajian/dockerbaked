@@ -23,6 +23,9 @@ public interface ContainerService extends IService<Container> {
     Result<List<Container>> getContainers(ContainerParam containerParam, Integer page, Integer pageSize, Integer userId);
     Result<List<Container>> getContainers(Integer page, Integer pageSize, Integer userId);
 
+    //管理员接口
+    Result<List<Container>> getContainers(Integer page, Integer pageSize);
+
     //创建容器
     String createContainer(AddContainer addContainer, long userId, Hardware hardware);
 

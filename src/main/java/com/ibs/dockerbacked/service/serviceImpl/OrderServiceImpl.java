@@ -74,7 +74,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if(!ObjectUtils.isEmpty(addOrder.getOrder()))
                 createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
         }
-        log.info("order接收端id:"+Thread.currentThread().getId());
+//        log.info("order接收端id:"+Thread.currentThread().getId());
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

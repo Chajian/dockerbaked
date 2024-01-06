@@ -115,6 +115,25 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         return Result.success(200, "success", containers);
     }
 
+    /***
+     *@descript 容器列表-管理员
+     * @param
+     *@return
+     *@author Yanglin
+     *@version 1.0
+     */
+    @Override
+    public Result<List<Container>> getContainers( Integer page, Integer pageSize) {
+        Page<Container> p = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
+        Page<Container> pageResult = page(p, lambdaQueryWrapper);
+        List<Container> containers = pageResult.getRecords();
+        if (pageResult.getSize() <= 0) {
+            return null;
+        }
+        return Result.success(200, "success", containers);
+    }
+
 
     //创建容器
     @Transactional
