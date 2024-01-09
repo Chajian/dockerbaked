@@ -20,6 +20,7 @@ public enum Constants {
     CODE_Login_500("登录失败",500),//登录失败
     CODE_BatchREgister_501("注册失败",501),//注册失败
     Internal_Server_Error("服务器错误",401),//服务器错误
+    CONTAINER_REPEAT_NAME("容器名重复",401),
 
     EXEC_ERROR("执行指令失败!",401);
 

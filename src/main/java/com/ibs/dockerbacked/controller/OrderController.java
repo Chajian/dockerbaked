@@ -1,12 +1,15 @@
 package com.ibs.dockerbacked.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
+import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.mapper.PacketMapper;
 import com.ibs.dockerbacked.service.OrderService;
@@ -47,6 +50,9 @@ public class OrderController {
     @Autowired
     TaskThreadPool taskThreadPool;
 
+    @Autowired
+    ContainerMapper containerMapper;
+
     /**
      * 创建订单
      *
@@ -60,6 +66,11 @@ public class OrderController {
         Hardware hard = hardwareMapper.selectById(packet.getHardwareId());
         if(packet==null||hard==null)
             return Result.error(Constants.CODE_401.getCode(),"packet or hardware have problems!");
+        //容器重命检测
+        String name=JwtUtil.getUserId(token)+"-"+addContainer.getContainerName();
+        boolean isRepeat = containerMapper.exists(new QueryWrapper<Container>().eq("name_c",name));
+        if(isRepeat)
+            return Result.error(Constants.CONTAINER_REPEAT_NAME);
         //发送消息
         AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
         Order result = orderService.sendMessage(addOrder);
