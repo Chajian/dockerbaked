@@ -21,6 +21,11 @@ public enum Constants {
     CODE_BatchREgister_501("注册失败",501),//注册失败
     Internal_Server_Error("服务器错误",401),//服务器错误
     CONTAINER_REPEAT_NAME("容器名重复",401),
+    HARDWARE_NULL("硬件信息为空",401),
+    PACKET_NULL("套餐信息为空",401),
+    NULL("存在空信息",401),
+
+    PAY_FAIL("支付失败",401),
 
     EXEC_ERROR("执行指令失败!",401);
 

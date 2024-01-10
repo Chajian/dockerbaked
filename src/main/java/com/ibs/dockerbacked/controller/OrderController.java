@@ -65,7 +65,7 @@ public class OrderController {
         Packet packet = packetMapper.selectById(packetId);
         Hardware hard = hardwareMapper.selectById(packet.getHardwareId());
         if(packet==null||hard==null)
-            return Result.error(Constants.CODE_401.getCode(),"packet or hardware have problems!");
+            return Result.error(Constants.NULL);
         //容器重命检测
         String name=JwtUtil.getUserId(token)+"-"+addContainer.getContainerName();
         boolean isRepeat = containerMapper.exists(new QueryWrapper<Container>().eq("name_c",name));
@@ -88,7 +88,7 @@ public class OrderController {
         Order order = orderService.getById(orderId);
         if(orderService.paied(order))
             return Result.success(Constants.CODE_200.getCode(),"支付成功!", null);
-        return Result.error(Constants.CODE_BatchREgister_501.getCode(),"支付失败！");
+        return Result.error(Constants.PAY_FAIL);
     }
 
 

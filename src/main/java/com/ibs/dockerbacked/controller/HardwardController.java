@@ -33,7 +33,7 @@ public class HardwardController {
         Hardware hardware = hardwareService.getHardwareById(hardwareId);
         if(hardware!=null)
             return Result.success(Constants.CODE_200,hardware);
-        return Result.error(Constants.CODE_401);
+        return Result.error(Constants.HARDWARE_NULL);
     }
 
     /**
@@ -45,6 +45,6 @@ public class HardwardController {
         List<Hardware> hardwares = hardwareService.getHardwares(page,pageSize);
         if(hardwares!=null)
             return Result.success(Constants.CODE_200,hardwares);
-        return Result.error(Constants.CODE_401);
+        return Result.error(Constants.HARDWARE_NULL);
     }
 }
