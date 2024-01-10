@@ -22,6 +22,9 @@ public enum Constants {
     Internal_Server_Error("服务器错误",401),//服务器错误
     CONTAINER_REPEAT_NAME("容器名重复",401),
     HARDWARE_NULL("硬件信息为空",401),
+    IMAGE_NOT_EXIST("镜像不存在",401),
+
+
     PACKET_NULL("套餐信息为空",401),
     NULL("存在空信息",401),
 

@@ -3,14 +3,12 @@ package com.ibs.dockerbacked.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
-import com.ibs.dockerbacked.entity.Container;
-import com.ibs.dockerbacked.entity.Hardware;
-import com.ibs.dockerbacked.entity.Order;
-import com.ibs.dockerbacked.entity.Packet;
+import com.ibs.dockerbacked.entity.*;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
+import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.mapper.PacketMapper;
 import com.ibs.dockerbacked.service.OrderService;
 import com.ibs.dockerbacked.task.BaseTask;
@@ -51,6 +49,9 @@ public class OrderController {
     TaskThreadPool taskThreadPool;
 
     @Autowired
+    ImageMapper imageMapper;
+
+    @Autowired
     ContainerMapper containerMapper;
 
     /**
@@ -71,6 +72,12 @@ public class OrderController {
         boolean isRepeat = containerMapper.exists(new QueryWrapper<Container>().eq("name_c",name));
         if(isRepeat)
             return Result.error(Constants.CONTAINER_REPEAT_NAME);
+        //镜像检测
+        String imageName = addContainer.getImageName();
+        boolean exist = imageMapper.exists(new QueryWrapper<Image>().eq("name",imageName));
+        if(!exist)
+            return Result.error(Constants.IMAGE_NOT_EXIST);
+
         //发送消息
         AddOrder addOrder = new AddOrder(packetId,JwtUtil.getUserId(token),addContainer,100);
         Order result = orderService.sendMessage(addOrder);
