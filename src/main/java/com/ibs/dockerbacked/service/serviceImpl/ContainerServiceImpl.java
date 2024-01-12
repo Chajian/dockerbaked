@@ -166,9 +166,13 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         //容器名字
         String containName = userId + "-" + addContainer.getContainerName();
+
         //2.2 创建容器
-        CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
-                    addContainer.generatePorts(), envs);
+
+        CreateContainerResponse createContainerResponse = containerModel.createContainer(hardware.getCpuCoreNumber(),hardware.getMemory(), hardware.getDisk(),
+                hardware.getNetworkSpeed(),containName,imageName,addContainer.generatePorts(),envs);
+//        CreateContainerResponse createContainerResponse = containerModel.createContainer(containName, imageName,
+//                    addContainer.generatePorts(), envs);
 
 
         String containId = null;
