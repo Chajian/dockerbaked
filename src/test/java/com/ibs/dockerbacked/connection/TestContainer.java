@@ -115,8 +115,8 @@ public class TestContainer {
 
     @Test
     public void exec2(){
-        List<String> info = containerModel.execCommand("41ce0447dc53dd1da4430487386af5eff8d8455c5009041b084a0da35b3c0cd9","ls");
-        System.out.println(Arrays.toString(info.toArray()));
+        String info = containerModel.execCommand("41ce0447dc53dd1da4430487386af5eff8d8455c5009041b084a0da35b3c0cd9","ls");
+        System.out.println(info);
     }
 
     /**
