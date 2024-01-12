@@ -23,6 +23,6 @@ public class Hardware extends TimeRecord {
     @Min(message = "磁盘不能小于等于0",value = 0)
     private int disk;
     @Min(message = "内存不能小于等于0",value = 0)
-    private float memory;
+    private int memory;
     private float money;
 }
