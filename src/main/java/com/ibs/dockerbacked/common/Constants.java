@@ -21,6 +21,7 @@ public enum Constants {
     CODE_BatchREgister_501("注册失败",501),//注册失败
     Internal_Server_Error("服务器错误",401),//服务器错误
     CONTAINER_REPEAT_NAME("容器名重复",401),
+    CONTAINER_STATS_ERROR("获取容器资源占用失败",401),
     HARDWARE_NULL("硬件信息为空",401),
     IMAGE_NOT_EXIST("镜像不存在",401),
 
