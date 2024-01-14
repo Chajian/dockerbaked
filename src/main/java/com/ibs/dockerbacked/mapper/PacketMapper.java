@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Options;
 
 public interface PacketMapper extends BaseMapper<Packet> {
 
-    @Insert("insert into hardware " +
+    @Insert("REPLACE INTO hardware " +
             "(cpu_type,cpu_core_number,network_speed,memory,disk,money) " +
             "values " +
             "(#{cpuType},#{cpuCoreNumber},#{networkSpeed},#{disk},#{memory},#{money})")
