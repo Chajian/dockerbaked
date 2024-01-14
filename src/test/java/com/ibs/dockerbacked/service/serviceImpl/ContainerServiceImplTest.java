@@ -72,12 +72,7 @@ class ContainerServiceImplTest {
         pullImages.setName("javaweb");
         pullImages.setTag("1.0");
         //通过指定的标签获取镜像,默认
-        try {
-            imageModel.pullImage(pullImages.getName(), pullImages.getTag());
-        } catch (InterruptedException e) {
-//            throw new CustomExpection(Constants.Internal_Server_Error, "拉取失败");
-            log.info("拉取失败");
-        }
+        imageModel.pullImage(pullImages.getName(), pullImages.getTag());
     }
 
     @Test

@@ -6,10 +6,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.ExecCreateCmd;
 import com.github.dockerjava.api.command.ExecCreateCmdResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.ExecCreateCmdImpl;
 import com.github.dockerjava.core.command.LogContainerCmdImpl;
 import com.github.dockerjava.core.exec.ExecCreateCmdExec;
@@ -39,8 +36,8 @@ public class TestContainer {
 
     @Before
     public void init(){
-//        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
-        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+//        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
         containerModel = new ContainerModel(dockerConnection.connect());
     }
 
@@ -148,6 +145,24 @@ public class TestContainer {
 
     }
 
-
+    @Test
+    public void stats() throws InterruptedException {
+        DockerClient dockerClient = dockerConnection.connect();
+        ResultCallback<Statistics>result = dockerClient.statsCmd("08447b73049a")
+                .withContainerId("08447b73049a")
+                .exec(new ResultCallback.Adapter<>(){
+            @Override
+            public void onNext(Statistics object) {
+                super.onNext(object);
+                System.out.println("进程信息");
+                String info = object.getPreCpuStats().toString()+object.getMemoryStats().toString();
+                System.out.println(info);
+            }
+        }).awaitStarted();
+        System.out.println(result.toString());
+        while(true){
+            Thread.sleep(1000);
+        }
+    }
 
 }
