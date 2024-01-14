@@ -1,18 +1,13 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.DockerObject;
-import com.github.dockerjava.api.model.Image;
-import com.github.dockerjava.api.model.PullResponseItem;
-import com.github.dockerjava.api.model.SearchItem;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ImageModel;
-import com.ibs.dockerbacked.entity.User;
+import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
-import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.service.ImageService;
-import com.ibs.dockerbacked.service.UserSerivce;
 import com.ibs.dockerbacked.task.EventTask;
 import com.ibs.dockerbacked.task.TaskStatus;
 import com.ibs.dockerbacked.task.TaskThreadPool;
@@ -25,15 +20,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ImageServiceImpl implements ImageService {
+public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements ImageService {
     @Autowired
     private ImageModel imageModel;
 

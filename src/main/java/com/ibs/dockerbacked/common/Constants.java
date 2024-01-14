@@ -30,7 +30,7 @@ public enum Constants {
     NULL("存在空信息",401),
 
     PAY_FAIL("支付失败",401),
-
+    PAY_NOT_ENOUGH_MONEY("支付失败，钱包金额不够",401),
     EXEC_ERROR("执行指令失败!",401);
 
     private String msg;
