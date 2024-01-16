@@ -24,7 +24,10 @@ public enum Constants {
     CONTAINER_STATS_ERROR("获取容器资源占用失败",401),
     HARDWARE_NULL("硬件信息为空",401),
     IMAGE_NOT_EXIST("镜像不存在",401),
-
+    FILE_NOT_EXIST("文件不存在",401),
+    FILE_AREALY_EXIST("文件已经存在",401),
+    FILE_WRITE_FAIL("文件写入失败",401),
+    PATH_NOT_EXIST("目录不存在",401),
 
     PACKET_NULL("套餐信息为空",401),
     NULL("存在空信息",401),
