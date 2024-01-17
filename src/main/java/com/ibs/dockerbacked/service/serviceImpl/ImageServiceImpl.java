@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
+import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.DockerObject;
 import com.ibs.dockerbacked.common.Result;
@@ -7,6 +8,7 @@ import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.mapper.ImageMapper;
+import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.task.EventTask;
 import com.ibs.dockerbacked.task.TaskStatus;
@@ -16,9 +18,11 @@ import com.ibs.dockerbacked.task.event.Event;
 import com.ibs.dockerbacked.util.EntityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,20 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
     @Autowired
     private TaskThreadPool taskThreadPool;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("user.image.space")
+    private String imageSpace;
+
+    @PostConstruct
+    public void init(){
+        //初始化用户的image空间
+        if(imageSpace==null)
+            imageSpace = System.getProperty("user.dir");
+    }
+
     //获取镜像
     @Override
     public List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId) {
@@ -125,5 +143,14 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
 
         return images;
+    }
+
+    @Override
+    public Result createImageSpace(String account) {
+        //创建用户空间
+        String userSpacePath = imageSpace+File.pathSeparator+account;
+
+
+        return null;
     }
 }

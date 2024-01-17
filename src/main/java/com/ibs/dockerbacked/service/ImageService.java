@@ -19,6 +19,6 @@ public interface ImageService {
     List<Image> dockerObjectToImage(List<? extends DockerObject> objects);
 
     //开辟镜像空间
-    Result createImageSpace();
+    Result createImageSpace(String account);
 
 }
