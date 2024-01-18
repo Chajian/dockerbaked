@@ -47,13 +47,13 @@ public class ImageController {
     }
 
     /**
-     * Dockerfile文件上传
-     * @param dockerFile
+     * build镜像通过Dockerfile文件
+     * @param imageName
      * @return
      */
     @PostMapping("/build")
-    public Result build(MultipartFile dockerFile) throws IOException {
-        File file = FileUtils.bytesToFile(dockerFile.getBytes(),dockerFile.getName());
-        return imageService.build(file);
+    public Result build(String imageName,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws IOException {
+        String account = JwtUtil.getUserAccount(token);
+        return imageService.build(imageName,account);
     }
 }

@@ -3,10 +3,12 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.DockerObject;
+import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.ImageService;
@@ -21,9 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,8 +129,21 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
     }
 
     @Override
-    public Result build(File dockerFile) {
-        imageModel.buildImage(dockerFile);
+    public Result build(String image,String account) {
+        String userPath = getUserSpacePath(account);
+        File file = new File(userPath);
+        if(FileUtil.isEmpty(file))
+            throw new CustomExpection(Constants.PATH_NOT_EXIST);
+        String imagePath = getImageSpacePath(account,image);
+        file = new File(imagePath);
+        if(FileUtil.isEmpty(file))
+            throw new CustomExpection(Constants.PATH_NOT_EXIST);
+        String dockerFilePath = imagePath+File.pathSeparator+"Dockerfile";
+        file = new File(dockerFilePath);
+        if(!file.exists())
+            throw new CustomExpection(Constants.FILE_NOT_EXIST);
+
+        imageModel.buildImage(file);
         return Result.success(200,"构建成功!",null);
     }
 
@@ -145,12 +162,65 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
         return images;
     }
 
+
+
     @Override
-    public Result createImageSpace(String account) {
-        //创建用户空间
-        String userSpacePath = imageSpace+File.pathSeparator+account;
+    public boolean createImageSpace(String account,String image) {
+        //检测用户空间
+        String userSpacePath = getUserSpacePath(account);
+        File userSpace = new File(getUserSpacePath(account));
+        if(!userSpace.exists())
+            createUserSpace(account);
 
+        //创建镜像空间
+        String imageSpacePath = getImageSpacePath(account,image);
+        File imageSpace = new File(imageSpacePath);
+        if(!imageSpace.exists()){
+            fileService.createFolder(userSpacePath,image);
+            return true;
+        }
+        return false;
 
-        return null;
     }
+
+    @Override
+    public boolean updateImageFile(MultipartFile multipartFile, String imageName, String account) {
+        String imageSpacePath = getImageSpacePath(account,imageName);
+        File imageSpace = new File(imageSpacePath);
+        if(!imageSpace.exists()){
+            createImageSpace(account,imageName);
+        }
+        try {
+            fileService.saveFile(multipartFile.getBytes(),multipartFile.getName(),imageSpacePath);
+        } catch (IOException e) {
+            throw new CustomExpection(Constants.FILE_WRITE_FAIL);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean createUserSpace(String account) {
+        //创建用户空间
+        String userSpacePath = getUserSpacePath(account);
+        File userSpace = new File(userSpacePath);
+        if(!userSpace.exists()){
+            fileService.createFolder(imageSpace,account);
+            return true;
+
+        }
+        return false;
+    }
+
+    @Override
+    public String getImageSpacePath(String account, String image) {
+        return imageSpace+File.pathSeparator+account+File.pathSeparator+image;
+    }
+
+    @Override
+    public String getUserSpacePath(String account) {
+        return imageSpace+File.pathSeparator+account;
+    }
+
+
 }
