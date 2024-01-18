@@ -34,6 +34,15 @@ public class Result<T> {
         return result;
     }
 
+    //成功的信息
+    public static <T> Result<T> success(Constants constants) {
+        Result<T> result = new Result<>();
+        result.data = null;
+        result.code = constants.getCode();
+        result.message = constants.getMsg();
+        return result;
+    }
+
     //失败的信息
     public static <T> Result<T> error(Integer code,String message) {
         Result<T> result = new Result<>();

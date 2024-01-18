@@ -56,4 +56,11 @@ public class ImageController {
         String account = JwtUtil.getUserAccount(token);
         return imageService.build(imageName,account);
     }
+
+    @PostMapping("/createSpace")
+    public Result createImageSpace(String imageName,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        String account = JwtUtil.getUserAccount(token);
+        imageService.createImageSpace(account,imageName);
+        return Result.success(Constants.CODE_200);
+    }
 }
