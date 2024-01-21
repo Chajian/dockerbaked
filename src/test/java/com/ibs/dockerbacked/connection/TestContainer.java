@@ -145,6 +145,16 @@ public class TestContainer {
 
     }
 
+    /**
+     * used_memory = memory_stats.usage - memory_stats.stats.cache
+     * available_memory = memory_stats.limit
+     * Memory usage % = (used_memory / available_memory) * 100.0
+     * cpu_delta = cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage
+     * system_cpu_delta = cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage
+     * number_cpus = lenght(cpu_stats.cpu_usage.percpu_usage) or cpu_stats.online_cpus
+     * CPU usage % = (cpu_delta / system_cpu_delta) * number_cpus * 100.0
+      * @throws InterruptedException
+     */
     @Test
     public void stats() throws InterruptedException {
         DockerClient dockerClient = dockerConnection.connect();
@@ -155,6 +165,20 @@ public class TestContainer {
             public void onNext(Statistics object) {
                 super.onNext(object);
                 System.out.println("进程信息");
+                if(object.getCpuStats().getSystemCpuUsage()!=null&&object.getPreCpuStats().getSystemCpuUsage()!=null) {
+                    double cpuDelta = object.getCpuStats().getCpuUsage().getTotalUsage() - object.getPreCpuStats().getCpuUsage().getTotalUsage();
+                    double cpuSysDetal = object.getCpuStats().getSystemCpuUsage() - object.getPreCpuStats().getSystemCpuUsage();
+                    double cpuPortion = cpuDelta / cpuSysDetal * object.getCpuStats().getOnlineCpus() * 100f;
+
+                }
+                if(object.getMemoryStats().getUsage()!=null){
+//                    double usedMemory = object.getMemoryStats().getUsage()-object.getMemoryStats().getStats().getCache();
+                    double usedMemory = object.getMemoryStats().getUsage();
+                    double availableMemory = object.getMemoryStats().getLimit();
+                    double memoryPortion = usedMemory/availableMemory*100f;
+                }
+
+
                 String info = object.getPreCpuStats().toString()+object.getMemoryStats().toString();
                 System.out.println(info);
             }
