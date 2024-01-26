@@ -19,8 +19,6 @@ public class ContainerHandler implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        StringBuffer stringBuffer = request.getRequestURL();
-
 
 
 

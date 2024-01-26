@@ -102,22 +102,5 @@ public class ContainerController {
         return Result.success(Constants.CODE_200,result);
     }
 
-    /**
-     * dashboard面板数据
-     * @return
-     */
-    @GetMapping("/dashboard/{id}")
-    public Result dashBoard(@PathVariable("id") String containerId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
-            return Result.error(Constants.CODE_400);
-        Dashboard dashboard = new Dashboard();
-        dashboard.setContainer(containerService.getContainerById(containerId));
-
-
-
-        return Result.success(Constants.CODE_200,dashboard);
-    }
-
-
 
 }

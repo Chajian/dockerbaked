@@ -22,6 +22,6 @@ public interface UserSerivce extends IService<User> {
     boolean batchGenerationUser(int count, String token);
 
     //开辟用户空间
-    boolean createUserSpace();
+//    boolean createUserSpace();
 
 }

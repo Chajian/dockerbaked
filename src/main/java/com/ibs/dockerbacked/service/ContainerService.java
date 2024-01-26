@@ -10,6 +10,8 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
+import com.ibs.dockerbacked.entity.vo.Dashboard;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 
 /**
@@ -53,4 +55,12 @@ public interface ContainerService extends IService<Container> {
      * @return id不存在返回false||OwnerId！=userId也返回false
      */
     boolean hasContainer(String id,int userId);
+
+    /**
+     * 获取容器的dashboard
+     * @param id 容器id
+     * @param sseEmitter sseemitter变量
+     * @return
+     */
+    Dashboard getDashboard(String id);
 }
