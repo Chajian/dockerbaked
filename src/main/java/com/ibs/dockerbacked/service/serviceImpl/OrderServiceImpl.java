@@ -67,6 +67,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Scheduled(fixedRate = 1000)
     public void receiveMessage(){
+        if(!kafkaModel.isEnable())
+            return;
         ConsumerRecords<Long, String> records = kafkaModel.getConsumer().poll(Duration.ofMillis(1));
         for (ConsumerRecord<Long, String> record : records) {
             AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);

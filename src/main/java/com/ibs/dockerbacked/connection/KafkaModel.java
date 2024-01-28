@@ -9,7 +9,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.common.KafkaFuture;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -26,17 +28,20 @@ public class KafkaModel {
     Properties summerprops = new Properties();
     Producer<Long, String> producer;
     KafkaConsumer<Long, String> consumer;
-
+    @Value("${kafka.enable:true}")
+    private boolean enable;
     String kafkaIp;
     String port;
 
     public KafkaModel(String kafkaIp, String port) {
         this.kafkaIp = kafkaIp;
         this.port = port;
-        init();
     }
 
+    @PostConstruct
     public void init (){
+        if(!enable)
+            return;
 
         //kafka topic check
         Properties properties = new Properties();

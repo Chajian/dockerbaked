@@ -8,11 +8,11 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.api.model.*;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ContainerModel;
@@ -25,6 +25,7 @@ import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
+import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ContainerMapper;
 import com.ibs.dockerbacked.mapper.UserMapper;
@@ -37,11 +38,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.dockerjava.api.model.Image;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 /**
  * @author sn
  */
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +69,9 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     @Autowired
     private ContainerModel containerModel;
+
+    @Autowired
+    private DockerClient dockerClient;
 
     public Result<List<Container>> getContainers( Integer page, Integer pageSize, Integer userId) {
         //测试用户
@@ -341,6 +346,41 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
     @Override
+    public Dashboard getDashboard(String id) {
+        try {
+            Dashboard[] temp = {null};
+            dockerClient.statsCmd(id)
+                .exec(new ResultCallback.Adapter<>(){
+                    @Override
+                    public void onNext(Statistics object) {
+                        super.onNext(object);
+                        System.out.println("进程信息");
+                        Dashboard dashboard = new Dashboard();
+
+                        if(object.getCpuStats().getSystemCpuUsage()!=null&&object.getPreCpuStats().getSystemCpuUsage()!=null) {
+                            double cpuDelta = object.getCpuStats().getCpuUsage().getTotalUsage() - object.getPreCpuStats().getCpuUsage().getTotalUsage();
+                            double cpuSysDetal = object.getCpuStats().getSystemCpuUsage() - object.getPreCpuStats().getSystemCpuUsage();
+                            double cpuPortion = cpuDelta / cpuSysDetal * object.getCpuStats().getOnlineCpus() * 100f;
+                            dashboard.setCpuPortion((float) cpuPortion);
+                        }
+                        if(object.getMemoryStats().getUsage()!=null){
+//                    double usedMemory = object.getMemoryStats().getUsage()-object.getMemoryStats().getStats().getCache();
+                            double usedMemory = object.getMemoryStats().getUsage();
+                            double availableMemory = object.getMemoryStats().getLimit();
+                            double memoryPortion = usedMemory/availableMemory*100f;
+                            dashboard.setMemoryPortion(memoryPortion);
+                        }
+                        dashboard.setContainerName(id);
+                        temp[0] = dashboard;
+                    }
+                }).awaitStarted();
+            return temp[0];
+        } catch (InterruptedException e) {
+            throw new CustomExpection(Constants.EXEC_ERROR);
+        }
+    }
+
+    @Override
     public Container getContainerById(String containerId) {
         LambdaQueryWrapper<Container> lambdaQueryWrapper = new LambdaQueryWrapper<>();//条件
         lambdaQueryWrapper.eq(Container::getId,containerId);
@@ -348,4 +388,6 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         return container;
     }
+
+
 }

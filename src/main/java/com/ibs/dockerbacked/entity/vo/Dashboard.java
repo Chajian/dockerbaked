@@ -8,5 +8,8 @@ import lombok.Data;
  */
 @Data
 public class Dashboard {
-    Container container;
+    String containerName;
+    double cpuPortion;
+    double memoryPortion;
+
 }

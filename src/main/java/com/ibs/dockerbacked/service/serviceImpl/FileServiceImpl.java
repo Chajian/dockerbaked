@@ -4,6 +4,8 @@ import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.util.FileUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 
@@ -11,6 +13,8 @@ import java.io.*;
  * 文件存储文件实现
  * @Date 2023/01/16
  */
+@Slf4j
+@Service
 public class FileServiceImpl implements FileService {
 
     @Override
