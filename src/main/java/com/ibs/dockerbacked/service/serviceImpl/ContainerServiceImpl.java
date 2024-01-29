@@ -382,6 +382,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 //                        temp[0] = dashboard;
 //                    }
 //                }).awaitCompletion();
+            closeDashboard(resultCallback);
             return resultCallback;
         } catch (InterruptedException e) {
             throw new CustomExpection(Constants.EXEC_ERROR);

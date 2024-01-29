@@ -2,7 +2,9 @@ package com.ibs.dockerbacked.controller;
 
 import com.alipay.api.java_websocket.server.WebSocketServer;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
@@ -39,7 +41,7 @@ public class WebSocketContorller {
         private static final CopyOnWriteArraySet<WebSocketContorller> webSockets = new CopyOnWriteArraySet<>();
         // 用来存在线连接数
         private static final Map<Integer, Session> sessionPool = new HashMap<Integer, Session>();
-        private static final Map<String, List<Dashboard>> dashboards = new HashMap<>();
+        private static final Map<String, DashboardResultCallback> dashboards = new HashMap<>();
         //保证对象唯一
         private static ContainerService containerService;
 
@@ -58,7 +60,8 @@ public class WebSocketContorller {
                 this.containerId = containerId;
                 webSockets.add(this);
                 sessionPool.put(userId, session);
-                containerService.getDashboard(containerId);
+                DashboardResultCallback resultCallback = (DashboardResultCallback) containerService.getDashboard(containerId);
+                dashboards.put(containerId,resultCallback);
                 log.info("websocket消息: 有新的连接，总数为:" + webSockets.size());
             } catch (Exception e) {
             }
@@ -72,14 +75,9 @@ public class WebSocketContorller {
         public void onMessage(String command) {
             if(!containerService.hasContainer(containerId,userId))
                 throw new CustomExpection(Constants.CODE_400);
-            switch (command){
-                case "close":
-
-                    break;
-            }
             //发送dashboard信息
-            List<Dashboard> dashboard = dashboards.get(containerId);
-            session.getAsyncRemote().sendObject(dashboard);
+            List<Dashboard> result = dashboards.get(containerId).getDashboards();
+            session.getAsyncRemote().sendObject(result);
         }
         /**
          * 此为单点消息
