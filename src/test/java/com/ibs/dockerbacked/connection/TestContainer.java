@@ -186,6 +186,7 @@ public class TestContainer {
         System.out.println(result.toString());
         while(true){
             Thread.sleep(1000);
+            result.onComplete();
         }
     }
 
