@@ -20,12 +20,13 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @Slf4j
-@ServerEndpoint("/ibs/api/containers/dashboard/{token}")
+@ServerEndpoint("/ibs/api/containers/dashboard/{token}/{containerid}")
 /**
  * 多对象模式
  *
@@ -34,9 +35,11 @@ public class WebSocketContorller {
         //与某个客户端的连接会话，需要通过它来给客户端发送数据
         private Session session;
         private int userId;
+        private String containerId;
         private static final CopyOnWriteArraySet<WebSocketContorller> webSockets = new CopyOnWriteArraySet<>();
         // 用来存在线连接数
         private static final Map<Integer, Session> sessionPool = new HashMap<Integer, Session>();
+        private static final Map<String, List<Dashboard>> dashboards = new HashMap<>();
         //保证对象唯一
         private static ContainerService containerService;
 
@@ -48,12 +51,14 @@ public class WebSocketContorller {
          * 链接成功调用的方法
          */
         @OnOpen
-        public void onOpen(Session session, @PathParam(value = "token") String token) {
+        public void onOpen(Session session, @PathParam(value = "token") String token,@PathParam(value = "containerid") String containerId) {
             try {
                 this.session = session;
                 this.userId = JwtUtil.getUserId(token);
+                this.containerId = containerId;
                 webSockets.add(this);
                 sessionPool.put(userId, session);
+                containerService.getDashboard(containerId);
                 log.info("websocket消息: 有新的连接，总数为:" + webSockets.size());
             } catch (Exception e) {
             }
@@ -64,14 +69,17 @@ public class WebSocketContorller {
          * 收到客户端消息后调用的方法
          */
         @OnMessage
-        public void onMessage(String containerId) {
+        public void onMessage(String command) {
             if(!containerService.hasContainer(containerId,userId))
                 throw new CustomExpection(Constants.CODE_400);
+            switch (command){
+                case "close":
 
+                    break;
+            }
             //发送dashboard信息
-            Dashboard dashboard = containerService.getDashboard(containerId);
+            List<Dashboard> dashboard = dashboards.get(containerId);
             session.getAsyncRemote().sendObject(dashboard);
-
         }
         /**
          * 此为单点消息

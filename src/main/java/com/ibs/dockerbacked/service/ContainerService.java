@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
@@ -62,5 +63,5 @@ public interface ContainerService extends IService<Container> {
      * @param sseEmitter sseemitter变量
      * @return
      */
-    Dashboard getDashboard(String id);
+    ResultCallback getDashboard(String id);
 }

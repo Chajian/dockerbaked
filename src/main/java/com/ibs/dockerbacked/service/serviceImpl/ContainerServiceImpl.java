@@ -17,6 +17,7 @@ import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
+import com.ibs.dockerbacked.controller.WebSocketContorller;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
@@ -346,10 +347,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
     @Override
-    public Dashboard getDashboard(String id) {
+    public ResultCallback getDashboard(String id) {
         try {
             Dashboard[] temp = {null};
-            dockerClient.statsCmd(id)
+            ResultCallback resultCallback = dockerClient.statsCmd(id)
                 .exec(new ResultCallback.Adapter<>(){
                     @Override
                     public void onNext(Statistics object) {
@@ -373,8 +374,8 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
                         dashboard.setContainerName(id);
                         temp[0] = dashboard;
                     }
-                }).awaitStarted();
-            return temp[0];
+                }).awaitCompletion();
+            return resultCallback;
         } catch (InterruptedException e) {
             throw new CustomExpection(Constants.EXEC_ERROR);
         }
