@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class Dashboard {
     String containerName;
-    double cpuPortion;
-    double memoryPortion;
+    double cpuPortion = -1;
+    double memoryPortion = -1;
 
 }

@@ -16,6 +16,7 @@ import com.github.dockerjava.api.model.*;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ContainerModel;
+import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.controller.WebSocketContorller;
 import com.ibs.dockerbacked.entity.Container;
@@ -37,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -56,6 +58,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container> implements ContainerService {
+    private static final long dashboardDelay = 10000L;
+
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -349,37 +353,47 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     @Override
     public ResultCallback getDashboard(String id) {
         try {
-            Dashboard[] temp = {null};
-            ResultCallback resultCallback = dockerClient.statsCmd(id)
-                .exec(new ResultCallback.Adapter<>(){
-                    @Override
-                    public void onNext(Statistics object) {
-                        super.onNext(object);
-                        System.out.println("进程信息");
-                        Dashboard dashboard = new Dashboard();
-
-                        if(object.getCpuStats().getSystemCpuUsage()!=null&&object.getPreCpuStats().getSystemCpuUsage()!=null) {
-                            double cpuDelta = object.getCpuStats().getCpuUsage().getTotalUsage() - object.getPreCpuStats().getCpuUsage().getTotalUsage();
-                            double cpuSysDetal = object.getCpuStats().getSystemCpuUsage() - object.getPreCpuStats().getSystemCpuUsage();
-                            double cpuPortion = cpuDelta / cpuSysDetal * object.getCpuStats().getOnlineCpus() * 100f;
-                            dashboard.setCpuPortion((float) cpuPortion);
-                        }
-                        if(object.getMemoryStats().getUsage()!=null){
-//                    double usedMemory = object.getMemoryStats().getUsage()-object.getMemoryStats().getStats().getCache();
-                            double usedMemory = object.getMemoryStats().getUsage();
-                            double availableMemory = object.getMemoryStats().getLimit();
-                            double memoryPortion = usedMemory/availableMemory*100f;
-                            dashboard.setMemoryPortion(memoryPortion);
-                        }
-                        dashboard.setContainerName(id);
-                        temp[0] = dashboard;
-                    }
-                }).awaitCompletion();
+            DashboardResultCallback resultCallback = new DashboardResultCallback();
+            dockerClient.statsCmd(id)
+                    .exec(resultCallback)
+                    .awaitCompletion();
+//            ResultCallback resultCallback = dockerClient.statsCmd(id)
+//                .exec(new ResultCallback.Adapter<>(){
+//                    @Override
+//                    public void onNext(Statistics object) {
+//                        super.onNext(object);
+//                        System.out.println("进程信息");
+//                        Dashboard dashboard = new Dashboard();
+//
+//                        if(object.getCpuStats().getSystemCpuUsage()!=null&&object.getPreCpuStats().getSystemCpuUsage()!=null) {
+//                            double cpuDelta = object.getCpuStats().getCpuUsage().getTotalUsage() - object.getPreCpuStats().getCpuUsage().getTotalUsage();
+//                            double cpuSysDetal = object.getCpuStats().getSystemCpuUsage() - object.getPreCpuStats().getSystemCpuUsage();
+//                            double cpuPortion = cpuDelta / cpuSysDetal * object.getCpuStats().getOnlineCpus() * 100f;
+//                            dashboard.setCpuPortion((float) cpuPortion);
+//                        }
+//                        if(object.getMemoryStats().getUsage()!=null){
+////                    double usedMemory = object.getMemoryStats().getUsage()-object.getMemoryStats().getStats().getCache();
+//                            double usedMemory = object.getMemoryStats().getUsage();
+//                            double availableMemory = object.getMemoryStats().getLimit();
+//                            double memoryPortion = usedMemory/availableMemory*100f;
+//                            dashboard.setMemoryPortion(memoryPortion);
+//                        }
+//                        dashboard.setContainerName(id);
+//                        temp[0] = dashboard;
+//                    }
+//                }).awaitCompletion();
             return resultCallback;
         } catch (InterruptedException e) {
             throw new CustomExpection(Constants.EXEC_ERROR);
         }
     }
+
+    @Scheduled(fixedDelay = dashboardDelay)
+    @Override
+    public void closeDashboard(DashboardResultCallback dashboardResultCallback) {
+        dashboardResultCallback.onComplete();
+    }
+
 
     @Override
     public Container getContainerById(String containerId) {
@@ -389,6 +403,9 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
         return container;
     }
+
+
+
 
 
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Image;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
@@ -60,8 +61,13 @@ public interface ContainerService extends IService<Container> {
     /**
      * 获取容器的dashboard
      * @param id 容器id
-     * @param sseEmitter sseemitter变量
      * @return
      */
     ResultCallback getDashboard(String id);
+
+    /**
+     * 关闭dashboard
+     * @param dashboardResultCallback
+     */
+    void closeDashboard(DashboardResultCallback dashboardResultCallback);
 }
