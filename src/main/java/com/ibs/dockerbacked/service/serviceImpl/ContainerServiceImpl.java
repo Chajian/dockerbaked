@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -352,11 +353,9 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     @Override
     public ResultCallback getDashboard(String id) {
-        try {
             DashboardResultCallback resultCallback = new DashboardResultCallback();
             dockerClient.statsCmd(id)
-                    .exec(resultCallback)
-                    .awaitCompletion();
+                    .exec(resultCallback);
 //            ResultCallback resultCallback = dockerClient.statsCmd(id)
 //                .exec(new ResultCallback.Adapter<>(){
 //                    @Override
@@ -382,16 +381,18 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 //                        temp[0] = dashboard;
 //                    }
 //                }).awaitCompletion();
-            closeDashboard(resultCallback);
             return resultCallback;
-        } catch (InterruptedException e) {
-            throw new CustomExpection(Constants.EXEC_ERROR);
-        }
+
     }
 
-    @Scheduled(fixedDelay = dashboardDelay)
     @Override
+    @Async
     public void closeDashboard(DashboardResultCallback dashboardResultCallback) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new CustomExpection(Constants.CLOSE_DASH_BOARD);
+        }
         dashboardResultCallback.onComplete();
     }
 

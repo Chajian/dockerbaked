@@ -9,30 +9,29 @@ import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-@Component
-@Slf4j
-@ServerEndpoint("/ibs/api/containers/dashboard/{token}/{containerid}")
 /**
  * 多对象模式
  *
  */
+@Component
+@ServerEndpoint("/ibs/api/containers/dashboard/{token}/{containerid}")
 public class WebSocketContorller {
         //与某个客户端的连接会话，需要通过它来给客户端发送数据
         private Session session;
@@ -45,6 +44,8 @@ public class WebSocketContorller {
         //保证对象唯一
         private static ContainerService containerService;
 
+        private DashboardResultCallback resultCallback;
+
         @Autowired
         public void setContainerService(ContainerService containerService){
             this.containerService = containerService;
@@ -53,7 +54,7 @@ public class WebSocketContorller {
          * 链接成功调用的方法
          */
         @OnOpen
-        public void onOpen(Session session, @PathParam(value = "token") String token,@PathParam(value = "containerid") String containerId) {
+        public void onOpen(Session session, @PathParam(value = "containerid") String containerId, @PathParam(value = "token") String token) {
             try {
                 this.session = session;
                 this.userId = JwtUtil.getUserId(token);
@@ -61,37 +62,33 @@ public class WebSocketContorller {
                 webSockets.add(this);
                 sessionPool.put(userId, session);
                 DashboardResultCallback resultCallback = (DashboardResultCallback) containerService.getDashboard(containerId);
+                this.resultCallback = resultCallback;
                 dashboards.put(containerId,resultCallback);
-                log.info("websocket消息: 有新的连接，总数为:" + webSockets.size());
+                System.out.println("websocket消息: 有新的连接，总数为:" + webSockets.size());
             } catch (Exception e) {
             }
         }
+
+
 
 
         /**
          * 收到客户端消息后调用的方法
          */
         @OnMessage
-        public void onMessage(String command) {
+        public String  onMessage(String message) {
             if(!containerService.hasContainer(containerId,userId))
                 throw new CustomExpection(Constants.CODE_400);
             //发送dashboard信息
             List<Dashboard> result = dashboards.get(containerId).getDashboards();
             session.getAsyncRemote().sendObject(result);
+            return result.toString();
         }
-        /**
-         * 此为单点消息
-         */
-        public void sendOneMessage(String userId, String message) {
-            Session session = sessionPool.get(userId);
-            if (session != null && session.isOpen()) {
-                try {
-                    log.info("websocket消: 单点消息:" + message);
-                    session.getAsyncRemote().sendText(message);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+
+
+        @OnClose
+        public void onDeath(){
+            resultCallback.onComplete();
         }
 
 }

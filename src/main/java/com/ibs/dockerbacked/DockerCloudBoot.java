@@ -16,12 +16,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 
 @SpringBootApplication
 @MapperScan(basePackages = {"com.ibs.dockerbacked.mapper"})
 @EnableScheduling
+@EnableAsync
 @EnableConfigurationProperties({DockerCloudConfig.class})
 public class DockerCloudBoot {
     public static void main(String[] args) {
