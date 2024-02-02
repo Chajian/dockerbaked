@@ -79,9 +79,20 @@ public class WebSocketContorller {
         public String  onMessage(String message) {
             if(!containerService.hasContainer(containerId,userId))
                 throw new CustomExpection(Constants.CODE_400);
-            //发送dashboard信息
             List<Dashboard> result = dashboards.get(containerId).getDashboards();
             session.getAsyncRemote().sendObject(result);
+            switch (message){
+                case "init":
+
+                    return result.toString();
+
+                case "current":
+
+                    return result.get(result.size()-1).toString();
+            }
+
+
+            //发送dashboard信息
             return result.toString();
         }
 
