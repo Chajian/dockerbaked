@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Yanglin
  */
 @RestController("/ibs/api/user")
-public class UserContorller {
+public class UserController {
 
     @Autowired
     UserSerivce userSerivce;
