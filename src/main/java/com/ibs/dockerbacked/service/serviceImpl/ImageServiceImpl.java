@@ -160,7 +160,6 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
-
         return true;
     }
 
