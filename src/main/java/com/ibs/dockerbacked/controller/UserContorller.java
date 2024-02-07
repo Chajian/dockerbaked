@@ -52,9 +52,10 @@ public class UserContorller {
      */
     @PostMapping("upAvatar")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatar){
+        //TODO 1. withdraw avatar  2.store to avatar space 3. return success
 
 
-
+        return null;
     }
 
 }
