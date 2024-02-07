@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.UserDto;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户模块
@@ -21,7 +22,7 @@ public interface UserSerivce extends IService<User> {
     //批量生产账号
     boolean batchGenerationUser(int count, String token);
 
-    //开辟用户空间
-//    boolean createUserSpace();
+    /*更新用户头像*/
+    boolean updateAvatar(MultipartFile file,String account);
 
 }

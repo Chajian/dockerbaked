@@ -31,6 +31,9 @@ public class UserContorller {
     @PostMapping("/update")
     public Result updateUser(@RequestBody UserParam userParam){
         //TODO update user info
+
+
+
         return null;
     }
 
@@ -50,12 +53,11 @@ public class UserContorller {
      * update user avatar
      * @return
      */
-    @PostMapping("upAvatar")
-    public Result updateAvatar(@RequestParam("file") MultipartFile avatar){
-        //TODO 1. withdraw avatar  2.store to avatar space 3. return success
-
-
-        return null;
+    @PostMapping("upavatar")
+    public Result updateAvatar(@RequestParam("file") MultipartFile avatar,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        String account = JwtUtil.getUserAccount(token);
+        userSerivce.updateAvatar(avatar,account);
+        return Result.success(Constants.CODE_200);
     }
 
 }
