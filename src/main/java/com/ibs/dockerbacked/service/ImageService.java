@@ -25,16 +25,6 @@ public interface ImageService {
 
     List<Image> dockerObjectToImage(List<? extends DockerObject> objects);
 
-    //开辟用户镜像空间
-    boolean createUserSpace(String account);
-
-    /**
-     * 创建镜像空间
-     * @param account
-     * @param imageName
-     * @return
-     */
-    boolean createImageSpace(String account,String imageName);
 
     /**
      * 上传文件到镜像空间
@@ -44,20 +34,5 @@ public interface ImageService {
      * @return
      */
     boolean updateImageFile(MultipartFile multipartFile,String imageName,String account);
-
-    /**
-     * 获取用户空间地址
-     * @param account
-     * @return
-     */
-    String getUserSpacePath(String account);
-
-    /**
-     * 获取用户镜像空间
-     * @param account
-     * @param image
-     * @return
-     */
-    String getImageSpacePath(String account,String image);
 
 }
