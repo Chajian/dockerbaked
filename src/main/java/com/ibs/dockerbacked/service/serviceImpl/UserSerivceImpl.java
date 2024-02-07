@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,10 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private FileService  fileService;
+
+    @Autowired
+    private UserMapper userMapper;
+
     /**
      * 用户的注册
      *
@@ -125,7 +130,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+        user.setAvatar(userPath+ File.pathSeparator+file.getName());
+        userMapper.updateById(user);
         return true;
-
     }
 }
