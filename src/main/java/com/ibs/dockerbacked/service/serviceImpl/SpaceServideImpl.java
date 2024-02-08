@@ -6,12 +6,16 @@ import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 
+@Slf4j
+@Service
 public class SpaceServideImpl implements SpaceService {
 
     @Autowired
