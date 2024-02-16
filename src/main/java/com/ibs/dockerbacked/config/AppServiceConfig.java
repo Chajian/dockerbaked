@@ -74,6 +74,7 @@ public class AppServiceConfig implements WebMvcConfigurer {
         Map<String,String> filterRuleMap = new HashMap<>();
 
         filterRuleMap.put("/ibs/api/verify/**","anon");
+        filterRuleMap.put("/ibs/api/socket/**","anon");
         filterRuleMap.put("/404","anon");//404
         filterRuleMap.put("/**", "jwt");
 //        filterRuleMap.put("/ibs/api//**", "anon");

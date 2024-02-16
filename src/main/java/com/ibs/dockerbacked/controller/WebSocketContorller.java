@@ -31,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  */
 @Component
-@ServerEndpoint("/ibs/api/containers/dashboard/{token}/{containerid}")
+@ServerEndpoint("/ibs/api/socket/dashboard/{token}/{containerid}")
 public class WebSocketContorller {
         //与某个客户端的连接会话，需要通过它来给客户端发送数据
         private Session session;
