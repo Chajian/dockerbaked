@@ -21,6 +21,8 @@ target/
 *.ipr
 *.yml
 *.gz
+*.tmp
+*.DS_Store
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -29,6 +31,6 @@ target/
 /.nb-gradle/
 !**/src/main/**/build/
 !**/src/test/**/build/
-out/ß
+/out/
 ### VS Code ###
 .vscode/

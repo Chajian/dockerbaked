@@ -13,6 +13,8 @@ import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.UserDto;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.UserMapper;
+import com.ibs.dockerbacked.service.FileService;
+import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.service.UserSerivce;
 import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,10 @@ import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +39,14 @@ import java.util.Map;
 @Service
 public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements UserSerivce {
 
+    @Autowired
+    private SpaceService spaceService;
+
+    @Autowired
+    private FileService  fileService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 用户的注册
@@ -109,4 +122,17 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     }
 
+    @Override
+    public boolean updateAvatar(MultipartFile file, String account) {
+        String userPath = spaceService.getUserSpace(account);
+        try {
+            fileService.saveFile(file.getBytes(),file.getName(),userPath);
+        } catch (IOException e) {
+            throw new CustomExpection(Constants.FILE_WRITE_FAIL);
+        }
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+        user.setAvatar(userPath+ File.pathSeparator+file.getName());
+        userMapper.updateById(user);
+        return true;
+    }
 }

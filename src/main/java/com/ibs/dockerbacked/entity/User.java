@@ -23,6 +23,6 @@ public class User extends TimeRecord implements Serializable {
     private Integer id;
     private String account;
     private String pwd;
-    /*用户头像*/
-    private String headUrl;
+    /*头像*/
+    private String avatar;
 }

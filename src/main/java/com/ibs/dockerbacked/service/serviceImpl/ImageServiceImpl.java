@@ -12,6 +12,7 @@ import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.ImageService;
+import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.task.EventTask;
 import com.ibs.dockerbacked.task.TaskStatus;
 import com.ibs.dockerbacked.task.TaskThreadPool;
@@ -47,15 +48,9 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
     @Autowired
     private FileService fileService;
 
-    @Value("user.image.space")
-    private String imageSpace;
+    @Autowired
+    private SpaceService spaceService;
 
-    @PostConstruct
-    public void init(){
-        //初始化用户的image空间
-        if(imageSpace==null)
-            imageSpace = System.getProperty("user.dir");
-    }
 
     //获取镜像
     @Override
@@ -130,19 +125,11 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
     @Override
     public Result build(String image,String account) {
-        String userPath = getUserSpacePath(account);
-        File file = new File(userPath);
-        if(FileUtil.isEmpty(file))
-            throw new CustomExpection(Constants.PATH_NOT_EXIST);
-        String imagePath = getImageSpacePath(account,image);
-        file = new File(imagePath);
-        if(FileUtil.isEmpty(file))
-            throw new CustomExpection(Constants.PATH_NOT_EXIST);
+        String imagePath = spaceService.getImageSpaceFromUser(account,image);
         String dockerFilePath = imagePath+File.pathSeparator+"Dockerfile";
-        file = new File(dockerFilePath);
+        File file = new File(dockerFilePath);
         if(!file.exists())
             throw new CustomExpection(Constants.FILE_NOT_EXIST);
-
         imageModel.buildImage(file);
         return Result.success(200,"构建成功!",null);
     }
@@ -164,63 +151,18 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
 
 
-    @Override
-    public boolean createImageSpace(String account,String image) {
-        //检测用户空间
-        String userSpacePath = getUserSpacePath(account);
-        File userSpace = new File(getUserSpacePath(account));
-        if(!userSpace.exists())
-            createUserSpace(account);
-
-        //创建镜像空间
-        String imageSpacePath = getImageSpacePath(account,image);
-        File imageSpace = new File(imageSpacePath);
-        if(!imageSpace.exists()){
-            fileService.createFolder(userSpacePath,image);
-            return true;
-        }
-        return false;
-
-    }
 
     @Override
     public boolean updateImageFile(MultipartFile multipartFile, String imageName, String account) {
-        String imageSpacePath = getImageSpacePath(account,imageName);
-        File imageSpace = new File(imageSpacePath);
-        if(!imageSpace.exists()){
-            createImageSpace(account,imageName);
-        }
+        String imageSpacePath = spaceService.getImageSpaceFromUser(account,imageName);
         try {
             fileService.saveFile(multipartFile.getBytes(),multipartFile.getName(),imageSpacePath);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
-
         return true;
     }
 
-    @Override
-    public boolean createUserSpace(String account) {
-        //创建用户空间
-        String userSpacePath = getUserSpacePath(account);
-        File userSpace = new File(userSpacePath);
-        if(!userSpace.exists()){
-            fileService.createFolder(imageSpace,account);
-            return true;
-
-        }
-        return false;
-    }
-
-    @Override
-    public String getImageSpacePath(String account, String image) {
-        return imageSpace+File.pathSeparator+account+File.pathSeparator+image;
-    }
-
-    @Override
-    public String getUserSpacePath(String account) {
-        return imageSpace+File.pathSeparator+account;
-    }
 
 
 }
