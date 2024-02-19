@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alipay.api.java_websocket.server.WebSocketServer;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -84,16 +85,16 @@ public class WebSocketContorller {
             switch (message){
                 case "init":
 
-                    return result.toString();
+                    return JSON.toJSONString(result);
 
                 case "current":
 
-                    return result.get(result.size()-1).toString();
+                    return JSON.toJSONString(result.get(result.size()-1));
             }
 
 
             //发送dashboard信息
-            return result.toString();
+            return JSON.toJSONString(result);
         }
 
 
