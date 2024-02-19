@@ -22,6 +22,12 @@ public enum Constants {
     Internal_Server_Error("服务器错误",401),//服务器错误
     CONTAINER_REPEAT_NAME("容器名重复",401),
     CONTAINER_STATS_ERROR("获取容器资源占用失败",401),
+
+    CONTAINER_NOT_EXIT("容器不存在",4000),
+    CONTAINER_STATUS_RUN("运行状态",4001),
+    CONTAINER_STATUS_PAUSE("暂停状态",4002),
+    CONTAINER_STATUS_STOP("关闭状态",4003),
+
     HARDWARE_NULL("硬件信息为空",401),
     IMAGE_NOT_EXIST("镜像不存在",401),
     FILE_NOT_EXIST("文件不存在",401),
