@@ -27,6 +27,8 @@ public enum Constants {
     CONTAINER_STATUS_RUN("运行状态",4001),
     CONTAINER_STATUS_PAUSE("暂停状态",4002),
     CONTAINER_STATUS_STOP("关闭状态",4003),
+    CONTAINER_STATUS_REPEAT("请勿重复执行同样的操作",4004),
+    CONTAINER_STATUS_FAIL_CHANGE("更改容器状态失败",4005),
 
     HARDWARE_NULL("硬件信息为空",401),
     IMAGE_NOT_EXIST("镜像不存在",401),
