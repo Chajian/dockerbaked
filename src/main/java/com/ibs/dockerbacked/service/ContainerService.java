@@ -40,6 +40,9 @@ public interface ContainerService extends IService<Container> {
     //操作容器
     Result operateContainer(String containerId, String status);
 
+    //获取容器状态
+    String getContainerStatus(String containerId);
+
     Long createOrder(long userId, Order order) throws ParseException;
 
     /**
