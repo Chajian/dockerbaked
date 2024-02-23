@@ -20,6 +20,15 @@ public interface SpaceService {
      */
     boolean createImageSpace(String account,String image);
 
+
+    /**
+     * 创建容器空间
+     * @param account
+     * @param container
+     * @return
+     */
+    boolean createContainerSpace(String account,String container);
+
     /**
      * 获取用户空间
      * @return
@@ -31,6 +40,14 @@ public interface SpaceService {
      * @return
      */
     String getImageSpaceFromUser(String account, String image);
+
+    /**
+     * 获取容器空间
+     * @param userName
+     * @param containerName
+     * @return
+     */
+    String getContainerSpace(String userName,String containerName);
 
 
 }

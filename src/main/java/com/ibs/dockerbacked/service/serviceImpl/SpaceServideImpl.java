@@ -21,7 +21,11 @@ public class SpaceServideImpl implements SpaceService {
     @Autowired
     FileService fileService;
 
-    @Value("space.root:")
+    String userSpaceFormat = "%s"+File.separator+"%s";
+    String imageSpaceFormat = "%s"+File.separator+"image"+File.separator+"%s";
+    String containerSpaceFormat = "%s"+File.separator+"container"+File.separator+"%s";
+
+    @Value("${space.root:}")
     private String rootSpace;
 
     @PostConstruct
@@ -38,7 +42,7 @@ public class SpaceServideImpl implements SpaceService {
         String userSpacePath = getUserSpace(account);
         File userSpace = new File(userSpacePath);
         if(!userSpace.exists()){
-            fileService.createFolder(rootSpace,account);
+            userSpace.mkdir();
             return true;
         }
         return false;
@@ -46,17 +50,23 @@ public class SpaceServideImpl implements SpaceService {
 
     @Override
     public boolean createImageSpace(String account, String image) {
-        //检测用户空间
-        String userSpacePath = getUserSpace(account);
-        File userSpace = new File(userSpacePath);
-        if(!userSpace.exists())
-            createUserSpace(account);
-
         //创建镜像空间
         String imageSpacePath = getImageSpaceFromUser(account,image);
         File imageSpace = new File(imageSpacePath);
         if(!imageSpace.exists()){
-            fileService.createFolder(userSpacePath,image);
+            imageSpace.mkdirs();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean createContainerSpace(String account, String container) {
+        //创建镜像空间
+        String containerSpacePath = getContainerSpace(account,container);
+        File containerSpace = new File(containerSpacePath);
+        if(!containerSpace.exists()){
+            containerSpace.mkdirs();
             return true;
         }
         return false;
@@ -64,19 +74,23 @@ public class SpaceServideImpl implements SpaceService {
 
     @Override
     public String getUserSpace(String account) {
-        String userSpace = rootSpace+File.pathSeparator+account;
-        if(FileUtil.exist(userSpace)){
-            createUserSpace(account);
-        }
+//        String userSpace = rootSpace+File.separator+account;
+        String userSpace = String.format(userSpaceFormat,rootSpace,account);
         return userSpace;
     }
 
     @Override
     public String getImageSpaceFromUser(String account, String image) {
-        String imageSpace = getUserSpace(account)+File.pathSeparator+image;
-        if(FileUtil.exist(imageSpace)){
-            createImageSpace(account,image);
-        }
+//        String imageSpace = getUserSpace(account)+File.separator+image;
+        String userSpace = getUserSpace(account);
+        String imageSpace = String.format(imageSpaceFormat,userSpace,image);
         return imageSpace;
+    }
+
+    @Override
+    public String getContainerSpace(String account, String containerName) {
+        String userSpace = getUserSpace(account);
+        String containerSpace = String.format(containerSpaceFormat,userSpace,containerName);
+        return containerSpace;
     }
 }
