@@ -76,23 +76,20 @@ INSERT INTO `hardware` VALUES (7, '20', 20, 20, 20, 20, '2023-09-22 00:04:07', '
 INSERT INTO `hardware` VALUES (8, '20', 20, 20, 20, 20, '2023-11-26 16:08:30', '2023-11-26 16:08:30', 0.00);
 COMMIT;
 
--- ----------------------------
--- Table structure for image
--- ----------------------------
-DROP TABLE IF EXISTS `image`;
-CREATE TABLE `image` (
+CREATE TABLE if not exists `image` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `repository` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `tag` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `imageId` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `d_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `repository` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `tag` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `imageId` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `d_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `size` int DEFAULT NULL,
-  `unit` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `author` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `unit` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
+  `author` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `name` varchar(255) COLLATE utf8mb3_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 -- ----------------------------
 -- Table structure for orders

@@ -90,6 +90,22 @@ public class WebSocketContorller {
                 case "current":
 
                     return JSON.toJSONString(result.get(result.size()-1));
+
+
+                case "status":
+
+                    return JSON.toJSONString(containerService.getContainerStatus(containerId));
+
+                case "close":
+                    sessionPool.remove(userId);
+                    try {
+                        session.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    webSockets.remove(this);
+
+                    break;
             }
 
 

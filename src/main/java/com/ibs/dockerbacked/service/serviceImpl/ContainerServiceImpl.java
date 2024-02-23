@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.model.*;
 import com.ibs.dockerbacked.common.Constants;
@@ -407,7 +408,9 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
 
-
-
-
+    @Override
+    public String getContainerStatus(String containerId) {
+        InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
+        return response.getState().getStatus();
+    }
 }
