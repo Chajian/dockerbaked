@@ -22,6 +22,8 @@ public class SpaceServideImpl implements SpaceService {
     FileService fileService;
 
     String userSpaceFormat = "%s"+File.separator+"%s";
+
+    String userAvatarSpaceFormat = "%s"+File.separator+"%s";
     String imageSpaceFormat = "%s"+File.separator+"image"+File.separator+"%s";
     String containerSpaceFormat = "%s"+File.separator+"container"+File.separator+"%s";
 
@@ -46,6 +48,24 @@ public class SpaceServideImpl implements SpaceService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean createUserAvatarSpace() {
+        //创建镜像空间
+        String userSpacePath = String.format(userAvatarSpaceFormat,rootSpace,"avatar");
+        File userSpace = new File(userSpacePath);
+        if(!userSpace.exists()){
+            userSpace.mkdirs();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String getUserAvatarPath() {
+        String userSpacePath = String.format(userAvatarSpaceFormat,rootSpace,"avatar");
+        return userSpacePath;
     }
 
     @Override

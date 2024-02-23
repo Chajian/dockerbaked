@@ -30,10 +30,23 @@ public interface SpaceService {
     boolean createContainerSpace(String account,String container);
 
     /**
+     * 创建用户头像空间
+     * 全局公共空间
+     * @return
+     */
+    boolean createUserAvatarSpace();
+
+    /**
      * 获取用户空间
      * @return
      */
     String getUserSpace(String userName);
+
+    /**
+     * 获取用户头像地址
+     * @return
+     */
+    String getUserAvatarPath();
 
     /**
      * 获取用户镜像空间

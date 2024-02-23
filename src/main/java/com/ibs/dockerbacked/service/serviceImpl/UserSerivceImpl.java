@@ -124,14 +124,14 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean updateAvatar(MultipartFile file, String account) {
-        String userPath = spaceService.getUserSpace(account);
+        String userAvatarPath = spaceService.getUserAvatarPath();
         try {
-            fileService.saveFile(file.getBytes(),file.getName(),userPath);
+            fileService.saveFile(file.getBytes(),file.getName(),userAvatarPath);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
-        user.setAvatar(userPath+ File.pathSeparator+file.getName());
+        user.setAvatar(userAvatarPath+ File.separator+file.getName());
         userMapper.updateById(user);
         return true;
     }

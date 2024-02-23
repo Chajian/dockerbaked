@@ -126,7 +126,7 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
     @Override
     public Result build(String image,String account) {
         String imagePath = spaceService.getImageSpaceFromUser(account,image);
-        String dockerFilePath = imagePath+File.pathSeparator+"Dockerfile";
+        String dockerFilePath = imagePath+File.separator+"Dockerfile";
         File file = new File(dockerFilePath);
         if(!file.exists())
             throw new CustomExpection(Constants.FILE_NOT_EXIST);
