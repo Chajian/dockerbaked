@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -206,6 +208,17 @@ public class TestContainer {
                 .withRemotePath("/home")
                 .exec();
 
+    }
+
+
+    @Test
+    public void testDownloadFile() throws IOException {
+        DockerClient dockerClient = dockerConnection.connect();
+        byte[] bytes = dockerClient.copyArchiveFromContainerCmd(containerId,"/home/pom.xml")
+                .exec().readAllBytes();
+        File file = new File("C:\\Users\\叶子\\Desktop\\springmvc\\dockerbaked\\Zekk\\pom.xml");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        fileOutputStream.write(bytes);
     }
 
 }
