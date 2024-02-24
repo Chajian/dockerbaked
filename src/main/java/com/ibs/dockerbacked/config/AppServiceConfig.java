@@ -1,5 +1,8 @@
 package com.ibs.dockerbacked.config;
 
+import com.alipay.service.schema.util.StringUtil;
+import com.ibs.dockerbacked.service.SpaceService;
+import lombok.Getter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
@@ -9,13 +12,16 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,7 +35,10 @@ import java.util.Map;
 @Configuration
 public class AppServiceConfig implements WebMvcConfigurer {
 
+    @Value("${space.root:}")
+    private static String rootSpace;
 
+    public static String userAvatarSpaceFormat = "%s"+ File.separator+"%s";
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -126,5 +135,25 @@ public class AppServiceConfig implements WebMvcConfigurer {
     }
 
 
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/custom/**")
+                .addResourceLocations(getUserAvatarSpace());
+    }
+
+    public static String getRootSpace() {
+        if(StringUtil.isEmpty(rootSpace)){
+            rootSpace = System.getProperty("user.dir");
+        }
+        return rootSpace;
+    }
+
+    public static void setRootSpace(String rootSpace) {
+        rootSpace = rootSpace;
+    }
+
+    public static String getUserAvatarSpace() {
+        return String.format(userAvatarSpaceFormat,rootSpace,"avatar");
+    }
 
 }

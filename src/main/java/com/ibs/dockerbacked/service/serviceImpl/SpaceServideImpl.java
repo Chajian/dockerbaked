@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service.serviceImpl;
 import cn.hutool.core.io.FileUtil;
 import com.alipay.service.schema.util.StringUtil;
 import com.ibs.dockerbacked.common.Constants;
+import com.ibs.dockerbacked.config.AppServiceConfig;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
@@ -23,19 +24,14 @@ public class SpaceServideImpl implements SpaceService {
 
     String userSpaceFormat = "%s"+File.separator+"%s";
 
-    String userAvatarSpaceFormat = "%s"+File.separator+"%s";
     String imageSpaceFormat = "%s"+File.separator+"image"+File.separator+"%s";
     String containerSpaceFormat = "%s"+File.separator+"container"+File.separator+"%s";
 
-    @Value("${space.root:}")
-    private String rootSpace;
+    String rootSpace;
 
     @PostConstruct
     public void init(){
-        //init rootspace
-        if (StringUtil.isEmpty(rootSpace)) {
-            rootSpace = System.getProperty("user.dir");
-        }
+        rootSpace = AppServiceConfig.getRootSpace();
     }
 
     @Override
@@ -53,10 +49,10 @@ public class SpaceServideImpl implements SpaceService {
     @Override
     public boolean createUserAvatarSpace() {
         //创建镜像空间
-        String userSpacePath = String.format(userAvatarSpaceFormat,rootSpace,"avatar");
-        File userSpace = new File(userSpacePath);
-        if(!userSpace.exists()){
-            userSpace.mkdirs();
+        String userAvatarSpacePath = AppServiceConfig.getUserAvatarSpace();
+        File AvatarSpace = new File(userAvatarSpacePath);
+        if(!AvatarSpace.exists()){
+            AvatarSpace.mkdirs();
             return true;
         }
         return false;
@@ -64,7 +60,7 @@ public class SpaceServideImpl implements SpaceService {
 
     @Override
     public String getUserAvatarPath() {
-        String userSpacePath = String.format(userAvatarSpaceFormat,rootSpace,"avatar");
+        String userSpacePath = AppServiceConfig.getUserAvatarSpace();
         return userSpacePath;
     }
 
@@ -94,14 +90,12 @@ public class SpaceServideImpl implements SpaceService {
 
     @Override
     public String getUserSpace(String account) {
-//        String userSpace = rootSpace+File.separator+account;
         String userSpace = String.format(userSpaceFormat,rootSpace,account);
         return userSpace;
     }
 
     @Override
     public String getImageSpaceFromUser(String account, String image) {
-//        String imageSpace = getUserSpace(account)+File.separator+image;
         String userSpace = getUserSpace(account);
         String imageSpace = String.format(imageSpaceFormat,userSpace,image);
         return imageSpace;
@@ -113,4 +107,5 @@ public class SpaceServideImpl implements SpaceService {
         String containerSpace = String.format(containerSpaceFormat,userSpace,containerName);
         return containerSpace;
     }
+
 }
