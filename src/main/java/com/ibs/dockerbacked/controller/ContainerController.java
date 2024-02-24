@@ -12,12 +12,16 @@ import com.ibs.dockerbacked.entity.dto.ExecParam;
 import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +41,9 @@ public class ContainerController {
 
     @Autowired
     private ContainerService containerService;
+
+    @Autowired
+    private SpaceService spaceService;
 
     /***
      *@descript 获取容器列表
@@ -100,5 +107,20 @@ public class ContainerController {
         return Result.success(Constants.CODE_200,result);
     }
 
+    /**
+     * 更新文件到容器
+     * @return
+     */
+    public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
+        String account = JwtUtil.getUserAccount(token);
+        String savePath = spaceService.getContainerSpace(account,containerId);
+        savePath += File.separator+tagetPath;
+        try {
+            containerService.uploadFileToContainer(containerId,savePath,multipartFile.getInputStream());
+        } catch (IOException e) {
+            throw new CustomExpection(Constants.FILE_WRITE_FAIL);
+        }
+        return Result.success(Constants.CODE_200,"文件成功！");
+    }
 
 }

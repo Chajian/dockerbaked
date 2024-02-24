@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 /**
  * @author sn
  */
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.List;
 
@@ -73,4 +74,8 @@ public interface ContainerService extends IService<Container> {
      * @param dashboardResultCallback
      */
     void closeDashboard(DashboardResultCallback dashboardResultCallback);
+
+    boolean uploadFileToContainer(String containerId, String containerPath, String sourcePath);
+
+    boolean uploadFileToContainer(String containerId, String containerPath, InputStream inputStream);
 }

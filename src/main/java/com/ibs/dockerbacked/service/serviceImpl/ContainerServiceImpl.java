@@ -49,6 +49,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -412,5 +413,23 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     public String getContainerStatus(String containerId) {
         InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
         return response.getState().getStatus();
+    }
+
+    @Override
+    public boolean uploadFileToContainer(String containerId, String containerPath, String sourcePath) {
+        dockerClient.copyArchiveToContainerCmd(containerId)
+                .withHostResource(sourcePath)
+                .withRemotePath(containerPath)
+                .exec();
+        return true;
+    }
+
+    @Override
+    public boolean uploadFileToContainer(String containerId, String containerPath, InputStream inputStream) {
+        dockerClient.copyArchiveToContainerCmd(containerId)
+                .withTarInputStream(inputStream)
+                .withRemotePath(containerPath)
+                .exec();
+        return true;
     }
 }
