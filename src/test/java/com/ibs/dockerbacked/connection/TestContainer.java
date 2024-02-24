@@ -2,10 +2,7 @@ package com.ibs.dockerbacked.connection;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.ExecCreateCmd;
-import com.github.dockerjava.api.command.ExecCreateCmdResponse;
-import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.ExecCreateCmdImpl;
 import com.github.dockerjava.core.command.LogContainerCmdImpl;
@@ -32,12 +29,12 @@ public class TestContainer {
 //    @Autowired
     private ContainerModel containerModel;
 
-    private String containerId;
+    private String containerId = "988d0a632f8c98fa8d46678e08850874e719a40d37b6f3b28ab8e189295c1fc4";
 
     @Before
     public void init(){
-        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
-//        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
+//        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
+        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
         containerModel = new ContainerModel(dockerConnection.connect());
     }
 
@@ -122,7 +119,7 @@ public class TestContainer {
     @Test
     public void getLog(){
         DockerClient dockerClient = dockerConnection.connect();
-        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd("2be0a12433a6")
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
                 .withTail(100)
                 .withTimestamps(true)
                 .withStdOut(true)
@@ -143,6 +140,14 @@ public class TestContainer {
             System.out.println("Logging log: " + log);
         }
 
+    }
+
+    @Test
+    public void status(){
+        DockerClient dockerClient = dockerConnection.connect();
+        InspectContainerResponse config =  dockerClient.inspectContainerCmd(containerId).exec();
+        config.getState().getStatus();
+        System.out.println(config.getState().getStatus());
     }
 
     /**

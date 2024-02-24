@@ -16,5 +16,6 @@ public class Wallet extends TimeRecord{
     @TableId(value = "id", type = IdType.AUTO)
     private int id;
     private int userId;
+    /*钱包余额*/
     private double balance;
 }

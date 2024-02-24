@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.model.*;
 import com.ibs.dockerbacked.common.Constants;
@@ -254,10 +255,10 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         //1.查找这个容器当前状态
         Container container = getById(containerId);
         if (container == null) {
-            throw new CustomExpection(500,"当前容器不存在");
+            throw new CustomExpection(Constants.CONTAINER_NOT_EXIT);
         }
         if (container.getState().equals(status)) {
-            throw new CustomExpection(500, "已经是当前状态已经不用重复操作");
+            throw new CustomExpection(Constants.CONTAINER_STATUS_REPEAT);
         }
         try {
             switch (status) {
@@ -284,7 +285,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
             }
         }catch (Exception e){
-            throw new CustomExpection(500, "更改状态失败");
+            throw new CustomExpection(Constants.CONTAINER_STATUS_FAIL_CHANGE);
         }
         //更新数据库
         container.setState(status);
@@ -407,7 +408,9 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
 
-
-
-
+    @Override
+    public String getContainerStatus(String containerId) {
+        InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
+        return response.getState().getStatus();
+    }
 }
