@@ -29,13 +29,17 @@ public class TestContainer {
 //    @Autowired
     private ContainerModel containerModel;
 
-    private String containerId = "988d0a632f8c98fa8d46678e08850874e719a40d37b6f3b28ab8e189295c1fc4";
+    private String containerId = "f44ba69f3c46";
 
     @Before
     public void init(){
 //        dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","unix:///var/run/docker.sock","https://index.docker.io/v1/");
         dockerConnection = new DockerConnection("dockerxylyjy","docker@123789","xylyjy@gmail.com","tcp://localhost:2375","https://index.docker.io/v1/");
+
+
+
         containerModel = new ContainerModel(dockerConnection.connect());
+//        dockerConnection.getDockerClient().copyFileFromContainerCmd()
     }
 
 
@@ -193,6 +197,15 @@ public class TestContainer {
             Thread.sleep(1000);
             result.onComplete();
         }
+    }
+    @Test
+    public void testCopy(){
+        DockerClient dockerClient = dockerConnection.connect();
+        dockerClient.copyArchiveToContainerCmd(containerId)
+                .withHostResource("C:\\Users\\叶子\\Desktop\\springmvc\\dockerbaked\\pom.xml")
+                .withRemotePath("/home")
+                .exec();
+
     }
 
 }

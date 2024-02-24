@@ -13,12 +13,18 @@ import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.service.FileService;
+import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,7 +32,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@SpringBootTest
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ContainerServiceImplTest {
     @Autowired
     private ContainerService containerService;
@@ -35,6 +42,8 @@ class ContainerServiceImplTest {
     private ImageModel imageModel;
     @Autowired
     private ContainerModel containerModel;
+    @Autowired
+    private SpaceService spaceService;
 
     //查询容器
     @Test
@@ -143,5 +152,17 @@ class ContainerServiceImplTest {
     @Test
     void operateContainer() {
         containerService.operateContainer("960d455fc8a73d67f3ad1212147360a0545cc90799ae822053b9f6039d7bc181", "stop");
+    }
+
+    @Test
+    void uploadFileToContainer() throws FileNotFoundException {
+        spaceService.createContainerSpace("Zekk","1-jskdfjlskdf");
+        String containerPath = spaceService.getContainerSpace("Zekk","1-jskdfjlskdf");
+        containerService.uploadFileToContainer("f44ba69f3c46","/","C:\\Users\\叶子\\Desktop\\springmvc\\dockerbaked\\pom.xml");
+
+
+        while(true){
+            System.out.println("skjdf");
+        }
     }
 }
