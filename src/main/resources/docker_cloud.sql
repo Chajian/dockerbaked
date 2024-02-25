@@ -289,3 +289,16 @@ CREATE TABLE `wallet` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('0', 13, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('11', 11, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('10', 10, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('9', 9, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('8', 8, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('7', 7, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('6', 6, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('5', 5, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('4', 4, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('3', 3, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('2', 2, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
+REPLACE INTO `docker_cloud`.`wallet` (`id`, `user_id`, `created_at`, `updated_at`, `balance`) VALUES ('1', 1, '2024-02-25 08:28:18', '2024-02-25 08:28:18', 0.00);
