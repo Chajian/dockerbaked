@@ -109,6 +109,7 @@ public class ContainerController {
 
     /**
      * 更新文件到容器
+     * @param tagetPath 目标存放地址
      * @return
      */
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
@@ -120,6 +121,24 @@ public class ContainerController {
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
+        return Result.success(Constants.CODE_200,"文件成功！");
+    }
+
+    /**
+     * 下载文件从容器
+     * @param token
+     * @param containerId
+     * @param tagetPath 目标地址
+     * @return
+     */
+    public Result downloadFileFromContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
+
+
+        String account = JwtUtil.getUserAccount(token);
+        String savePath = spaceService.getContainerSpace(account,containerId);
+        savePath += File.separator+tagetPath;
+
+        containerService.downloadFileFromContainer(containerId,savePath);
         return Result.success(Constants.CODE_200,"文件成功！");
     }
 

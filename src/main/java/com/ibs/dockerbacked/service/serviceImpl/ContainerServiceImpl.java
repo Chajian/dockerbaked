@@ -48,6 +48,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  * @author sn
  */
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -94,6 +95,20 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         }
         return Result.success(200, "success", containers);
     }
+
+    @Override
+    public byte[] downloadFileFromContainer(String containerId, String target) {
+        InputStream inputStream = dockerClient.copyArchiveFromContainerCmd(containerId,target)
+                .exec();
+        byte[] result = null;
+        try {
+            result = inputStream.readAllBytes();
+        } catch (IOException e) {
+            throw new CustomExpection(Constants.FILE_WRITE_FAIL);
+        }
+        return result;
+    }
+
     /***
      *@descript 容器列表
      * @param
