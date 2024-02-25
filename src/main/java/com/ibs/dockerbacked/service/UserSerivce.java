@@ -3,6 +3,7 @@ package com.ibs.dockerbacked.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.UserDto;
+import com.ibs.dockerbacked.entity.vo.LoginResult;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -24,5 +25,12 @@ public interface UserSerivce extends IService<User> {
 
     /*更新用户头像*/
     boolean updateAvatar(MultipartFile file,String account);
+
+    /**
+     * 拿取登录之后所需的信息
+     * @param account
+     * @return
+     */
+    LoginResult getUserLoginInfo(String account);
 
 }

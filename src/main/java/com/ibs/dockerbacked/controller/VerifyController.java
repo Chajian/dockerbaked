@@ -4,6 +4,7 @@ package com.ibs.dockerbacked.controller;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.dto.UserDto;
+import com.ibs.dockerbacked.entity.vo.LoginResult;
 import com.ibs.dockerbacked.service.UserSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +42,13 @@ public class VerifyController {
      *@version 1.0
      */
     @PostMapping("/login")
-    public Result<String> userLogin(@RequestBody UserDto user) {
+    public Result userLogin(@RequestBody UserDto user) {
         String userLoginToken = userSerivce.userLogin(user);
-        return Result.success(Constants.CODE_200, userLoginToken);
+
+        LoginResult loginResult = userSerivce.getUserLoginInfo(user.getAccount());
+        loginResult.setToken(userLoginToken);
+
+        return Result.success(Constants.CODE_200, loginResult);
     }
 
 

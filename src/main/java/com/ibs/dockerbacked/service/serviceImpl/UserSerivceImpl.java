@@ -10,9 +10,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.config.JWTToken;
 import com.ibs.dockerbacked.entity.User;
+import com.ibs.dockerbacked.entity.Wallet;
 import com.ibs.dockerbacked.entity.dto.UserDto;
+import com.ibs.dockerbacked.entity.vo.LoginResult;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.UserMapper;
+import com.ibs.dockerbacked.mapper.WalletMapper;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.service.UserSerivce;
@@ -48,6 +51,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private WalletMapper walletMapper;
+
     /**
      * 用户的注册
      *
@@ -69,6 +75,10 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         one = new User();
         BeanUtil.copyProperties(user, one);
         save(one);
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0);
+        wallet.setUserId(one.getId());
+        walletMapper.insert(wallet);
         return user;
     }
 
@@ -134,5 +144,16 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setAvatar(userAvatarPath+ File.separator+file.getName());
         userMapper.updateById(user);
         return true;
+    }
+
+    @Override
+    public LoginResult getUserLoginInfo(String account) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+        Wallet wallet = walletMapper.selectOne(new QueryWrapper<Wallet>().eq("user_id",user.getId()));
+        LoginResult loginResult = new LoginResult();
+        loginResult.setUser(user);
+        loginResult.setWallet(wallet);
+
+        return loginResult;
     }
 }
