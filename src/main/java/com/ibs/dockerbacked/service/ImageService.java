@@ -11,6 +11,9 @@ import java.io.File;
 import java.util.List;
 
 public interface ImageService {
+    Image getImageByName(String imageName);
+    DockerObject getImageObjectByName(String imageName);
+
     List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId);
 
     Result pull(String imageName,String tag);

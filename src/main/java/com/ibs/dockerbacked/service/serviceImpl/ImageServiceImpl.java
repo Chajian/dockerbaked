@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import cn.hutool.core.io.FileUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.DockerObject;
 import com.ibs.dockerbacked.common.Constants;
@@ -51,6 +52,17 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
     @Autowired
     private SpaceService spaceService;
 
+
+    @Override
+    public Image getImageByName(String imageName) {
+        Image image = imageMapper.selectOne(new QueryWrapper<Image>().eq("name",imageName));
+        return image;
+    }
+
+    @Override
+    public DockerObject getImageObjectByName(String imageName) {
+        return imageModel.inspectImage(imageName);
+    }
 
     //获取镜像
     @Override

@@ -43,6 +43,9 @@ public class ImageController {
      */
     @PostMapping("/pull")
     public Result pull(@RequestBody PullImages pullImages){
+
+
+
         return imageService.pull(pullImages.getName(),pullImages.getTag());
     }
 
