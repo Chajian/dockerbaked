@@ -32,6 +32,7 @@ public enum Constants {
 
     HARDWARE_NULL("硬件信息为空",401),
     IMAGE_NOT_EXIST("镜像不存在",401),
+    IMAGE_ALEARY_EXIST("镜像已经存在",401),
     FILE_NOT_EXIST("文件不存在",401),
     FILE_AREALY_EXIST("文件已经存在",401),
     FILE_WRITE_FAIL("文件写入失败",401),
