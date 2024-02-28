@@ -1,10 +1,12 @@
 package com.ibs.dockerbacked.controller;
 
+import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.UserParam;
+import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.service.UserSerivce;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +15,21 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+
 /**
  * 用户接口
  * @author Yanglin
  */
-@RestController("/ibs/api/user")
+@RestController()
+@RequestMapping("/ibs/api/user")
 public class UserController {
 
     @Autowired
     UserSerivce userSerivce;
+
+    @Autowired
+    SpaceService spaceService;
 
 
     /**
@@ -56,6 +64,10 @@ public class UserController {
     @PostMapping("upavatar")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatar,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String account = JwtUtil.getUserAccount(token);
+        File file = new File(spaceService.getUserAvatarPath());
+        if(!file.exists()){
+            spaceService.createUserAvatarSpace();
+        }
         userSerivce.updateAvatar(avatar,account);
         return Result.success(Constants.CODE_200);
     }
