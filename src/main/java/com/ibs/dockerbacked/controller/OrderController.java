@@ -6,10 +6,8 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.*;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.AddOrder;
-import com.ibs.dockerbacked.mapper.ContainerMapper;
-import com.ibs.dockerbacked.mapper.HardwareMapper;
-import com.ibs.dockerbacked.mapper.ImageMapper;
-import com.ibs.dockerbacked.mapper.PacketMapper;
+import com.ibs.dockerbacked.execption.CustomExpection;
+import com.ibs.dockerbacked.mapper.*;
 import com.ibs.dockerbacked.service.OrderService;
 import com.ibs.dockerbacked.task.BaseTask;
 import com.ibs.dockerbacked.task.TaskThreadPool;
@@ -52,7 +50,13 @@ public class OrderController {
     ImageMapper imageMapper;
 
     @Autowired
+    WalletMapper walletMapper;
+
+    @Autowired
     ContainerMapper containerMapper;
+
+    //是否开启支付功能
+    boolean enablePay = false;
 
     /**
      * 创建订单
@@ -86,13 +90,22 @@ public class OrderController {
     }
 
     /**
-     *
+     * 支付功能
      * @return
      */
     @Transactional
     @PutMapping("/pay/{id}")
-    public Result payOrder(@PathVariable("id") int orderId){
+    public Result payOrder(@PathVariable("id") int orderId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         Order order = orderService.getById(orderId);
+        Integer userId = JwtUtil.getUserId(token);
+        if(enablePay){//开启支付功能
+            Wallet wallet = walletMapper.selectOne(new QueryWrapper<Wallet>().eq("user_id",userId));
+            if(wallet.getBalance()<order.getMoney()){
+                throw new CustomExpection(Constants.PAY_NOT_ENOUGH_MONEY);
+            }
+            wallet.setBalance(wallet.getBalance()-order.getMoney());
+            walletMapper.updateById(wallet);
+        }
         if(orderService.paied(order))
             return Result.success(Constants.CODE_200.getCode(),"支付成功!", null);
         return Result.error(Constants.PAY_FAIL);

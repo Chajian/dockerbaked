@@ -4,6 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.InspectImageResponse;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PullResponseItem;
 import com.github.dockerjava.api.model.SearchItem;
@@ -35,8 +36,13 @@ public class ImageModel extends BaseDriver {
      * @param imageName
      */
     public InspectImageResponse inspectImage(String imageName){
-        InspectImageResponse image = dockerClient.inspectImageCmd(imageName).exec();
-        return image;
+        try {
+            InspectImageResponse image = dockerClient.inspectImageCmd(imageName).exec();
+            return image;
+        }
+        catch (NotFoundException e){
+            return null;
+        }
     }
 
     /**
