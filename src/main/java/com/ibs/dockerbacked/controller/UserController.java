@@ -17,7 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 用户接口
  * @author Yanglin
  */
-@RestController("/ibs/api/user")
+@RestController
+@RequestMapping("/ibs/api/user")
 public class UserController {
 
     @Autowired
@@ -53,7 +54,7 @@ public class UserController {
      * update user avatar
      * @return
      */
-    @PostMapping("upavatar")
+    @PostMapping("/upavatar")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatar,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String account = JwtUtil.getUserAccount(token);
         userSerivce.updateAvatar(avatar,account);
