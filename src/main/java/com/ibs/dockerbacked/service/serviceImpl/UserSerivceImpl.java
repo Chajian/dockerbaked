@@ -136,7 +136,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean updateAvatar(MultipartFile file, String account) {
         String userAvatarPath = spaceService.getUserAvatarPath();
         try {
-            fileService.saveFile(file.getBytes(),file.getOriginalFilename(),userAvatarPath);
+            int index = file.getOriginalFilename().lastIndexOf('.');
+            String fileName = account+file.getOriginalFilename().substring(index,file.getOriginalFilename().length());
+            fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }

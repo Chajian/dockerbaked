@@ -84,6 +84,7 @@ public class AppServiceConfig implements WebMvcConfigurer {
 
         filterRuleMap.put("/ibs/api/verify/**","anon");
         filterRuleMap.put("/ibs/api/socket/**","anon");
+        filterRuleMap.put("/static/**","anon");
         filterRuleMap.put("/404","anon");//404
         filterRuleMap.put("/**", "jwt");
 //        filterRuleMap.put("/ibs/api//**", "anon");
@@ -137,8 +138,8 @@ public class AppServiceConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/custom/**")
-                .addResourceLocations(getUserAvatarSpace());
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("file:"+getUserAvatarSpace()+"/");
     }
 
     public static String getRootSpace() {
