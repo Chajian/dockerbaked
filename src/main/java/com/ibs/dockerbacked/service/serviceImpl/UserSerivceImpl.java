@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.IdUtil;
@@ -135,6 +136,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean updateAvatar(MultipartFile file, String account) {
         String userAvatarPath = spaceService.getUserAvatarPath();
+        if(!FileUtil.exist(userAvatarPath)){
+            spaceService.createUserAvatarSpace();
+        }
         try {
             int index = file.getOriginalFilename().lastIndexOf('.');
             String fileName = account+file.getOriginalFilename().substring(index,file.getOriginalFilename().length());

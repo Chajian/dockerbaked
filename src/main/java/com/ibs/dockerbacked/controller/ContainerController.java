@@ -1,5 +1,6 @@
 package com.ibs.dockerbacked.controller;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.ibs.dockerbacked.common.Constants;
@@ -12,6 +13,7 @@ import com.ibs.dockerbacked.entity.dto.ExecParam;
 import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,9 @@ public class ContainerController {
 
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private FileService fileService;
 
     /***
      *@descript 获取容器列表
@@ -80,7 +85,7 @@ public class ContainerController {
     /***
      *@descript 操作容器
      *@param  *
-     *@return
+     *@retur
      *@author chen  /ibs/api/containers/{id}/{action}
      *@version 1.0
      */
@@ -112,16 +117,19 @@ public class ContainerController {
      * @param tagetPath 目标存放地址
      * @return
      */
-    @PostMapping("/{id}/upload")
+    @PostMapping("/upload")
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
         String account = JwtUtil.getUserAccount(token);
         String savePath = spaceService.getContainerSpace(account,containerId);
-        savePath += File.separator+tagetPath;
         try {
-            containerService.uploadFileToContainer(containerId,savePath,multipartFile.getInputStream());
+            if(!FileUtil.exist(savePath)){
+                spaceService.createContainerSpace(account,containerId);
+            }
+            fileService.saveFile(multipartFile.getInputStream(),multipartFile.getOriginalFilename(),savePath);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
+        containerService.uploadFileToContainer(containerId,tagetPath,savePath+File.separator+multipartFile.getOriginalFilename());
         return Result.success(Constants.CODE_200,"文件成功！");
     }
 
