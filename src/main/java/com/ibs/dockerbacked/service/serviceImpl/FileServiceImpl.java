@@ -24,7 +24,7 @@ public class FileServiceImpl implements FileService {
             throw new CustomExpection(Constants.PATH_NOT_EXIST);
         FileOutputStream fileOutputStream = null;
         try {
-            File file = new File(path+fileName);
+            File file = new File(path+File.separator+fileName);
             if(file.exists())
                 throw new CustomExpection(Constants.FILE_AREALY_EXIST);
             fileOutputStream = new FileOutputStream(file);
@@ -36,7 +36,9 @@ public class FileServiceImpl implements FileService {
         }
         finally {
             try {
-                fileOutputStream.close();
+                if(fileOutputStream!=null) {
+                    fileOutputStream.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new CustomExpection(Constants.FILE_WRITE_FAIL);

@@ -112,6 +112,7 @@ public class ContainerController {
      * @param tagetPath 目标存放地址
      * @return
      */
+    @PostMapping("/{id}/upload")
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
         String account = JwtUtil.getUserAccount(token);
         String savePath = spaceService.getContainerSpace(account,containerId);
@@ -131,6 +132,7 @@ public class ContainerController {
      * @param tagetPath 目标地址
      * @return
      */
+    @PostMapping("/{id}/download")
     public Result downloadFileFromContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
 
 

@@ -48,6 +48,7 @@ public class VerifyController {
         LoginResult loginResult = userSerivce.getUserLoginInfo(user.getAccount());
         loginResult.setToken(userLoginToken);
 
+
         return Result.success(Constants.CODE_200, loginResult);
     }
 
