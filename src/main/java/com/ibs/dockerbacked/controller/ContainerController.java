@@ -16,6 +16,7 @@ import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -137,18 +139,26 @@ public class ContainerController {
      * 下载文件从容器
      * @param token
      * @param containerId
-     * @param tagetPath 目标地址
+     * @param targetPath 目标地址
      * @return
      */
-    @PostMapping("/{id}/download")
-    public Result downloadFileFromContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
+    @PostMapping("/download")
+    public Result downloadFileFromContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @Param("containerId") String containerId, @Param("targetPath") String targetPath){
 
-
+        int lastIndex = targetPath.lastIndexOf('/');
+        String fileName = targetPath.substring(lastIndex+1,targetPath.length());
         String account = JwtUtil.getUserAccount(token);
         String savePath = spaceService.getContainerSpace(account,containerId);
-        savePath += File.separator+tagetPath;
 
-        containerService.downloadFileFromContainer(containerId,savePath);
+        byte[] context =  containerService.downloadFileFromContainer(containerId,targetPath);
+        try {
+            if(!FileUtil.exist(savePath)){
+                spaceService.createContainerSpace(account,containerId);
+            }
+            fileService.saveFile(context,fileName,savePath);
+        } catch (FileNotFoundException e) {
+            throw new CustomExpection(Constants.FILE_WRITE_FAIL);
+        }
         return Result.success(Constants.CODE_200,"文件成功！");
     }
 
