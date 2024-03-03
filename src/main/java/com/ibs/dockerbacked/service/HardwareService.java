@@ -12,4 +12,6 @@ public interface HardwareService extends IService<Hardware> {
     Hardware getHardwareById(int id);
 
     List<Hardware> getHardwares(int page ,int size);
+
+    Hardware getHardwareByContainerId(String containerId);
 }
