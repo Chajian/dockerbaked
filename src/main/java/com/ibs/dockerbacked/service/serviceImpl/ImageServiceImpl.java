@@ -2,12 +2,14 @@ package com.ibs.dockerbacked.service.serviceImpl;
 
 import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.dockerjava.api.model.DockerObject;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Image;
+import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ImageMapper;
@@ -64,6 +66,8 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
         return imageModel.inspectImage(imageName);
     }
 
+
+
     //获取镜像
     @Override
     public List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId) {
@@ -89,6 +93,17 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
             images = imageModel.searchImage(imageName,pageSize);
         }
         return images;
+    }
+
+    @Override
+    public List<Image> getImagesByDatabase(ImagesParam imagesParam, long userId) {
+        Page<Image> page = new Page<>(imagesParam.getPageParam().getPage(),imagesParam.getPageParam().getPageSize());
+        Page<Image> pageResult = page(page,new QueryWrapper<>());
+        List<Image> containers = pageResult.getRecords();
+        if (pageResult.getSize() <= 0) {
+            return null;
+        }
+        return containers;
     }
 
     /**

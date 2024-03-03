@@ -34,8 +34,9 @@ public class ImageController {
     @PostMapping
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        List<Image> images = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
-
+        List<Image> images = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token));
+        List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
+        images.addAll(images2);
         return Result.success(Constants.CODE_200,images);
     }
 

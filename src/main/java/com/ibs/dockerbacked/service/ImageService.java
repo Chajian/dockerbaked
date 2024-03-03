@@ -16,6 +16,7 @@ public interface ImageService extends IService<Image>{
     DockerObject getImageObjectByName(String imageName);
 
     List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId);
+    List<Image> getImagesByDatabase(ImagesParam imagesParam, long userId);
 
     Result pull(String imageName,String tag);
 
