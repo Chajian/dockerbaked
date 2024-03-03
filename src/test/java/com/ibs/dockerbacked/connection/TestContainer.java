@@ -170,7 +170,7 @@ public class TestContainer {
     public void stats() throws InterruptedException {
         DockerClient dockerClient = dockerConnection.connect();
         ResultCallback<Statistics>result = dockerClient.statsCmd("08447b73049a")
-                .withContainerId("08447b73049a")
+                .withContainerId("f44ba69f3c46")
                 .exec(new ResultCallback.Adapter<>(){
             @Override
             public void onNext(Statistics object) {
