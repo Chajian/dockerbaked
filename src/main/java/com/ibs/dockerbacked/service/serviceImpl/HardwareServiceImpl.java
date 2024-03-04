@@ -42,4 +42,12 @@ public class HardwareServiceImpl extends ServiceImpl<HardwareMapper, Hardware> i
         }
         return hardwares;
     }
+
+    @Override
+    public Hardware getHardwareByContainerId(String containerId) {
+
+
+
+        return null;
+    }
 }

@@ -6,12 +6,14 @@ import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
+import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
+import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
@@ -44,6 +46,9 @@ class ContainerServiceImplTest {
     private ContainerModel containerModel;
     @Autowired
     private SpaceService spaceService;
+
+    @Autowired
+    private HardwareMapper hardwareMapper;
 
     //查询容器
     @Test
@@ -164,5 +169,12 @@ class ContainerServiceImplTest {
         while(true){
             System.out.println("skjdf");
         }
+    }
+
+    @Test
+    void testGetHardwareByContainer(){
+
+
+
     }
 }
