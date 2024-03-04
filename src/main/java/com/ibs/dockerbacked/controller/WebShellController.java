@@ -7,6 +7,7 @@ import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import com.ibs.dockerbacked.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,9 +72,14 @@ public class WebShellController {
     public String  onMessage(String message) {
         if(!containerService.hasContainer(containerId,userId))
             throw new CustomExpection(Constants.CODE_400);
-
-
-
+        if(!containerService.getContainerStatus(containerId).equals("running")){
+            throw new CustomExpection(Constants.CONTAINER_STATUS_NOT_INT_RUNNING);
+        }
+        String result = containerService.execCommand(containerId,message,location);
+        //cd 执行触发
+        String tempPath = StringUtil.execCm(message,location);
+        if(tempPath!=null)
+            location = tempPath;
         //发送dashboard信息
         return JSON.toJSONString(result);
     }
