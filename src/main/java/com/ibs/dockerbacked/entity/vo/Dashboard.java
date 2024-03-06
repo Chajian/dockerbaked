@@ -11,5 +11,4 @@ public class Dashboard {
     String containerName;
     double cpuPortion = -1;
     double memoryPortion = -1;
-
 }
