@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResult {
-    User user;
-    Wallet wallet;
+    String avatar;
     String token;
+    String userName;
 }
