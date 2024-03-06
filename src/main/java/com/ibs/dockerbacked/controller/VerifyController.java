@@ -1,11 +1,14 @@
 package com.ibs.dockerbacked.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
+import com.ibs.dockerbacked.entity.User;
 import com.ibs.dockerbacked.entity.dto.UserDto;
 import com.ibs.dockerbacked.entity.vo.LoginResult;
 import com.ibs.dockerbacked.service.UserSerivce;
+import com.ibs.dockerbacked.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +49,11 @@ public class VerifyController {
         String userLoginToken = userSerivce.userLogin(user);
 
         LoginResult loginResult = userSerivce.getUserLoginInfo(user.getAccount());
-        loginResult.setToken(userLoginToken);
+        User userEntity = userSerivce.getOne(new QueryWrapper<User>().eq("account",user.getAccount()));
 
+        loginResult.setUserName(userEntity.getAccount());
+        loginResult.setAvatar(userEntity.getAvatar());
+        loginResult.setToken(userLoginToken);
 
         return Result.success(Constants.CODE_200, loginResult);
     }
