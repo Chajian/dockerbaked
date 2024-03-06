@@ -47,14 +47,8 @@ public class VerifyController {
     @PostMapping("/login")
     public Result userLogin(@RequestBody UserDto user) {
         String userLoginToken = userSerivce.userLogin(user);
-
         LoginResult loginResult = userSerivce.getUserLoginInfo(user.getAccount());
-        User userEntity = userSerivce.getOne(new QueryWrapper<User>().eq("account",user.getAccount()));
-
-        loginResult.setUserName(userEntity.getAccount());
-        loginResult.setAvatar(userEntity.getAvatar());
         loginResult.setToken(userLoginToken);
-
         return Result.success(Constants.CODE_200, loginResult);
     }
 

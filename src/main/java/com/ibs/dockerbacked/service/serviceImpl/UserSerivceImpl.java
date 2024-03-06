@@ -155,11 +155,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public LoginResult getUserLoginInfo(String account) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
-        user.setPwd("");
-        Wallet wallet = walletMapper.selectOne(new QueryWrapper<Wallet>().eq("user_id",user.getId()));
         LoginResult loginResult = new LoginResult();
-        loginResult.setUser(user);
-        loginResult.setWallet(wallet);
+        loginResult.setUserName(user.getAccount());
+        loginResult.setAvatar(user.getAvatar());
 
         return loginResult;
     }
