@@ -122,10 +122,10 @@ public class ContainerController {
     @PostMapping("/upload")
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
         String account = JwtUtil.getUserAccount(token);
-        String savePath = spaceService.getContainerSpace(account,containerId);
+        String savePath = spaceService.getContainerSpace(account,containerId)+tagetPath.replace("/",File.separator);
         try {
             if(!FileUtil.exist(savePath)){
-                spaceService.createContainerSpace(account,containerId);
+                new File(savePath).mkdirs();
             }
             fileService.saveFile(multipartFile.getInputStream(),multipartFile.getOriginalFilename(),savePath);
         } catch (IOException e) {
@@ -148,12 +148,12 @@ public class ContainerController {
         int lastIndex = targetPath.lastIndexOf('/');
         String fileName = targetPath.substring(lastIndex+1,targetPath.length());
         String account = JwtUtil.getUserAccount(token);
-        String savePath = spaceService.getContainerSpace(account,containerId);
+        String savePath = spaceService.getContainerSpace(account,containerId)+targetPath.substring(0,lastIndex).replace("/",File.separator);
 
         byte[] context =  containerService.downloadFileFromContainer(containerId,targetPath);
         try {
             if(!FileUtil.exist(savePath)){
-                spaceService.createContainerSpace(account,containerId);
+                new File(savePath).mkdirs();
             }
             fileService.saveFile(context,fileName,savePath);
         } catch (FileNotFoundException e) {
