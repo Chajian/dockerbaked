@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -107,6 +108,16 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
         return result;
+    }
+
+    @Override
+    public List<String> getFilesByPath(String containerId, String path) {
+        List<String> result = new ArrayList<>();
+        String info = containerModel.execCommand(containerId,"/","ls");
+        //pre handler data
+        String[] files =  info.split("\n");
+        List<String> List = Arrays.asList(files);
+        return List;
     }
 
     /***

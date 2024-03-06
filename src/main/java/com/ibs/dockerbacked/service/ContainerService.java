@@ -80,4 +80,6 @@ public interface ContainerService extends IService<Container> {
     boolean uploadFileToContainer(String containerId, String containerPath, InputStream inputStream);
 
     byte[] downloadFileFromContainer(String containerId,String target);
+
+    List<String> getFilesByPath(String containerId,String path);
 }
