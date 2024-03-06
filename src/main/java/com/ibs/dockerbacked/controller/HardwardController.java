@@ -53,13 +53,5 @@ public class HardwardController {
         return Result.error(Constants.HARDWARE_NULL);
     }
 
-    /**
-     * 获取硬件信息通过容器Id
-     * @return
-     */
-    @GetMapping("/get/{containerId}")
-    public Result getHardByContainer(@PathVariable("containerId")String containerId){
-        Hardware hardware = hardwareMapper.getHardwareByContainer("023cd63d9b97d603cb45539c5391d5b5654a7464bfd2be1f8c3c5c925564899c");
-        return Result.success(Constants.CODE_200,hardware);
-    }
+
 }

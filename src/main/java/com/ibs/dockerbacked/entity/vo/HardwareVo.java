@@ -1,5 +1,9 @@
 package com.ibs.dockerbacked.entity.vo;
 
+
+import lombok.Data;
+
+@Data
 public class HardwareVo {
     String cpuType;
     String diskPercent;
