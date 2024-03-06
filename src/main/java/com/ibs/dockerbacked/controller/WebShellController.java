@@ -34,7 +34,6 @@ public class WebShellController {
     private static final CopyOnWriteArraySet<WebShellController> webSockets = new CopyOnWriteArraySet<>();
     // 用来存在线连接数
     private static final Map<Integer, Session> sessionPool = new HashMap<Integer, Session>();
-    private static final Map<String, DashboardResultCallback> dashboards = new HashMap<>();
     //保证对象唯一
     private static ContainerService containerService;
     private String location = "/";
@@ -55,8 +54,6 @@ public class WebShellController {
             this.containerId = containerId;
             webSockets.add(this);
             sessionPool.put(userId, session);
-            DashboardResultCallback resultCallback = (DashboardResultCallback) containerService.getDashboard(containerId);
-            dashboards.put(containerId,resultCallback);
             System.out.println("webshell消息: 有新的连接，总数为:" + webSockets.size());
         } catch (Exception e) {
         }
@@ -75,13 +72,17 @@ public class WebShellController {
         if(!containerService.getContainerStatus(containerId).equals("running")){
             throw new CustomExpection(Constants.CONTAINER_STATUS_NOT_INT_RUNNING);
         }
-        String result = containerService.execCommand(containerId,message,location);
-        //cd 执行触发
-        String tempPath = StringUtil.execCm(message,location);
-        if(tempPath!=null)
-            location = tempPath;
-        //发送dashboard信息
-        return JSON.toJSONString(result);
+        try {
+            String result = containerService.execCommand(containerId, message, location);
+            //cd 执行触发
+            String tempPath = StringUtil.execCm(message,location);
+            if(tempPath!=null)
+                location = tempPath;
+            return JSON.toJSONString(result);
+        }
+        catch (RuntimeException e){
+            return JSON.toJSONString(e.getMessage());
+        }
     }
 
 
