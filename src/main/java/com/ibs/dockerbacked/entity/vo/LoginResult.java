@@ -16,4 +16,5 @@ public class LoginResult {
     String avatar;
     String token;
     String userName;
+    double balance;
 }

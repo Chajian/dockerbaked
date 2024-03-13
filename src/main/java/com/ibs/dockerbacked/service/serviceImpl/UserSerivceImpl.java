@@ -158,7 +158,8 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         LoginResult loginResult = new LoginResult();
         loginResult.setUserName(user.getAccount());
         loginResult.setAvatar(user.getAvatar());
-
+        Wallet wallet = walletMapper.selectOne(new QueryWrapper<Wallet>().eq("user_id",user.getId()));
+        loginResult.setBalance(wallet.getBalance());
         return loginResult;
     }
 }

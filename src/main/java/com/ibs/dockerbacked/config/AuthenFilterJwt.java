@@ -22,7 +22,7 @@ import java.net.URLEncoder;
  *
  * 处理顺序preHandle->isAccessAllowed->isLoginAttempt->executeLogin
  * @author Chajian
- * @date 2020/9/14
+ * @date 2024/03/12
  */
 @Component
 @Slf4j
