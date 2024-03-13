@@ -143,12 +143,12 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
             int index = file.getOriginalFilename().lastIndexOf('.');
             String fileName = account+file.getOriginalFilename().substring(index,file.getOriginalFilename().length());
             fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
+            User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+            user.setAvatar(userAvatarPath+ File.separator+fileName);
+            userMapper.updateById(user);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
-        user.setAvatar(userAvatarPath+ File.separator+file.getName());
-        userMapper.updateById(user);
         return true;
     }
 
