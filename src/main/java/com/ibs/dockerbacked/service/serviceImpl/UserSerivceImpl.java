@@ -20,6 +20,7 @@ import com.ibs.dockerbacked.mapper.WalletMapper;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.service.UserSerivce;
+import com.ibs.dockerbacked.service.WalletService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.core5.http.HttpStatus;
@@ -52,8 +53,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private UserMapper userMapper;
 
+
     @Autowired
-    private WalletMapper walletMapper;
+    private WalletService walletService;
 
     /**
      * 用户的注册
@@ -79,7 +81,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         Wallet wallet = new Wallet();
         wallet.setBalance(0);
         wallet.setUserId(one.getId());
-        walletMapper.insert(wallet);
+        walletService.save(wallet);
         return user;
     }
 
@@ -158,7 +160,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         LoginResult loginResult = new LoginResult();
         loginResult.setUserName(user.getAccount());
         loginResult.setAvatar(user.getAvatar());
-        Wallet wallet = walletMapper.selectOne(new QueryWrapper<Wallet>().eq("user_id",user.getId()));
+        Wallet wallet = walletService.getOne(new QueryWrapper<Wallet>().eq("user_id",user.getId()));
         loginResult.setBalance(wallet.getBalance());
         return loginResult;
     }

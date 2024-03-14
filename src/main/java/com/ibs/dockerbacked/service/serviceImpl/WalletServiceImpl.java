@@ -7,8 +7,12 @@ import com.ibs.dockerbacked.entity.Wallet;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.WalletMapper;
 import com.ibs.dockerbacked.service.WalletService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
+@Service
 public class WalletServiceImpl extends ServiceImpl<WalletMapper, Wallet> implements WalletService {
     @Override
     @Transactional
