@@ -7,6 +7,7 @@ import cn.hutool.core.lang.hash.Hash;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.config.JWTToken;
@@ -137,6 +138,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean updateAvatar(MultipartFile file, String account) {
+        if(file.isEmpty()){
+            throw new CustomExpection(Constants.FILE_IS_NULL);
+        }
         String userAvatarPath = spaceService.getUserAvatarPath();
         if(!FileUtil.exist(userAvatarPath)){
             spaceService.createUserAvatarSpace();
@@ -144,8 +148,13 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
         try {
             int index = file.getOriginalFilename().lastIndexOf('.');
             String fileName = account+file.getOriginalFilename().substring(index,file.getOriginalFilename().length());
-            fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
+            //step1 do avatar is exist
             User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
+            if(!(StringUtils.isEmpty(user.getAvatar())&&FileUtil.exist(user.getAvatar()))){
+                //avatar exist, to delete avatar
+                FileUtil.del(user.getAvatar());
+            }
+            fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
             user.setAvatar(userAvatarPath+ File.separator+fileName);
             userMapper.updateById(user);
         } catch (IOException e) {

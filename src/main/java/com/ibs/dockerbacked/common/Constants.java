@@ -37,6 +37,7 @@ public enum Constants {
     FILE_NOT_EXIST("文件不存在",401),
     FILE_AREALY_EXIST("文件已经存在",401),
     FILE_WRITE_FAIL("文件写入失败",401),
+    FILE_IS_NULL("文件为空",401),
     PATH_NOT_EXIST("目录不存在",401),
     CLOSE_DASH_BOARD("关闭dashboard出现问题",401),
 
