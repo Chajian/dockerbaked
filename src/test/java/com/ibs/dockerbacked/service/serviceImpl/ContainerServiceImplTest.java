@@ -8,6 +8,7 @@ import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.TreeNode;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.PageParam;
@@ -49,6 +50,8 @@ class ContainerServiceImplTest {
 
     @Autowired
     private HardwareMapper hardwareMapper;
+
+    private String containerId = "adfb4bb806c4886a48a4478293218788dac4e7ec1b0371281853596b0cbc8d19";
 
     //查询容器
     @Test
@@ -175,6 +178,12 @@ class ContainerServiceImplTest {
     void testGetHardwareByContainer(){
 
 
+
+    }
+
+    @Test
+    void testGetFilesByContainer(){
+       TreeNode result =  containerService.getFilesByPath(containerId,"/");
 
     }
 }
