@@ -20,10 +20,8 @@ import com.ibs.dockerbacked.connection.ContainerModel;
 import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.controller.WebSocketContorller;
+import com.ibs.dockerbacked.entity.*;
 import com.ibs.dockerbacked.entity.Container;
-import com.ibs.dockerbacked.entity.Hardware;
-import com.ibs.dockerbacked.entity.Order;
-import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
@@ -48,6 +46,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  * @author sn
  */
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,13 +110,24 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
     }
 
     @Override
-    public List<String> getFilesByPath(String containerId, String path) {
-        List<String> result = new ArrayList<>();
-        String info = containerModel.execCommand(containerId,"/","ls");
+    public TreeNode getFilesByPath(String containerId, String path) {
+        TreeNode treeNode = new TreeNode();
+        treeNode.setName(path);
+        treeNode.setAbsolutePath(path);
+        String info = containerModel.execCommand(containerId,path,"ls","-F");
         //pre handler data
         String[] files =  info.split("\n");
         List<String> List = Arrays.asList(files);
-        return List;
+        for(String file:List){
+            TreeNode treeNode1 = new TreeNode();
+            String name = file.substring(0,file.length()-1);
+            char type = file.charAt(file.length()-1);
+            treeNode1.setName(name);
+            treeNode1.setType(String.valueOf(type));
+            treeNode1.setAbsolutePath(path+name);
+            treeNode.addNode(treeNode1);
+        }
+        return treeNode;
     }
 
     /***

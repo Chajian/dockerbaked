@@ -8,6 +8,7 @@ import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.TreeNode;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
@@ -81,5 +82,5 @@ public interface ContainerService extends IService<Container> {
 
     byte[] downloadFileFromContainer(String containerId,String target);
 
-    List<String> getFilesByPath(String containerId,String path);
+    TreeNode getFilesByPath(String containerId, String path);
 }
