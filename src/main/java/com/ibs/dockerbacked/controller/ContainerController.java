@@ -7,6 +7,7 @@ import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Order;
+import com.ibs.dockerbacked.entity.TreeNode;
 import com.ibs.dockerbacked.entity.dto.AddContainer;
 import com.ibs.dockerbacked.entity.dto.ContainerParam;
 import com.ibs.dockerbacked.entity.dto.ExecParam;
@@ -160,6 +161,15 @@ public class ContainerController {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }
         return Result.success(Constants.CODE_200,"文件成功！");
+    }
+
+    @PostMapping("/get/file")
+    public Result getContainerFileSystem(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @Param("containerId") String containerId, @Param("targetPath") String targetPath){
+        if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
+            return Result.error(Constants.CODE_400);
+
+        TreeNode treeNode = containerService.getFilesByPath(containerId,targetPath);
+        return Result.success(Constants.CODE_200,treeNode);
     }
 
 
