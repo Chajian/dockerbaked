@@ -123,6 +123,9 @@ public class ContainerController {
     @PostMapping("/upload")
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
         String account = JwtUtil.getUserAccount(token);
+
+
+
         String savePath = spaceService.getContainerSpace(account,containerId)+tagetPath.replace("/",File.separator);
         try {
             if(!FileUtil.exist(savePath)){

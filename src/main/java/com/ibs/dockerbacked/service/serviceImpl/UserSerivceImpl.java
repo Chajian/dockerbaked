@@ -155,7 +155,7 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
                 FileUtil.del(user.getAvatar());
             }
             fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
-            user.setAvatar(userAvatarPath+ File.separator+fileName);
+            user.setAvatar(fileName);
             userMapper.updateById(user);
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
