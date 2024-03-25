@@ -150,9 +150,9 @@ public class UserSerivceImpl extends ServiceImpl<UserMapper, User> implements Us
             String fileName = account+file.getOriginalFilename().substring(index,file.getOriginalFilename().length());
             //step1 do avatar is exist
             User user = userMapper.selectOne(new QueryWrapper<User>().eq("account",account));
-            if(!(StringUtils.isEmpty(user.getAvatar())&&FileUtil.exist(user.getAvatar()))){
+            if(FileUtil.exist(userAvatarPath+File.separator+user.getAvatar())){
                 //avatar exist, to delete avatar
-                FileUtil.del(user.getAvatar());
+                FileUtil.del(userAvatarPath+File.separator+user.getAvatar());
             }
             fileService.saveFile(file.getBytes(),fileName,userAvatarPath);
             user.setAvatar(fileName);

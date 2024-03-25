@@ -21,6 +21,8 @@ public class StringUtil {
             path = currentPath+path.substring(1,path.length());
         }
 
+
+
         if(path.charAt(path.length()-1)=='/')
             return path.substring(0,path.length()-1);
         return path;
