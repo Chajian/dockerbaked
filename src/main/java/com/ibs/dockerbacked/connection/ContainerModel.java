@@ -189,7 +189,7 @@ public class ContainerModel {
                 public void onNext(Frame object) {
                     String payLoad = new String(object.getPayload(),StandardCharsets.UTF_8);
                     output.append(payLoad);
-                    if(payLoad.contains("failed")||payLoad.contains("No such file or directory"))
+                    if(payLoad.contains("failed")||payLoad.contains("No such file or directory")||payLoad.contains("Not a directory"))
                         onError(new Throwable(payLoad));
                     super.onNext(object);
                 }
