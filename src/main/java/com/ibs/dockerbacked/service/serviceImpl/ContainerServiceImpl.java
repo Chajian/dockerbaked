@@ -119,12 +119,15 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
         String[] files =  info.split("\n");
         List<String> List = Arrays.asList(files);
         for(String file:List){
+            if(StringUtils.isEmpty(file)){
+                continue;
+            }
             TreeNode treeNode1 = new TreeNode();
             String name = file.substring(0,file.length()-1);
             char type = file.charAt(file.length()-1);
             treeNode1.setName(name);
             treeNode1.setType(String.valueOf(type));
-            treeNode1.setAbsolutePath(path+name);
+            treeNode1.setAbsolutePath(path+'/'+name);
             treeNode.addNode(treeNode1);
         }
         return treeNode;
