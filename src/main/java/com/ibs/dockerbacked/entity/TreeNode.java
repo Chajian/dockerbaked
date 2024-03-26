@@ -19,7 +19,14 @@ public class TreeNode {
     private String name;
     /*绝对路径*/
     private String absolutePath;
-    /*文件类型*/
+    /*
+    标识符  文件类型
+    / 目录
+    * 可执行文件.
+    | FIFO命名管道.
+    @ 符号链接.
+    = socket.
+    */
     private String type;
     /*子节点*/
     private List<TreeNode> treeNodeList = new ArrayList<>();

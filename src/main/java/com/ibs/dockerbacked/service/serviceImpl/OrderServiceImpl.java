@@ -73,8 +73,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         for (ConsumerRecord<Long, String> record : records) {
             AddOrder addOrder = JSON.parseObject(record.value(), AddOrder.class);
             //创建订单
-            if(!ObjectUtils.isEmpty(addOrder.getOrder()))
-                createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
+            if(!ObjectUtils.isEmpty(addOrder.getOrder())) {
+                createOrderTask(addOrder.getOrder(), addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
+            }
         }
 //        log.info("order接收端id:"+Thread.currentThread().getId());
         try {
