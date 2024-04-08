@@ -26,8 +26,6 @@ public class TaskThreadPool {
 
     ScheduledExecutorService scheduledExecutorService;
     ThreadPoolExecutor executor;
-    /*加密队列*/
-    Queue<TaskThread> queue;
     /*
      * orderId,TaskId
      * get Task by OrderId
@@ -43,21 +41,21 @@ public class TaskThreadPool {
 
     @PostConstruct
     public void init(){
-//        executor = new ThreadPoolExecutor(
-//                corePoolSize,
-//                maximumPoolSize,
-//                keepAliveTime,
-//                TimeUnit.SECONDS,
-//                new ArrayBlockingQueue<>(queueCapacity)
-//        ){
-//            @Override
-//            protected void beforeExecute(Thread t, Runnable r) {
-//                super.beforeExecute(t, r);
-//                log.info("Thread:"+t.toString()+"Runnable:"+r.toString());
-//            }
-//        };
+        executor = new ThreadPoolExecutor(
+                corePoolSize,
+                maximumPoolSize,
+                keepAliveTime,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(queueCapacity),
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        ){
+            @Override
+            protected void beforeExecute(Thread t, Runnable r) {
+                super.beforeExecute(t, r);
+                log.info("Thread:"+t.toString()+"Runnable:"+r.toString());
+            }
+        };
         scheduledExecutorService = Executors.newScheduledThreadPool(corePoolSize);
-        queue = new PriorityQueue<>();
         cache = new ArrayList<>();
     }
 
