@@ -12,5 +12,7 @@ public class PullImageEvent extends Event<Image> {
     {
         setName("pullImage");
     }
+    /**拉取进度**/
+    private float rate;
 
 }
