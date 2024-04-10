@@ -9,6 +9,7 @@ import com.ibs.dockerbacked.connection.DashboardResultCallback;
 import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
+import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,10 +46,17 @@ public class WebSocketContorller {
         //保证对象唯一
         private static ContainerService containerService;
 
+        private static ImageService imageService;
+
         private DashboardResultCallback resultCallback;
 
-        @Autowired
-        public void setContainerService(ContainerService containerService){
+    @Autowired
+    public void setImageService(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
+    @Autowired
+    public void setContainerService(ContainerService containerService){
             this.containerService = containerService;
         }
         /**
@@ -105,7 +113,9 @@ public class WebSocketContorller {
                     }
                     webSockets.remove(this);
 
-                    break;
+                case "pullimages":
+
+                    return JSON.toJSONString(imageService.getPullImageEvents());
             }
 
 
