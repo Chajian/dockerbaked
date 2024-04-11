@@ -76,9 +76,14 @@ public class ImageModel extends BaseDriver {
 
                        @Override
                        public void onNext(PullResponseItem object) {
-                           pullImageEvent.setStatus("pulling");
+                           String suffix = "";
+                           for(int i = 0 ; i < pullImageEvent.getUpdateTimes()%3;i++){
+                                suffix+='.';
+                           }
+                           pullImageEvent.setStatus("pulling"+suffix);
                            parent.Triger(pullImageEvent);
                            log.info("pull过程中:"+Thread.currentThread().getId());
+                           pullImageEvent.setUpdateTimes(pullImageEvent.getUpdateTimes()+1);
                            super.onNext(object);
                        }
 
