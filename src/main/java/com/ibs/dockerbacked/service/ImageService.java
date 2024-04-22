@@ -6,6 +6,8 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.Order;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
+import com.ibs.dockerbacked.task.event.PullImageEvent;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -16,6 +18,10 @@ public interface ImageService extends IService<Image>{
     DockerObject getImageObjectByName(String imageName);
 
     List<? extends DockerObject> getImages(ImagesParam imagesParam, long userId);
+
+    List<PullImageEvent> getPullImageEvents();
+
+    PullImageEvent getPullImageEvent(long id);
     List<Image> getImagesByDatabase(ImagesParam imagesParam, long userId);
 
     Result pull(String imageName,String tag);

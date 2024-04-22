@@ -11,6 +11,7 @@ import com.ibs.dockerbacked.connection.ImageModel;
 import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
+import com.ibs.dockerbacked.entity.dto.PullImages;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.ImageMapper;
 import com.ibs.dockerbacked.service.FileService;
@@ -21,6 +22,7 @@ import com.ibs.dockerbacked.task.TaskStatus;
 import com.ibs.dockerbacked.task.TaskThreadPool;
 import com.ibs.dockerbacked.task.event.BaseListener;
 import com.ibs.dockerbacked.task.event.Event;
+import com.ibs.dockerbacked.task.event.PullImageEvent;
 import com.ibs.dockerbacked.util.EntityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +35,15 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements ImageService {
+    Map<Long, PullImageEvent> pullImagesMap = new HashMap<>();
     @Autowired
     private ImageModel imageModel;
 
@@ -96,6 +101,17 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
     }
 
     @Override
+    public List<PullImageEvent> getPullImageEvents() {
+        return (List<PullImageEvent>) pullImagesMap.values();
+    }
+
+    @Override
+    public PullImageEvent getPullImageEvent(long id) {
+        return pullImagesMap.get(id);
+    }
+
+
+    @Override
     public List<Image> getImagesByDatabase(ImagesParam imagesParam, long userId) {
         Page<Image> page = new Page<>(imagesParam.getPageParam().getPage(),imagesParam.getPageParam().getPageSize());
         Page<Image> pageResult = page(page,new QueryWrapper<>());
@@ -132,6 +148,7 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
                     public void onListen(Event event) {
                         super.onListen(event);
                         log.info("pull监听:"+Thread.currentThread().getId());
+                        pullImagesMap.put(event.getEventId(),(PullImageEvent)event);
                         if(event.getStatus().equals("complete")){
                             com.ibs.dockerbacked.entity.Image pullResponseItem = (com.ibs.dockerbacked.entity.Image) event.getT();
                             imageMapper.insert(pullResponseItem);
@@ -146,7 +163,7 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
             }
         };
         taskThreadPool.addTask(pullEvent);
-        log.info("pull结束:"+Thread.currentThread().getId());
+        log.info("pull异步:"+Thread.currentThread().getId());
         return Result.success(200,"拉取成功",null);
     }
 

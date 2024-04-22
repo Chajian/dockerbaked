@@ -58,11 +58,8 @@ public class FileServiceImpl implements FileService {
         try {
             byte[] bytes = context.readAllBytes();
             File file = new File(path+File.separator+fileName);
-            if(file.exists())
-                throw new CustomExpection(Constants.FILE_AREALY_EXIST);
             fileOutputStream = new FileOutputStream(file);
             fileOutputStream.write(bytes);
-
         } catch (IOException e) {
             throw new CustomExpection(Constants.FILE_WRITE_FAIL);
         }

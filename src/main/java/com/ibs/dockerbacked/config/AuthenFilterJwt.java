@@ -29,9 +29,7 @@ import java.net.URLEncoder;
 public class AuthenFilterJwt extends BasicHttpAuthenticationFilter {
 
     /**
-     * 检查token
-     *
-     *
+     * 检查token并且验证合法性
      * @param request
      * @param response
      * @return

@@ -55,6 +55,7 @@ public class ImageModel extends BaseDriver {
         //PullImage事件
         log.info("pull:"+Thread.currentThread().getId());
         PullImageEvent pullImageEvent = new PullImageEvent();
+        pullImageEvent.setName(imageName+":"+tag);
         var parent = this;
         try {
             ResultCallback resultCallback =  dockerClient.pullImageCmd(imageName)
@@ -67,6 +68,7 @@ public class ImageModel extends BaseDriver {
                            image.setTag(tag);
                            image.setName(imageName+":"+tag);
                            pullImageEvent.setT(image);
+                           pullImageEvent.setStatus("complete");
                            parent.Triger(pullImageEvent);
                            log.info("pull完成:"+Thread.currentThread().getId());
                            super.onComplete();
@@ -74,8 +76,14 @@ public class ImageModel extends BaseDriver {
 
                        @Override
                        public void onNext(PullResponseItem object) {
-                           pullImageEvent.setStatus("complete");
+                           String suffix = "";
+                           for(int i = 0 ; i < pullImageEvent.getUpdateTimes()%3;i++){
+                                suffix+='.';
+                           }
+                           pullImageEvent.setStatus("pulling"+suffix);
+                           parent.Triger(pullImageEvent);
                            log.info("pull过程中:"+Thread.currentThread().getId());
+                           pullImageEvent.setUpdateTimes(pullImageEvent.getUpdateTimes()+1);
                            super.onNext(object);
                        }
 
@@ -83,6 +91,7 @@ public class ImageModel extends BaseDriver {
                        public void onError(Throwable throwable) {
                            pullImageEvent.setStatus("error");
                            pullImageEvent.setDesc(throwable.getMessage());
+                           parent.Triger(pullImageEvent);
                            super.onError(throwable);
                        }
                    })
