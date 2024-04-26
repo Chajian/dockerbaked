@@ -111,6 +111,8 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
         }
         packet.setHardwareId(hardwareDB.getId()); //设置硬件id
         packet.setCreatedAt(new Date());
+        packet.setName(hardware.getName());
+        packet.setDescription(hardware.getDesc());
         save(packet);
         return true;
     }
