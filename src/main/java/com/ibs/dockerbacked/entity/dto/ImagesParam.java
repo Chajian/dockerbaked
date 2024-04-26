@@ -19,4 +19,6 @@ public class ImagesParam {
     private String id;
     // size 获取的个数
     private Integer size;
+    // 是否获取中央仓库的镜像
+    private boolean center;
 }

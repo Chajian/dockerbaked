@@ -34,10 +34,17 @@ public class ImageController {
     @PostMapping
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        List<Image> images = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token));
-        List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
-        images.addAll(images2);
-        return Result.success(Constants.CODE_200,images);
+        if(imagesParam.isCenter()) {
+            List<Image> images = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token));
+            List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
+            images.addAll(images2);
+            return Result.success(Constants.CODE_200,images);
+
+        }
+        else{
+            List<com.github.dockerjava.api.model.Image> images = (List<com.github.dockerjava.api.model.Image>) imageService.getImages(imagesParam,JwtUtil.getUserId(token));
+            return Result.success(Constants.CODE_200,images);
+        }
     }
 
     /** 拉取镜像
