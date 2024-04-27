@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import cn.hutool.core.io.FileUtil;
+import com.alipay.service.schema.util.StringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -82,20 +83,15 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
         String imageName = imagesParam.getLabel();
         List<? extends DockerObject> images = new ArrayList<>();
-        if (imageName==null) {
-            imageName = "";
-            images = imageModel.getImages(imageName);
-            //2.分页处理
-            if(page!=null&&pageSize!=null)
-                if ((page - 1) * pageSize < images.size()) {
-                    images = images.stream()
-                            .skip((page - 1) * pageSize)
-                            .limit(pageSize)
-                            .collect(Collectors.toList());
-                }
-        }
-        else{
-            images = imageModel.searchImage(imageName,pageSize);
+        imageName = "";
+        images = imageModel.getImages(imageName);
+        //2.分页处理
+        if(page!=null&&pageSize!=null)
+            if ((page - 1) * pageSize < images.size()) {
+                images = images.stream()
+                        .skip((page - 1) * pageSize)
+                        .limit(pageSize)
+                        .collect(Collectors.toList());
         }
         return images;
     }

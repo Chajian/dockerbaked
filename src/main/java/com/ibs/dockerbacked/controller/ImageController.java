@@ -42,7 +42,7 @@ public class ImageController {
 
         }
         else{
-            List<com.github.dockerjava.api.model.Image> images = (List<com.github.dockerjava.api.model.Image>) imageService.getImages(imagesParam,JwtUtil.getUserId(token));
+            List<Image> images = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
             return Result.success(Constants.CODE_200,images);
         }
     }
