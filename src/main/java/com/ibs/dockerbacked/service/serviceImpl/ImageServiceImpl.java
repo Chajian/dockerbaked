@@ -98,7 +98,8 @@ public class ImageServiceImpl extends ServiceImpl<ImageMapper, Image> implements
 
     @Override
     public List<PullImageEvent> getPullImageEvents() {
-        return (List<PullImageEvent>) pullImagesMap.values();
+        List<PullImageEvent> pullImagesList = new ArrayList<>(pullImagesMap.values());
+        return pullImagesList;
     }
 
     @Override
