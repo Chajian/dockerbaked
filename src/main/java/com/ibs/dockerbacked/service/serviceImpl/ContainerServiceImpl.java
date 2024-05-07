@@ -13,6 +13,7 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.*;
 import com.ibs.dockerbacked.common.Constants;
 import com.ibs.dockerbacked.common.Result;
@@ -206,7 +207,7 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 //        userMoney = userMoney - userConfigMoney;
 
         //2.1检查填写的是否为空 envs和imageName
-        check(addContainer);
+//        check(addContainer);
         //给这个contain name 规范化
 
         //环境
@@ -450,8 +451,14 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
 
     @Override
     public String getContainerStatus(String containerId) {
-        InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
-        return response.getState().getStatus();
+        try {
+            InspectContainerResponse response = dockerClient.inspectContainerCmd(containerId).exec();
+            return response.getState().getStatus();
+        }
+        catch (NotFoundException e){
+            return "exited";
+        }
+
     }
 
     @Override

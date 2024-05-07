@@ -96,9 +96,10 @@ public class WebSocketContorller {
                     return JSON.toJSONString(result);
 
                 case "current":
-
-                    return JSON.toJSONString(result.get(result.size()-1));
-
+                    if(result.size()>0) {
+                        return JSON.toJSONString(result.get(result.size() - 1));
+                    }
+                    break;
 
                 case "status":
 

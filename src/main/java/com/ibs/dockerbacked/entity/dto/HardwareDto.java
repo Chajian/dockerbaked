@@ -22,4 +22,6 @@ public class HardwareDto extends Hardware {
     private float networkSpeedMoney = 20l;
     @Min(value = 0,message = "不能小于于0")
     private float diskMoney = 20l;
+    private String name = "";
+    private String desc = "";
 }
