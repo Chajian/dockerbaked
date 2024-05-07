@@ -65,6 +65,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return taskThreadPool;
     }
 
+    //消费者一秒钟轮询一次，检查是否有可消费订单
     @Scheduled(fixedRate = 1000)
     public void receiveMessage(){
         if(!kafkaModel.isEnable())
@@ -76,7 +77,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if(!ObjectUtils.isEmpty(addOrder.getOrder()))
                 createOrderTask(addOrder.getOrder(),addOrder.getPacketId(), addOrder.getUserId(), addOrder.getAddContainer(), addOrder.getLifeTime());
         }
-//        log.info("order接收端id:"+Thread.currentThread().getId());
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -102,7 +102,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
 
 
-
+    //消费订单业务逻辑
     public Order createOrderTask(Order order,int packetId, long userId, AddContainer addContainer,int lifeTime) {
         Packet packet = packetService.getById(packetId);//套餐
         Hardware hard = hardwareMapper.selectById(packet.getHardwareId());
