@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.HardwareDto;
+import com.ibs.dockerbacked.entity.vo.PacketVo;
 
 import java.util.List;
 
@@ -29,4 +30,11 @@ public interface PacketService extends IService<Packet> {
      * @return
      */
     List<Packet> getPackets(int page,int size);
+
+    /**
+     * Packet转为PakcetVo
+     * @param packet
+     * @return
+     */
+    PacketVo ToPacketVo(Packet packet);
 }
