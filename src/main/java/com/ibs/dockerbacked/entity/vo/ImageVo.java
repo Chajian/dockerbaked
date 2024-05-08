@@ -24,9 +24,9 @@ public class ImageVo {
     /*作者*/
     private String author;
     /*是否最新*/
-    private boolean newest;
+    private Boolean newest = null;
     /*是否安装*/
-    private boolean install;
+    private Boolean install = null;
 
     public void toImageVo(Image image){
         if (image != null) {

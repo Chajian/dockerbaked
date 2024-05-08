@@ -39,13 +39,15 @@ public class ImageController {
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(imagesParam.isCenter()) {
-            Map<Integer,Image> imageMap = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token)).stream().collect(Collectors.toMap(Image::getId,image->image));
+            Map<String,Image> imageMap = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token)).stream().filter(image -> {
+                return image.getName()!=null;
+            }).collect(Collectors.toMap(Image::getName,image->image));
             List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
             List<ImageVo> imageVos = new ArrayList<>();
             for(Image image:images2){
                 ImageVo imageVo = new ImageVo();
                 imageVo.toImageVo(image);
-                imageVo.setInstall(imageMap.get(imageVo.getId())!=null);
+                imageVo.setInstall(imageMap.get(imageVo.getName())!=null);
                 imageVos.add(imageVo);
             }
             return Result.success(Constants.CODE_200,imageVos);
