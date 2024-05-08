@@ -28,7 +28,8 @@ public class PacketController {
     @Autowired
     private PacketService packetService;
 
-
+    @Autowired
+    private HardwareService hardwareService;
 
     /**
      * author sn
@@ -56,6 +57,20 @@ public class PacketController {
         }
         return Result.success(Constants.CODE_200,result);
 
+    }
+
+    /**
+     * 修改套餐信息
+     * @return
+     */
+    @RequiresRoles("admin")
+    @PostMapping("/update")
+    public Result updatePakcet(@RequestBody @Validated PacketVo packetVo){
+        Packet packet = packetVo.toPacket();
+        packetService.updateById(packet);
+        Hardware hardware = packetVo.getHardware();
+        hardwareService.updateById(hardware);
+        return Result.success(Constants.CODE_200);
     }
 
 

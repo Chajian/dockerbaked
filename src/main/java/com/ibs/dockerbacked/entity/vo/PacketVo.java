@@ -23,4 +23,12 @@ public class PacketVo {
         this.hardwareId = packet.getHardwareId();
     }
 
+    public Packet toPacket(){
+        Packet packet = new Packet();
+        packet.setName(this.name);
+        packet.setId(this.id);
+        packet.setHardwareId(this.hardwareId);
+        packet.setDescription(this.description);
+    }
+
 }
