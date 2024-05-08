@@ -29,6 +29,7 @@ public class PacketVo {
         packet.setId(this.id);
         packet.setHardwareId(this.hardwareId);
         packet.setDescription(this.description);
+        return packet;
     }
 
 }
