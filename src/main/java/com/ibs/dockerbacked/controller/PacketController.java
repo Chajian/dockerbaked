@@ -53,7 +53,7 @@ public class PacketController {
         List<Packet> list = packetService.getPackets(page,pageSize);
         List<PacketVo> result = new ArrayList<>();
         for(int i = 0 ; i < list.size();i++){
-            result.add(packetService.ToPacketVo(list.get(0)));
+            result.add(packetService.ToPacketVo(list.get(i)));
         }
         return Result.success(Constants.CODE_200,result);
 
