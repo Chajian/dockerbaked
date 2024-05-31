@@ -93,6 +93,8 @@ public class EntityUtils {
             com.github.dockerjava.api.model.Image dockerImage = (com.github.dockerjava.api.model.Image) object;
             if(dockerImage.getRepoTags().length>0){
                 image.setName(dockerImage.getRepoTags()[0]);
+                int firstOn = image.getName().lastIndexOf(":");
+                image.setTag(firstOn==-1?"":image.getName().substring(firstOn));
             }
             if(dockerImage.getSize()>0)
                 image.setSize(dockerImage.getSize());

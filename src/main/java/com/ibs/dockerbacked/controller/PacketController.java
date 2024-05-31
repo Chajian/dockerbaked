@@ -7,6 +7,7 @@ import com.ibs.dockerbacked.entity.Container;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.HardwareDto;
+import com.ibs.dockerbacked.entity.vo.PacketVo;
 import com.ibs.dockerbacked.service.HardwareService;
 import com.ibs.dockerbacked.service.PacketService;
 import org.apache.ibatis.annotations.Param;
@@ -27,7 +28,8 @@ public class PacketController {
     @Autowired
     private PacketService packetService;
 
-
+    @Autowired
+    private HardwareService hardwareService;
 
     /**
      * author sn
@@ -47,10 +49,28 @@ public class PacketController {
      * @return
      */
     @GetMapping
-    public Result<List<Packet>> getPackets(@Param("page") int page, @Param("pageSize") int pageSize){
+    public Result<List<PacketVo>> getPackets(@Param("page") int page, @Param("pageSize") int pageSize){
         List<Packet> list = packetService.getPackets(page,pageSize);
-        return Result.success(Constants.CODE_200,list);
+        List<PacketVo> result = new ArrayList<>();
+        for(int i = 0 ; i < list.size();i++){
+            result.add(packetService.ToPacketVo(list.get(i)));
+        }
+        return Result.success(Constants.CODE_200,result);
 
+    }
+
+    /**
+     * 修改套餐信息
+     * @return
+     */
+    @RequiresRoles("admin")
+    @PostMapping("/update")
+    public Result updatePakcet(@RequestBody @Validated PacketVo packetVo){
+        Packet packet = packetVo.toPacket();
+        packetService.updateById(packet);
+        Hardware hardware = packetVo.getHardware();
+        hardwareService.updateById(hardware);
+        return Result.success(Constants.CODE_200);
     }
 
 

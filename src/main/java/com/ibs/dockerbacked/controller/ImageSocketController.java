@@ -8,6 +8,7 @@ import com.ibs.dockerbacked.entity.vo.Dashboard;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.ImageService;
+import com.ibs.dockerbacked.task.event.PullImageEvent;
 import com.ibs.dockerbacked.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -78,7 +79,8 @@ public class ImageSocketController {
                 long data = jsonObject.getLong(MESSAGE);
                 return JSON.toJSONString(imageService.getPullImageEvent(data));
             case "images/get":
-                return JSON.toJSONString(imageService.getPullImageEvents());
+                List<PullImageEvent> events = imageService.getPullImageEvents();
+                return JSON.toJSONString(events);
         }
 
 

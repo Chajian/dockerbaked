@@ -6,6 +6,7 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Image;
 import com.ibs.dockerbacked.entity.dto.ImagesParam;
 import com.ibs.dockerbacked.entity.dto.PullImages;
+import com.ibs.dockerbacked.entity.vo.ImageVo;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.util.FileUtils;
@@ -17,7 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -35,15 +39,31 @@ public class ImageController {
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(imagesParam.isCenter()) {
-            List<Image> images = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token));
-            List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
-            images.addAll(images2);
-            return Result.success(Constants.CODE_200,images);
+            Map<String,Image> imageMap = imageService.getImagesByDatabase(imagesParam, JwtUtil.getUserId(token))
+                    .stream()
+                    .filter(image -> {return image.getName()!=null;})
+                    .collect(Collectors.toMap(Image::getName,image->image,(existingValue,newValue)->{return existingValue;}));
 
+            List<Image> images2 = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
+            List<ImageVo> imageVos = new ArrayList<>();
+            for(Image image:images2){
+                ImageVo imageVo = new ImageVo();
+                imageVo.toImageVo(image);
+                imageVo.setInstall(imageMap.get(imageVo.getName())!=null);
+                imageVos.add(imageVo);
+            }
+            return Result.success(Constants.CODE_200,imageVos);
         }
         else{
             List<Image> images = imageService.dockerObjectToImage(imageService.getImages(imagesParam, JwtUtil.getUserId(token)));
-            return Result.success(Constants.CODE_200,images);
+            List<ImageVo> imageVos = new ArrayList<>();
+            for(Image image:images){
+                ImageVo imageVo = new ImageVo();
+                imageVo.toImageVo(image);
+                imageVo.setNewest(true);
+                imageVos.add(imageVo);
+            }
+            return Result.success(Constants.CODE_200,imageVos);
         }
     }
 

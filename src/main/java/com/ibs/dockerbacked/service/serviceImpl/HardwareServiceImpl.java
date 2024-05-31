@@ -1,6 +1,7 @@
 package com.ibs.dockerbacked.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ibs.dockerbacked.entity.Hardware;
@@ -26,7 +27,6 @@ public class HardwareServiceImpl extends ServiceImpl<HardwareMapper, Hardware> i
     @Override
     public Hardware getHardwareById(int id) {
         Hardware hardware = hardwareMapper.selectById(id);
-
         return hardware;
     }
 

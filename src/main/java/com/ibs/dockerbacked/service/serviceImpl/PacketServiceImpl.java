@@ -9,6 +9,7 @@ import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.entity.Packet;
 import com.ibs.dockerbacked.entity.dto.AtomicFloat;
 import com.ibs.dockerbacked.entity.dto.HardwareDto;
+import com.ibs.dockerbacked.entity.vo.PacketVo;
 import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.mapper.PacketMapper;
 import com.ibs.dockerbacked.service.HardwareService;
@@ -134,4 +135,15 @@ public class PacketServiceImpl extends ServiceImpl<PacketMapper, Packet> impleme
         }
         return containers;
     }
+
+    @Override
+    public PacketVo ToPacketVo(Packet packet) {
+        Hardware hardware = hardwareService.getHardwareById(packet.getHardwareId());
+        PacketVo packetVo = new PacketVo();
+        packetVo.toPacketVo(packet);
+        packetVo.setHardware(hardware);
+        return packetVo;
+    }
+
+
 }

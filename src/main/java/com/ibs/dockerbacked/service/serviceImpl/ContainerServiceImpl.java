@@ -128,7 +128,11 @@ public class ContainerServiceImpl extends ServiceImpl<ContainerMapper, Container
             char type = file.charAt(file.length()-1);
             treeNode1.setName(name);
             treeNode1.setType(String.valueOf(type));
-            treeNode1.setAbsolutePath(path+'/'+name);
+            if(path.equals("/")){
+                treeNode1.setAbsolutePath('/'+name);
+            }else {
+                treeNode1.setAbsolutePath(path + '/' + name);
+            }
             treeNode.addNode(treeNode1);
         }
         return treeNode;
