@@ -94,10 +94,11 @@ public class EntityUtils {
             if(dockerImage.getRepoTags().length>0){
                 image.setName(dockerImage.getRepoTags()[0]);
                 int firstOn = image.getName().lastIndexOf(":");
-                image.setTag(firstOn==-1?"":image.getName().substring(firstOn));
+                image.setTag(firstOn==-1?"":image.getName().substring(firstOn+1));
             }
-            if(dockerImage.getSize()>0)
+            if(dockerImage.getSize()>0) {
                 image.setSize(dockerImage.getSize());
+            }
         }
 
         return image;
