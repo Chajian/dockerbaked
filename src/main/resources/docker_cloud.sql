@@ -38,14 +38,7 @@ CREATE TABLE `container` (
 -- ----------------------------
 -- Records of container
 -- ----------------------------
-BEGIN;
-INSERT INTO `container` VALUES ('023cd63d9b97d603cb45539c5391d5b5654a7464bfd2be1f8c3c5c925564899c', 'mysql:8.0', '1-test1', NULL, 1, '1', '2024-01-03 19:35:03', '2024-01-03 19:57:49', '2024-01-03 19:35:03', NULL);
-INSERT INTO `container` VALUES ('3f9abc3542a21ecca3dd5f265f6088065e69b455fc502d9a9bd0260fc1ea98fb', 'mysql:8.0', '1-testtest234234', NULL, 1, '1', '2024-01-03 20:01:56', '2024-01-03 20:02:16', '2024-01-03 20:01:56', NULL);
-INSERT INTO `container` VALUES ('47bb51f250660d0b83e37d6146b83af20cc1f46d9ec8eb368b9a0b930450a18f', 'mysql:8.0', '4-jkjk', NULL, 4, '1', '2024-01-03 19:51:50', '2024-01-03 19:51:50', '2024-01-03 19:51:50', NULL);
-INSERT INTO `container` VALUES ('5bb8bcbe5a115282c159725c60157ba30bcbd3e3f871fda33d5d6316ab389dcc', 'mysql:5.7', '4-111123', NULL, 4, '1', '2024-01-03 19:50:16', '2024-01-03 19:50:37', '2024-01-03 19:50:16', NULL);
-INSERT INTO `container` VALUES ('733584b342e5ab8d8f03769f7371a7e58ad550660cc1e4fa6fae0d8f11bddb29', 'mysql:8.0', '1-1111', NULL, 1, '1', '2024-01-03 19:38:03', '2024-01-03 19:38:19', '2024-01-03 19:38:03', NULL);
-INSERT INTO `container` VALUES ('b8e5f7a4aeb53e17f7ffd9c5566d754bf7a71f30ae99a9c672dc82e189de7591', 'mysql:8.0', '1-testtest', NULL, 1, '1', '2024-01-03 20:00:47', '2024-01-03 20:00:47', '2024-01-03 20:00:47', NULL);
-COMMIT;
+
 
 -- ----------------------------
 -- Table structure for hardware
@@ -91,6 +84,16 @@ CREATE TABLE if not exists `image` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
+CREATE TABLE if not exists image_pull_progress (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_id INT NOT NULL,
+    progress INT NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES image(id)
+);
+
 -- ----------------------------
 -- Table structure for orders
 -- ----------------------------
@@ -113,16 +116,7 @@ CREATE TABLE `orders` (
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-BEGIN;
-INSERT INTO `orders` VALUES (111760, '023cd63d9b97d603cb45539c5391d5b5654a7464bfd2be1f8c3c5c925564899c', NULL, 'order', '2024-01-03 19:34:56', '2024-01-03 19:35:04', 1, 0.00, 3, NULL, '创建成功!');
-INSERT INTO `orders` VALUES (111761, '733584b342e5ab8d8f03769f7371a7e58ad550660cc1e4fa6fae0d8f11bddb29', NULL, 'order', '2024-01-03 19:37:57', '2024-01-03 19:38:03', 1, 0.00, 5, NULL, '创建成功!');
-INSERT INTO `orders` VALUES (111762, NULL, NULL, 'order', '2024-01-03 19:43:29', '2024-01-03 19:43:29', 4, 0.00, 3, NULL, '未支付');
-INSERT INTO `orders` VALUES (111763, NULL, NULL, 'order', '2024-01-03 19:43:56', '2024-01-03 19:43:56', 4, 0.00, 3, NULL, '未支付');
-INSERT INTO `orders` VALUES (111764, '5bb8bcbe5a115282c159725c60157ba30bcbd3e3f871fda33d5d6316ab389dcc', NULL, 'order', '2024-01-03 19:50:08', '2024-01-03 19:50:18', 4, 0.00, 5, NULL, '创建成功!');
-INSERT INTO `orders` VALUES (111765, '47bb51f250660d0b83e37d6146b83af20cc1f46d9ec8eb368b9a0b930450a18f', NULL, 'order', '2024-01-03 19:51:43', '2024-01-03 19:51:50', 4, 0.00, 5, NULL, '创建成功!');
-INSERT INTO `orders` VALUES (111766, 'b8e5f7a4aeb53e17f7ffd9c5566d754bf7a71f30ae99a9c672dc82e189de7591', NULL, 'order', '2024-01-03 20:00:40', '2024-01-03 20:00:47', 1, 0.00, 5, NULL, '创建成功!');
-INSERT INTO `orders` VALUES (111767, '3f9abc3542a21ecca3dd5f265f6088065e69b455fc502d9a9bd0260fc1ea98fb', NULL, 'order', '2024-01-03 20:01:50', '2024-01-03 20:01:56', 1, 0.00, 5, NULL, '创建成功!');
-COMMIT;
+
 
 -- ----------------------------
 -- Table structure for packet

@@ -29,6 +29,19 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
+<!--        swagger依赖-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version> <!-- 注意：使用适合Spring Boot 2.x的版本 -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.maciejwalkowiak.spring</groupId>
+            <artifactId>spring-boot-startup-report</artifactId>
+            <version>0.2.0</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>

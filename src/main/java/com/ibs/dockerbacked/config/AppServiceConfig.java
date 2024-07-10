@@ -88,6 +88,10 @@ public class AppServiceConfig implements WebMvcConfigurer {
         filterRuleMap.put("/404","anon");//404
         filterRuleMap.put("/**", "jwt");
 //        filterRuleMap.put("/ibs/api//**", "anon");
+        //swagger相关配置权限过滤
+        filterRuleMap.put("/swagger-ui/**","anon");
+        filterRuleMap.put("/swagger-resources/**","anon");
+        filterRuleMap.put("/v2/api-docs/**","anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return shiroFilterFactoryBean;
     }
