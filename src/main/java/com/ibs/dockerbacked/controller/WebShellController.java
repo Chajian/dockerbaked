@@ -8,6 +8,7 @@ import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
 import com.ibs.dockerbacked.util.StringUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+@Api(tags = "WebShell容器接口")
 @Component
 @ServerEndpoint("/ibs/api/socket/webshell/{token}/{containerid}")
 public class WebShellController {

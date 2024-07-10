@@ -1,5 +1,7 @@
 package com.ibs.dockerbacked.entity.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @Data
 @ToString
+@ApiModel("分页配置")
 public class PageParam {
+    @ApiModelProperty(value = "当前页码")
     private Integer page;
+    @ApiModelProperty(value = "每页数量")
     private Integer pageSize;
 }

@@ -10,6 +10,8 @@ import com.ibs.dockerbacked.entity.dto.HardwareDto;
 import com.ibs.dockerbacked.entity.vo.PacketVo;
 import com.ibs.dockerbacked.service.HardwareService;
 import com.ibs.dockerbacked.service.PacketService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 套餐模块
+ * 套餐接口
  */
+@Api(tags = "套餐接口")
 @RestController
 @RequestMapping("ibs/api/packet")
 public class PacketController {
@@ -37,6 +40,7 @@ public class PacketController {
      *
      * @return true or false
      */
+    @ApiOperation("创建套餐信息")
     @RequiresRoles("admin")
     @PostMapping("/create")
     public Result<HardwareDto> createPacket(@RequestBody @Validated HardwareDto hardware, boolean ifFree) {
@@ -48,6 +52,7 @@ public class PacketController {
      * 获取套餐信息
      * @return
      */
+    @ApiOperation("获取套餐信息")
     @GetMapping
     public Result<List<PacketVo>> getPackets(@Param("page") int page, @Param("pageSize") int pageSize){
         List<Packet> list = packetService.getPackets(page,pageSize);
@@ -63,6 +68,7 @@ public class PacketController {
      * 修改套餐信息
      * @return
      */
+    @ApiOperation("修改套餐信息")
     @RequiresRoles("admin")
     @PostMapping("/update")
     public Result updatePakcet(@RequestBody @Validated PacketVo packetVo){

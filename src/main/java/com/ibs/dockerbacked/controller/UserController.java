@@ -9,6 +9,8 @@ import com.ibs.dockerbacked.entity.dto.UserParam;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.service.UserSerivce;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,7 @@ import java.io.File;
  * 用户接口
  * @author Yanglin
  */
+@Api(tags = "用户接口")
 @RestController()
 @RequestMapping("/ibs/api/user")
 public class UserController {
@@ -36,6 +39,7 @@ public class UserController {
      * update user info
      * @return
      */
+    @ApiOperation("更新用户")
     @PostMapping("/update")
     public Result updateUser(@RequestBody UserParam userParam){
         //TODO update user info
@@ -49,6 +53,7 @@ public class UserController {
      * get user info only by own
      * @return
      */
+    @ApiOperation("获取用户信息")
     @GetMapping()
     public Result getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String userName = JwtUtil.getUserAccount(token);
@@ -61,6 +66,7 @@ public class UserController {
      * update user avatar
      * @return
      */
+    @ApiOperation("更新用户头像")
     @PostMapping("upavatar")
     public Result updateAvatar(@RequestParam("file") MultipartFile avatar,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         String account = JwtUtil.getUserAccount(token);

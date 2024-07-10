@@ -11,6 +11,10 @@ import com.ibs.dockerbacked.service.PacketService;
 import com.ibs.dockerbacked.service.UserSerivce;
 
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
@@ -30,6 +34,7 @@ import java.util.List;
  * @descript 管理员接口
  * @date 2023/3/2 19:04
  */
+@Api(tags = "管理员接口")
 @RestController
 @RequestMapping("/ibs/api/admin")
 @RequiresRoles("admin")
@@ -48,6 +53,7 @@ public class AdminController {
      *@author chen  /ibs/api/admin/containers/{id}/{status}
      *@version 1.0
      */
+    @ApiOperation("操纵容器接口,status状态有start,stop,pause,restart")
     @GetMapping("/container/{id}/{status}")
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status) {
         return containerService.operateContainer(containerId, status);
@@ -60,6 +66,7 @@ public class AdminController {
      * @param addContainer
      * @return 成功为200 失败为500
      */
+    @ApiOperation("新增容器接口")
     @PostMapping("/containers/create")
     public Result create(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         long userId = JwtUtil.getUserId(token);
@@ -74,6 +81,7 @@ public class AdminController {
      *@author chen /ibs/api/admin/containers/
      *@version 1.0
      */
+    @ApiOperation("查看容器接口")
     @GetMapping("/containers/{page}/{pageSize}")
     public Result<List<Container>> getContainers(@PathVariable("page") Integer page,
                                                  @PathVariable("pageSize") Integer pageSize) {
@@ -88,6 +96,7 @@ public class AdminController {
      *@author sn
      *@version 1.0
      */
+    @ApiOperation("批量生成账号接口")
     @GetMapping("/batch/{count}/{token}")
     public Boolean batchGenerationUser(@PathVariable("count") int count,
                                        @PathVariable String token) {

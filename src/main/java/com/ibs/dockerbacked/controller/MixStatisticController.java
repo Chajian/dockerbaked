@@ -8,6 +8,8 @@ import com.ibs.dockerbacked.entity.vo.HardwareVo;
 import com.ibs.dockerbacked.mapper.*;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * 混合数据的controller层
  * @author
  */
+@Api(tags = "混合数据接口")
 @RestController
 @RequestMapping("/ibs/api/mix")
 public class MixStatisticController {
@@ -40,6 +43,7 @@ public class MixStatisticController {
      * 获取硬件信息通过容器Id
      * @return
      */
+    @ApiOperation("获取硬件信息通过容器ID")
     @GetMapping("/get/{containerId}")
     public Result getHardByContainer(@PathVariable("containerId")String containerId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))

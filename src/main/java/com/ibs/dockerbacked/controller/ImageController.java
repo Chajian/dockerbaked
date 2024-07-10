@@ -11,6 +11,8 @@ import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.util.FileUtils;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Api(tags = "镜像接口")
 @RestController
 @RequestMapping("/ibs/api/images")
 public class ImageController {
@@ -35,6 +37,7 @@ public class ImageController {
      * author chen
      * @return 镜像列表
      */
+    @ApiOperation("获取镜像列表接口")
     @PostMapping
     public Result getImages(@RequestBody(required = false) ImagesParam imagesParam,
                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
@@ -71,6 +74,7 @@ public class ImageController {
      * author chen
      * @return code 200 msg success
      */
+    @ApiOperation("拉去镜像接口")
     @PostMapping("/pull")
     public Result pull(@RequestBody PullImages pullImages){
         String fullName = pullImages.getName()+pullImages.getTag();
@@ -98,6 +102,7 @@ public class ImageController {
      * @param imageName
      * @return
      */
+    @ApiOperation("通过Dockerfile构建镜像")
     @PostMapping("/build")
     public Result build(String imageName,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws IOException {
         String account = JwtUtil.getUserAccount(token);

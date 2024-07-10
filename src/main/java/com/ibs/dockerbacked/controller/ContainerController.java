@@ -17,6 +17,8 @@ import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.FileService;
 import com.ibs.dockerbacked.service.SpaceService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +40,7 @@ import java.util.Map;
  * @descript 普通用户的容器接口
  * @date 2023/3/4 21:34
  */
+@Api(tags = "容器管理接口")
 @RestController
 @RequestMapping("/ibs/api/containers")
 public class ContainerController {
@@ -61,6 +64,7 @@ public class ContainerController {
      *@author chen
      *@version 1.0
      */
+    @ApiOperation("获取容器列表接口")
     @GetMapping("/get/{page}/{pageSize}")
     public Result getContainers(@RequestBody(required = false) ContainerParam containerParam,
                                 @PathVariable(value = "page") Integer page,
@@ -77,6 +81,7 @@ public class ContainerController {
      *@author sn
      *@version 1.0
      */
+    @ApiOperation("创建容器接口")
     @PostMapping("/create")
     public Result createContainer(@RequestBody AddContainer addContainer, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
 
@@ -92,6 +97,7 @@ public class ContainerController {
      *@author chen  /ibs/api/containers/{id}/{action}
      *@version 1.0
      */
+    @ApiOperation("操作容器接口,status状态有start,stop,pause,restart")
     @PostMapping("/{id}/{status}")
     public Result operateContainer(@PathVariable("id") String containerId, @PathVariable("status") String status,@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
@@ -103,6 +109,7 @@ public class ContainerController {
     /**
      * 执行sh语句
      */
+    @ApiOperation("执行sh指令接口")
     @PostMapping("/{id}/exec")
     public Result execContainer(@PathVariable("id") String containerId,@RequestBody() ExecParam exec,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))
@@ -120,6 +127,7 @@ public class ContainerController {
      * @param tagetPath 目标存放地址
      * @return
      */
+    @ApiOperation("上传文件到容器接口")
     @PostMapping("/upload")
     public Result uploadFileToContainer(@RequestParam("file") MultipartFile multipartFile, @RequestHeader(HttpHeaders.AUTHORIZATION) String token,String containerId,String tagetPath){
         String account = JwtUtil.getUserAccount(token);
@@ -143,6 +151,7 @@ public class ContainerController {
      * @param targetPath 目标地址
      * @return
      */
+    @ApiOperation("下载文件到容器接口")
     @PostMapping("/download")
     public Result downloadFileFromContainer(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @Param("containerId") String containerId, @Param("targetPath") String targetPath){
 
@@ -162,7 +171,7 @@ public class ContainerController {
         }
         return Result.success(Constants.CODE_200,"文件成功！");
     }
-
+    @ApiOperation("获取容器文件树接口")
     @PostMapping("/get/file")
     public Result getContainerFileSystem(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @Param("containerId") String containerId, @Param("targetPath") String targetPath){
         if(!containerService.hasContainer(containerId, JwtUtil.getUserId(token)))

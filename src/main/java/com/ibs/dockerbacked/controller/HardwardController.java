@@ -5,6 +5,8 @@ import com.ibs.dockerbacked.common.Result;
 import com.ibs.dockerbacked.entity.Hardware;
 import com.ibs.dockerbacked.mapper.HardwareMapper;
 import com.ibs.dockerbacked.service.HardwareService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.util.List;
  * 硬件接口
  * @author Yanglin
  */
+@Api(tags = "硬件信息接口")
 @RestController
 @RequestMapping("/ibs/api/hardware")
 public class HardwardController {
@@ -33,6 +36,7 @@ public class HardwardController {
      * 获取套餐信息
      * @return
      */
+    @ApiOperation("获取套餐硬件信息接口")
     @GetMapping
     public Result getHardware(@Param("hardwareId") int hardwareId){
         Hardware hardware = hardwareService.getHardwareById(hardwareId);
@@ -42,9 +46,10 @@ public class HardwardController {
     }
 
     /**
-     * 获取套餐信息
+     * 获取硬件信息
      * @return
      */
+    @ApiOperation("获取硬件信息接口")
     @GetMapping("/{page}/{pageSize}")
     public Result getHardwares(@PathVariable("page")int page,@PathVariable("pageSize") int pageSize){
         List<Hardware> hardwares = hardwareService.getHardwares(page,pageSize);

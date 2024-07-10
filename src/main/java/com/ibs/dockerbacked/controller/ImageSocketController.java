@@ -10,6 +10,7 @@ import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.task.event.PullImageEvent;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * 镜像socket接口
  */
+@Api(tags = "镜像socket接口")
 @Component
 @ServerEndpoint("/ibs/api/socket/command/{token}")
 public class ImageSocketController {

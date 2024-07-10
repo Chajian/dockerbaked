@@ -11,6 +11,7 @@ import com.ibs.dockerbacked.execption.CustomExpection;
 import com.ibs.dockerbacked.service.ContainerService;
 import com.ibs.dockerbacked.service.ImageService;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * 多对象模式
  *
  */
+@Api(tags = "容器webscoket接口2.0")
 @Component
 @ServerEndpoint("/ibs/api/socket/dashboard/{token}/{containerid}")
 public class WebSocketContorller {

@@ -16,6 +16,8 @@ import com.ibs.dockerbacked.task.event.DelayDriver;
 import com.ibs.dockerbacked.task.event.Event;
 import com.ibs.dockerbacked.task.event.Listener;
 import com.ibs.dockerbacked.util.JwtUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ import java.util.List;
  * 订单接口
  * @author Yanglin
  */
+@Api(tags = "订单接口")
 @RestController
 @RequestMapping("/ibs/api/order")
 public class OrderController {
@@ -64,6 +67,7 @@ public class OrderController {
      * @param token
      * @return
      */
+    @ApiOperation("创建订单接口")
     @Transactional
     @PostMapping("/create")
     public Result<Order> createOrder(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestParam("id") int packetId,@RequestBody AddContainer addContainer) throws ParseException {
@@ -93,6 +97,7 @@ public class OrderController {
      * 支付功能
      * @return
      */
+    @ApiOperation("支付订单")
     @Transactional
     @PutMapping("/pay/{id}")
     public Result payOrder(@PathVariable("id") int orderId,@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
@@ -117,6 +122,7 @@ public class OrderController {
      * @param token
      * @return
      */
+    @ApiOperation("获取用户的订单")
     @GetMapping("/get/{page}/{pageSize}")
     public Result getOrders(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,@PathVariable(value = "page") Integer page,
                             @PathVariable(value = "pageSize") Integer pageSize){
